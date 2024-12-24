@@ -209,6 +209,17 @@ def get_sim_num(iters: tuple, n_iters: tuple) -> int:
 
 
 def sim_setup_arg_parser():
+    """Set up the argument parser for the simulation.
+
+    Argument parser is initialzed and processed here to avoid cluttering
+    the main setup file.
+    
+    Returns
+    -------
+    argparse.ArgumentParser
+        The argument parser with the arguments added.
+    """
+    
     parser = argparse.ArgumentParser(description="Run a single simulation")
     parser.add_argument("-p","--specs_file",
                     help="specificatons file",
