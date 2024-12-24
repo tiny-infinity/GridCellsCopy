@@ -5,7 +5,7 @@ import h5py
 import json
 from itertools import islice
 import os
-
+import argparse
 
 """
 Helper functions for the simulation setup, runs and data handling
@@ -206,7 +206,16 @@ def get_sim_num(iters: tuple, n_iters: tuple) -> int:
     for i,iter in enumerate(iters):
         sim_num+=iter*np.prod(n_iters[i+1:])
     return sim_num
-                
+
+
+def sim_setup_arg_parser():
+    parser = argparse.ArgumentParser(description="Run a single simulation")
+    parser.add_argument("-p","--specs_file",
+                    help="specificatons file",
+                    type=str,
+                    required=True)
+    return parser
+
 
 class ProgressBar:
     """Progress bar for simulations.
@@ -265,3 +274,4 @@ def chunks(data, SIZE=10000):
     for i in range(0, len(data), SIZE):
         res.append(dict(islice(it, SIZE)))
     return res
+

@@ -10,13 +10,9 @@ from param import Param
 
 
 tstart = time.perf_counter()
-
+args = s_hf.sim_setup_arg_parser().parse_args()
 #Process specs file
-try:
-    fname = sys.argv[1]
-except IndexError as err:
-    err.add_note("Please pass specs file")
-    raise err
+fname = args.specs_file
 mod_name = os.path.split(fname)[0] + "." + \
     (os.path.split(fname)[1]).split(".")[0]
 
