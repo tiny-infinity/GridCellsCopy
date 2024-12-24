@@ -177,4 +177,5 @@ analysis/figures/**/*
 !analysis/figures/.placeholder
 
 docs/build/*
+!docs/build/.placeholder
 
