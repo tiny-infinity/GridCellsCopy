@@ -1,0 +1,137 @@
+{
+    "sim_date_time": null,
+    "sim_dur": 4500,
+    "dt": 0.025,
+    "sim_id": 0,
+    "sim_num": 0,
+    "n_nodes": 1,
+    "vel_type": "const",
+    "x_input": 0,
+    "n_cpus":null,
+    "post_sim_analysis": false,
+    "progress":false,
+    "recorder_dt": 1,
+    "data_root":"data/",
+    "python": "python",
+    "build_conn_matrix":true,
+    "save_conn_matrix":false,
+    "record_handle_stell": {
+        "stell_spks": {
+            "state": true,
+            "cells_to_record": "all"
+        },
+        "stell_v": {
+            "state": false,
+            "cells_to_record": [
+                12,
+                14
+            ]
+        },
+        "stell_ih": {
+            "state": false,
+            "cells_to_record": "all"
+        },
+        "stell_ina": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_ik": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_itheta": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_nap": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_gna": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_gh": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_gnap": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_ih_mf": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_ih_ms": {
+            "state": false,
+            "cellsncpus_to_record": []
+        },
+        "stell_syn_exc_i": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_syn_exc_g": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_syn_inhib_i": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_syn_inhib_g": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_ext_dc_i": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_ext_dc_amp": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "stell_theta_i": {
+            "state": false,
+            "cells_to_record": []
+        }
+    },
+    "record_handle_intrnrn": {
+        "intrnrn_spks": {
+            "state": true,
+            "cells_to_record": "all"
+        },
+        "intrnrn_v": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "intrnrn_syn_exc_i": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "intrnrn_syn_exc_g": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "intrnrn_syn_inhib_i": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "intrnrn_syn_inhib_g": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "intrnrn_ext_dc_i": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "intrnrn_ext_dc_amp": {
+            "state": false,
+            "cells_to_record": []
+        },
+        "intrnrn_theta_i": {
+            "state": false,
+            "cells_to_record": []
+        }
+    }
+}

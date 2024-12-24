@@ -1,0 +1,78 @@
+{
+    "n_intrnrn": 101,
+    "n_stell": 202,
+    "N_per_sheet": 101,
+    "is_peak": 2,
+    "is_stdev": 0.136,
+    "is_mean": 16,
+    "si_peak": 0.5,
+    "si_stdev": 0.272,
+    "si_mean": 7,
+    "ii_peak": 2,
+    "ii_stdev": 0.136,
+    "ii_mean": 16,
+    "stell_noise": [
+        150,
+        0,
+        0
+    ],
+    "stell_init_noise": [
+        50,
+        0,
+        0.05
+    ],
+    "intrnrn_dc_amp": 0.0005,
+    "intrnrn_noise": [
+        150,
+        0,
+        0
+    ],
+    "intrnrn_init_noise": [
+        50,
+        0,
+        0.05
+    ],
+    "Amp_i_theta": 0.0001,
+    "phi_i_theta": 1.57,
+    "omega_i_theta": 0.01,
+    "theta_vel_tuning": 0,
+    "g_h_bar": 0.0015,
+    "gnap_bar": 0.0005,
+    "stell_theta_Amp": 0,
+    "stell_theta_c": 0,
+    "stell_theta_omega": 0.01,
+    "noise_seed": 0,
+    "hs_tau": 5.6,
+    "hf_tau": 0.51,
+    "input_id":false,
+    "split_sim": [
+        false,
+        1000
+    ],
+    "stell_const_dc": [
+        -1,
+        -2e-3
+    ],
+    "init_noise_seed": 0,
+    "conn_id":"main",
+    "instr_id":"main",
+    "model_version": null,
+    "xtra_params":{},
+    "n_phases": 64,
+    "traj_id": "sin_vel_04_45000",
+    "lambda0": 6.2831,
+    "allothetic_stell_dc": -0.00265,
+    "allothetic_nrn_n": 16,
+    "vel_integ_zero": -0.0027,
+    "vel_integ_multiple": 1,
+    "vel_integ_or": -0.0027,
+    "traj_dur_s": 45000,
+    "allothetic_dur": 8000,
+    "global_inhib_dc":0,
+    "ext_Amp_i_theta":1e-3,
+    "si_asym_factor":[1,1],
+    "is_asym_factor":[1,1],
+    "is_peak_asym_fact":1,
+    "is_mean_asym_factor":0,
+    "my_nestd_dict":{"hello":{"sdf":34},"sdf":234}
+}
