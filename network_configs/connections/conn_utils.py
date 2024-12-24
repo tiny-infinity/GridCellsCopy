@@ -18,33 +18,28 @@ def file_args():
     
     parser = argparse.ArgumentParser()
     parser.add_argument("-i","--sim_id",
-                        metavar='N',
                         help="Sim id",
                         type=str,
                         required=False)
 
     parser.add_argument("-c","--conn_id",
-                        metavar='N',
                         help="Connection id",
                         type=str,
                         required=False)
 
     parser.add_argument("-t","--sim_type",
-                        metavar='N',
                         help="simulation type",
                         type=str,
                         required=False,
                         default="single")
 
     parser.add_argument("-n","--sim_num",
-                        metavar='N',
                         help="simulation number",
                         type=int,
                         required=False,
                         default=0)
 
     parser.add_argument("-p","--specs_file",
-                        metavar='N',
                         help="specs file",
                         type=str,
                         required=False)
