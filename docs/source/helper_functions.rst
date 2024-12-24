@@ -5,3 +5,4 @@ Helper Functions
    :maxdepth: 2
 
    sim_hf
+   conn_utils

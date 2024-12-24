@@ -1,1 +1,1 @@
-cd docs && make html
+cd docs && make html && cd ..
