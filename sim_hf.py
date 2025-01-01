@@ -6,7 +6,6 @@ import json
 from itertools import islice
 import os
 import argparse
-
 """
 Helper functions for the simulation setup, runs and data handling
 """
@@ -226,6 +225,39 @@ def sim_setup_arg_parser():
                     type=str,
                     required=True)
     return parser
+
+def sim_run_arg_parser():
+    """Set up the argument parser for the simulation run.
+
+    Argument parser is initialzed and processed here to avoid cluttering
+    the main run file.
+    
+    Returns
+    -------
+    argparse.ArgumentParser
+        The argument parser with the arguments added.
+    """
+    
+    parser = argparse.ArgumentParser(description="Run a single simulation")
+    parser.add_argument("-i","--sim_id",
+                    help="simulation ID",
+                    type=str,
+                    required=True)
+    return parser
+
+def log_from_rank_0(logger,rank,msg):
+    """Logs a message if the rank is 0.
+    
+    Parameters:
+        rank : int: 
+            The rank of the process.
+        msg : str 
+            The message to be logged.
+    """
+    if rank==0:
+        print(rank)
+        logger.info(msg)
+        # logger.handlers[1].flush()
 
 
 class ProgressBar:
