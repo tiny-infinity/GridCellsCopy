@@ -255,7 +255,6 @@ def log_from_rank_0(logger,rank,msg):
             The message to be logged.
     """
     if rank==0:
-        print(rank)
         logger.info(msg)
         # logger.handlers[1].flush()
 
@@ -283,7 +282,7 @@ class ProgressBar:
         bar = self.marker * filled_length + '-' * (self.length - filled_length)
         # sys.stdout.write(f'\rProgress ({self.curr_progress} of {self.total}): |{bar}| {percent:.2f}%')
         # sys.stdout.flush()
-        print(f"Progress ({self.iteration} of {self.total}): |{bar}| {percent:.2f}%",end="\r")
+        print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\r")
         
 
     def finish(self):
@@ -293,7 +292,7 @@ class ProgressBar:
         bar = self.marker * filled_length + '-' * (self.length - filled_length)
         # sys.stdout.write(f'\rProgress ({iteration} of {self.total}): |{bar}| {percent:.2f}%\n')
         # sys.stdout.flush()
-        print(f"Progress ({self.iteration} of {self.total}): |{bar}| {percent:.2f}",end="\n",flush=True)
+        print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\n",flush=True)
 
     def increment(self,iteration):
         self.iteration=iteration
@@ -302,7 +301,7 @@ class ProgressBar:
         bar = self.marker * filled_length + '-' * (self.length - filled_length)
         # sys.stdout.write(f'\rProgress ({self.iteration} of {self.total}): |{bar}| {percent:.2f}%')
         # sys.stdout.flush()
-        print(f"Progress ({self.iteration} of {self.total}): |{bar}| {percent:.2f}%",end="\r")
+        print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\r")
 
 
 
