@@ -44,6 +44,10 @@ def file_args():
                         help="specs file",
                         type=str,
                         required=False)
+    parser.add_argument("-s","--split",
+                        help="split building connectivitry matrix to save on memory",
+                        type=str,
+                        required=False)
     return parser
 
 def add_project_to_sys_path():
@@ -59,7 +63,6 @@ def add_project_to_sys_path():
     
     directory=Path(__file__).resolve().parents[2]
     sys.path.insert(0, str(directory))
-
 
 def find_params(args: argparse.Namespace) -> dict:
     """Finds and returns simulation parameters based on the provided arguments.
@@ -96,7 +99,6 @@ def find_params(args: argparse.Namespace) -> dict:
         try:
             return s_hf.json_read(f"cache/s_params_merged_{args.sim_id}.json")
         except FileNotFoundError:
-            
             return s_hf.load_sim_params(args.sim_id)
     if args.specs_file:
         from param import Param
