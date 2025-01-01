@@ -105,7 +105,7 @@ if params["save_conn_matrix"]:
     with h5py.File(f"network_configs/connections/saved_matrices/matrix_{conn_id}.hdf5", "w") as f:
         z=f.create_dataset(str('matrix'),data=adj_matrix,compression='gzip')
 
-with h5py.File(f"cache/matrix_{conn_id}_{sim_id}.hdf5", "w") as f:
+with h5py.File(f"cache/matrix_{conn_id}_{sim_id}_{sim_num}.hdf5", "w") as f:
     z=f.create_dataset(str('matrix'),data=adj_matrix,compression='gzip') 
 
 
