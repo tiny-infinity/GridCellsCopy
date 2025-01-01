@@ -1,13 +1,21 @@
+"""
+Main simulation run. 
+This file,
+1. Initializes network based on params by calling 
+    network_initialize from network_init.py
+2. Runs simulation.
+3. Saves data in hdf5 format.
+"""
+
 import numpy as np
 from neuron import h
 from neuron.units import ms, mV
 import time
-# from network_init import network_intialize
+from network_init import network_intialize
 import sim_hf as s_hf
 import h5py
 h5py.get_config().track_order = True
 import logging
-import sys
 
 
 h.nrnmpi_init()
@@ -21,6 +29,8 @@ if pc.id() == 0:
             logging.StreamHandler()], encoding='utf-8', level=logging.DEBUG,
             format=f'%(asctime)s:%(levelname)s: {sim_id}: %(message)s')
     logger = logging.getLogger()
+else:
+    logger = None
 #load params file
 params = s_hf.json_read(f"cache/s_params_merged_{sim_id}.json")
 
@@ -41,7 +51,7 @@ t3 = time.perf_counter()
 h.celsius = 37
 t = h.Vector().record(h._ref_t)
 pc.set_maxstep(10 * ms)
-s_hf.log_from_rank_0(logger,pc.id(),f"Simulation started (sim id):{sim_id}")
+s_hf.log_from_rank_0(logger,pc.id(),f"Simulation {sim_num} started")
 if pc.id() == 0:
     if params["progress"]:
         pbar=s_hf.ProgressBar(total=int(sim_dur))
@@ -58,7 +68,7 @@ else:
     if pc.id()==0:
         pbar.finish()        
 tsim = round(time.perf_counter()-t3, 2)
-s_hf.log_from_rank_0(logger,pc.id(),f"Simulation completed (sim id):{sim_id}")
+s_hf.log_from_rank_0(logger,pc.id(),f"Simulation {sim_num} completed")
 #save data for which recording is enabled
 for param_to_record,states in network.params['record_handle_stell'].items():
     if states['state']==True:
