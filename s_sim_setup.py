@@ -1,7 +1,5 @@
 import subprocess
 import os
-import sys
-import warnings
 import time
 import importlib
 import logging
@@ -20,21 +18,23 @@ param_file = importlib.import_module(mod_name)
 input_params = param_file.generate_input_params()
 
 #Initialize params dictionary
-params = Param().update_input_params(input_params)
+params = Param()
+params.update_params(input_params)
 params.save_curr_time()
+
 sim_id = params["sim_id"]
-n_cpus = 3 #params["n_cpus"] if params["n_cpus"] else os.cpu_count()//2
+n_cpus = 8 #params["n_cpus"] if params["n_cpus"] else os.cpu_count()//2
 
 #start logger
-logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log"),
-        logging.StreamHandler()], encoding='utf-8', level=logging.INFO,
-        format=f'%(asctime)s:%(levelname)s: {sim_id}: %(message)s')
+logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log",mode="w"),
+        logging.StreamHandler()], encoding='utf-8', level=args.verbose,
+        format=f'%(asctime)s:%(levelname)s:{sim_id}:Sim 0: %(message)s')
 
 # save parameters to cache for running the simulation
-s_hf.json_save(params,f"cache/s_params_merged_{sim_id}.json")
+s_hf.json_save(params,f"cache/params_{sim_id}.json")
 
 #create data directory in data_root/
-data_root = params["data_root"]+"/" if  params["data_root"][-1]!="/" else  params["data_root"] #ensure trailing slash
+data_root = s_hf.process_data_root(params["data_root"])
 data_loc = data_root+f"{sim_id}/"
 over_write_data=True #set to False to prevent overwriting data
 if over_write_data:
@@ -59,14 +59,15 @@ logging.info(f"Building connectivity matrix")
 
 t2 = time.perf_counter()
 if params["build_conn_matrix"]:
-    cmd = f"python network_configs/connections/{params['conn_id']}_config.py -i {sim_id} -s {params["split_built_conn_matrix"]}"
+    cmd = f"python network_configs/connections/{params['conn_id']}_config.py -i {sim_id}"
     proc=subprocess.run(cmd.split(),check=True)
 logging.info(f"Connectivity matrix built in {round(time.perf_counter()-t2,2)}s")
 
 #run simulation
-logging.debug(f"launching s_run")
+logging.debug(f"Launching s_run")
+verbosity = "-v" if args.verbose == logging.DEBUG else None
 if params["split_sim"][0]:
-    proc=subprocess.run(["mpiexec","-n", f"{n_cpus}","python", "s_run_split.py",f"{sim_id}"],check=True)
+    proc=subprocess.run(["mpiexec","-n", f"{n_cpus}","python", "s_run_split.py",f"{sim_id}",verbosity],check=True)
 else:
     proc=subprocess.run(
         ["mpiexec","-n", f"{n_cpus}","python", "s_run.py", "--sim_id",f"{sim_id}"],check=True)
@@ -79,14 +80,17 @@ params["t_simulation"]= t_simulation
 
 #remove cache file
 try:
-    os.remove(f"cache/s_params_merged_{sim_id}.json")
+    os.remove(f"cache/params_{sim_id}.json")
 except FileNotFoundError as err:
-    logging.warning(f"Could not remove params file cache")
+    logging.warning(f"Cannot not remove cached params file")
+    logging.debug(f"{err}")
 
 try:
     os.remove(f"cache/matrix_{params["conn_id"]}_{sim_id}_0.hdf5")
 except FileNotFoundError as err:
-    logging.warning(f"Could not remove matrix file cache")
+    logging.warning(f"Cannot not remove cached matrix file")
+    logging.debug(f"{err}")
+
             
 # copy params file to data for future reference
 param_fname = data_loc + f"{params['sim_id']}.json"
