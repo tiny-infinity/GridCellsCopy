@@ -36,7 +36,6 @@ def file_args():
 
     parser.add_argument("-n","--sim_num",
                         help="simulation number",
-                        type=int,
                         required=False,
                         default=0)
 
@@ -96,8 +95,13 @@ def find_params(args: argparse.Namespace) -> dict:
 
     import sim_hf as s_hf
     if args.sim_id:
+        
         try:
-            return s_hf.json_read(f"cache/s_params_merged_{args.sim_id}.json")
+            params=s_hf.json_read(f"cache/params_{args.sim_id}.json")
+            if params.get("sim_id",None):
+                return params
+            else:
+                return params[f"{args.sim_num}"]
         except FileNotFoundError:
             return s_hf.load_sim_params(args.sim_id)
     if args.specs_file:
@@ -105,10 +109,16 @@ def find_params(args: argparse.Namespace) -> dict:
         mod_name = os.path.split(args.specs_file)[0] + "." + \
             (os.path.split(args.specs_file)[1]).split(".")[0]
         param_file = importlib.import_module(mod_name)
-        input_params = param_file.generate_input_params()
+        try:
+            input_params = param_file.generate_input_params()
+        except AttributeError as err:
+            err.add_note("Pass specs for single simulation")
+            raise err
 
+        params = Param()
+        params.update_params(input_params)
         #Initialize params dictionary
-        return Param().update_input_params(input_params)
+        return params
     raise  FileNotFoundError("No sim_id or specs_file provided")
 
 
