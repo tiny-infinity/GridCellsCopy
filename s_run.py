@@ -11,7 +11,6 @@ import numpy as np
 from neuron import h
 from neuron.units import ms, mV
 import time
-from network_init import network_intialize
 import sim_hf as s_hf
 import h5py
 h5py.get_config().track_order = True
@@ -25,25 +24,26 @@ tstart = time.perf_counter()
 args = s_hf.sim_run_arg_parser().parse_args()
 sim_id = args.sim_id
 if pc.id() == 0:
-    logging.basicConfig(handlers=[logging.FileHandler(f"logs/sim_{sim_id}.log"),
-            logging.StreamHandler()], encoding='utf-8', level=logging.DEBUG,
-            format=f'%(asctime)s:%(levelname)s: {sim_id}: %(message)s')
+    logging.basicConfig(handlers=[logging.FileHandler(f"logs/sim_{sim_id}.log",mode='w'),
+            logging.StreamHandler()], encoding='utf-8', level=args.verbose,
+            format=f'%(asctime)s:%(levelname)s:{sim_id}:Sim 0: %(message)s')
     logger = logging.getLogger()
 else:
     logger = None
 #load params file
-params = s_hf.json_read(f"cache/s_params_merged_{sim_id}.json")
+params = s_hf.json_read(f"cache/params_{sim_id}.json")
 
 #initialize network
 t2 = time.perf_counter()
 s_hf.log_from_rank_0(logger,pc.id(),"Initializing network")
-network = network_intialize(params)
+network = s_hf.network_intialize(params)
 tinit = time.perf_counter()
 s_hf.log_from_rank_0(logger,pc.id(),f"Network intialized in {round(tinit-t2,2)}s")
+
+#load params
 sim_dur = network.params["sim_dur"]
 sim_num = str(network.params["sim_num"])
-sim_id = str(network.params["sim_id"])
-data_root = network.params["data_root"]+"/" if  network.params["data_root"][-1]!="/" else  network.params["data_root"]
+data_root = s_hf.process_data_root(network.params["data_root"])
 data_loc = data_root+f"{sim_id}/"
 
 #run simulation
@@ -51,7 +51,7 @@ t3 = time.perf_counter()
 h.celsius = 37
 t = h.Vector().record(h._ref_t)
 pc.set_maxstep(10 * ms)
-s_hf.log_from_rank_0(logger,pc.id(),f"Simulation {sim_num} started")
+s_hf.log_from_rank_0(logger,pc.id(),f"Simulation started")
 if pc.id() == 0:
     if params["progress"]:
         pbar=s_hf.ProgressBar(total=int(sim_dur))
@@ -68,16 +68,15 @@ else:
     if pc.id()==0:
         pbar.finish()        
 tsim = round(time.perf_counter()-t3, 2)
-s_hf.log_from_rank_0(logger,pc.id(),f"Simulation {sim_num} completed")
-#save data for which recording is enabled
+s_hf.log_from_rank_0(logger,pc.id(),f"Simulation completed")
+
+#save data for stellate cells
 for param_to_record,states in network.params['record_handle_stell'].items():
     if states['state']==True:
         local_data={}
         for cell in network.stellate_cells:
-            try:
-                local_data[cell._gid]= list(cell.recorder[f'{param_to_record}'])
-            except:
-                continue            
+            if cell.recorder.get(f'{param_to_record}',None):
+                local_data[cell._gid]= list(cell.recorder[f'{param_to_record}'])   
         all_data = pc.py_alltoall([local_data] + [None] * (pc.nhost() - 1)) 
         pc.barrier()
         if pc.id() == 0:
@@ -95,11 +94,8 @@ for param_to_record,states in network.params['record_handle_intrnrn'].items():
     if states['state']==True:
         local_data={}
         for cell in network.interneurons:
-            try:
+            if cell.recorder.get(f'{param_to_record}',None):
                 local_data[cell._gid]= list(cell.recorder[f'{param_to_record}'])
-            except:
-                raise Exception
-                continue
         all_data = pc.py_alltoall([local_data] + [None] * (pc.nhost() - 1))
         pc.barrier()
         if pc.id() == 0:
