@@ -6,9 +6,104 @@ import json
 from itertools import islice
 import os
 import argparse
+import importlib
+from neuron import h
+import logging
 """
 Helper functions for the simulation setup, runs and data handling
 """
+def network_intialize(params):
+    """Initialize network and setup instrumentation
+
+    Parameters:
+        params : dict or Param
+            Parameter dictionary
+
+    Returns:
+        network 
+            Network object that includes cells and instrumentations
+
+    """
+    from network import Network
+    #if asked to build matrix, load from cache. Otherwise load a previously saved matrix.
+    if params['build_conn_matrix']:
+        file = h5py.File(
+            f"cache/matrix_{params['conn_id']}_{params['sim_id']}_{params['sim_num']}.hdf5", "r"
+        )
+        adj_matrix = file["matrix"]
+    else:
+        file = h5py.File(
+            f"network_configs/connections/saved_matrices/matrix_{params['conn_id']}.hdf5", "r"
+        )
+        adj_matrix = file["matrix"]
+    network = Network(0, adj_matrix, params)  # initialize grid cells
+    file.close()
+    
+    #Add instrumentation
+    setup_instrumentation = importlib.import_module(f"network_configs.instrumentations.{params['instr_id']}_instr").setup_instrumentation
+    setup_instrumentation(network)
+    return network
+
+def recursive_getattr(obj, attr_string):
+    """Recursively retrieves an attribute or calls a method on an object based on a colon-separated string.
+
+    Used to add recorders.
+
+    Parameters:
+        obj
+            The object from which to retrieve the attribute or method.
+        attr_string : str
+            A colon-separated string representing the attribute or method to retrieve or call.
+            If the string ends with ')', it indicates a method call.
+
+    Returns:
+        object: The final attribute or the result of the method call.
+    """
+    parts = attr_string.split(':')
+    for part in parts:
+        if part.endswith(")"):
+            func_name = part[:part.find("(")]
+            func = getattr(obj, func_name)
+            obj = func()
+        else:
+            obj = getattr(obj, part)
+    return obj
+def setup_recorders(cell,recorder_handle,recorder_dt):
+    """Sets up recorders for a given cell based on the provided recorder handle.
+
+    For each parameter, create a vector to record from the given location in the cell obj.
+    For spikes, create a spike detector and record the spikes.
+
+    Parameters:
+        cell
+            The cell object for which the recorders are being set up.
+        recorder_handle : dict 
+            A dictionary containing recorder configurations.
+        recorder_dt : float
+            The time interval for recording data.
+    Returns:
+        object: The cell object with the recorders set up.
+
+    """
+    #dictionary poiting to the location of the parameter in the cell
+    for record in recorder_handle:
+        #Dealing with non-spike data
+        if not record.endswith("spks") and recorder_handle[record]['state']==True and \
+        (recorder_handle[record]['cells_to_record']=='all' or \
+            cell._gid in list(recorder_handle[f'{record}']['cells_to_record'])):
+            
+            cell.recorder[f'{record}'] = h.Vector().record( \
+                recursive_getattr(cell,recorder_handle[record]["loc"]),recorder_dt)
+        
+        #Dealing with spikes
+        elif record.endswith("spks") and recorder_handle[record]['state']==True and \
+            (recorder_handle[record]['cells_to_record']=='all' or \
+             cell._gid in list(recorder_handle[f'{record}']['cells_to_record'])):
+            
+            cell.recorder[f'{record}'] = h.Vector()
+            cell._spike_detector.record(cell.recorder[f'{record}'])
+            
+    return cell
 
 def load_sim_params(sim_id: str, file_path: str = None) -> dict:
     """Load simulation parameters.
@@ -224,6 +319,9 @@ def sim_setup_arg_parser():
                     help="specificatons file",
                     type=str,
                     required=True)
+    parser.add_argument("-v","--verbose",
+                    help="show verbose output",
+                    action="store_const",const=logging.DEBUG,default=logging.INFO)
     return parser
 
 def sim_run_arg_parser():
@@ -243,9 +341,12 @@ def sim_run_arg_parser():
                     help="simulation ID",
                     type=str,
                     required=True)
+    parser.add_argument("-v","--verbose",
+                        help="show verbose output",
+                        action="store_const",const=logging.DEBUG,default=logging.INFO)
     return parser
 
-def log_from_rank_0(logger,rank,msg):
+def log_from_rank_0(logger,rank,msg,level=logging.INFO):
     """Logs a message if the rank is 0.
     
     Parameters:
@@ -255,9 +356,18 @@ def log_from_rank_0(logger,rank,msg):
             The message to be logged.
     """
     if rank==0:
-        logger.info(msg)
+        logger.log(level,msg)
         # logger.handlers[1].flush()
 
+def process_data_root(data_root):
+    """Processes the given data root path to ensure it ends with a slash.
+    
+    Parameters:
+        data_root (str): The root path to the data directory.
+    Returns:
+        str: The data root path ending with a slash.
+    """
+    return data_root+"/" if data_root[-1]!="/" else data_root
 
 class ProgressBar:
     """Progress bar for simulations.
