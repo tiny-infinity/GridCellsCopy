@@ -57,49 +57,25 @@ class Network():
             pc.cell(cell._gid, cell._spike_detector)
 
     def _connect_cells(self):
-
-        # synapse where all targets are stellate cells
-        for target in self.stellate_cells:
-
+        for target in self.stellate_cells + self.interneurons:
             for i, weight in enumerate(self.adj_matrix[:, target._gid]):
                 if weight != 0.:  # ignore zero weight (no synapse)
                     source_gid = i
-                    if self.i_or_s(source_gid) == 's':  # excitatory
-
+                    if self.i_or_s(source_gid) == 'StellateCell' and target.name=="StellateCell":  #SS
                         nc = pc.gid_connect(source_gid, target.exc_syn)
                         nc.weight[0] = weight*self.exc_syn_ss_gmax
-                        nc.delay = 1  # important for parallel
-
-                        target._ncs.append(nc)
-                    if self.i_or_s(source_gid) == 'i':  # inhibitory
+                    elif self.i_or_s(source_gid) == 'Interneuron' and target.name=="StellateCell":  #IS
                         nc = pc.gid_connect(source_gid, target.inhb_syn)
                         nc.weight[0] = weight*self.inhb_syn_is_gmax
-
-                        nc.delay = 1
-                        target._ncs.append(nc)
-
-        # synapse where all targets are stellate cells
-        for target in self.interneurons:
-
-            for i, weight in enumerate(self.adj_matrix[:, target._gid]):
-
-                if weight != 0.:
-
-                    source_gid = i
-                    if self.i_or_s(source_gid) == 's':  # exc
-
+                    elif self.i_or_s(source_gid) == 'StellateCell' and target.name=="Interneuron": #SI
                         nc = pc.gid_connect(source_gid, target.exc_syn)
                         nc.weight[0] = weight*self.exc_syn_si_gmax
-                        nc.delay = 1
-
-                        target._ncs.append(nc)
-                    if self.i_or_s(source_gid) == 'i':  # inhib
-
+                    elif self.i_or_s(source_gid) == 'Interneuron' and target.name=="Interneuron": #II
                         nc = pc.gid_connect(source_gid, target.inhb_syn)
                         nc.weight[0] = weight*self.inhb_syn_ii_gmax
-                        nc.delay = 1
+                    nc.delay = 1 # important for parallel
+                    target._ncs.append(nc)
 
-                        target._ncs.append(nc)
 
     def _set_gids(self):
         """Set the gidlist on this host."""
@@ -108,8 +84,8 @@ class Network():
             pc.set_gid2node(gid, pc.id())
 
     def i_or_s(self, x):
-        """Return type of neuron based in gid"""
+        """Return the type of cell based on the gid."""
         if x < self.n_stell:
-            return 's'
+            return "StellateCell"
         elif x >= self.n_stell:
-            return 'i'
+            return "Interneuron"
