@@ -100,12 +100,11 @@ def set_global_variables(params):
     h.hs_tau_input_stellate_mech = params['hs_tau']
     h.phi_i_theta = params['phi_i_theta']
     h.omega_i_theta = params['omega_i_theta']
-
+    
 def set_stell_range_variables(stell,params):
     stell.soma(0.5).stellate_mech.ghbar = params['g_h_bar']
     stell.soma(0.5).stellate_mech.gnap_bar = params['gnap_bar']
     stell.soma(0.5).i_theta_stell.Amp = params['stell_theta_Amp']
-    stell.soma(0.5).i_theta_stell.c = params['stell_theta_c']
     stell.soma(0.5).i_theta_stell.omega = params['stell_theta_omega']
 
 def set_intrnrn_range_variables(interneuron,params):
