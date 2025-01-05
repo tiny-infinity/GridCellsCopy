@@ -5,9 +5,9 @@ import h5py
 import json
 from itertools import islice
 import os
+os.environ["NEURON_MODULE_OPTIONS"] = "-nogui" #Stops no gui warnings
 import argparse
 import importlib
-from neuron import h
 import logging
 """
 Helper functions for the simulation setup, runs and data handling
@@ -94,7 +94,7 @@ def locate_data_dir(sim_id: str) -> str:
     for key,val in data_locations.items():
         if os.path.exists(f"{val}{sim_id}"):
             return val
-    raise FileNotFoundError("cannot locate data. verify sim_id")
+    raise FileNotFoundError(f"Cannot locate data for sim ID: {sim_id}")
 
 def json_save(obj: dict, fname: str):
     """Wrapper function to save a dictionary object to a JSON file.
@@ -307,6 +307,46 @@ def process_data_root(data_root):
         str: The data root path ending with a slash.
     """
     return data_root+"/" if data_root[-1]!="/" else data_root
+
+import os
+import sim_utils as s_utils
+
+
+
+def load_spikes(sim_id,sim_num=0):
+
+    """Load spike data for a given simulation ID.
+    
+    Parameters
+    ----------
+    sim_id : str
+        Simulation ID to load spikes from.
+    sim_num : int, optional
+        Simulation number to load spikes from, by default 0 (single sim).
+    
+    Returns
+    -------
+    spks : tuple
+        A tuple containing two lists of lists:
+        - stell_spikes_l: List of spike times for stellate cells.
+        - intrnrn_spikes_l: List of spike times for interneurons.
+    """
+    
+    data_dir = locate_data_dir(sim_id)
+    # get spikes of a sim from hdf5 file
+    sim_num = str(sim_num)
+    data_loc = f"{data_dir}{sim_id}/"
+    file_path_stell = data_loc + f"stell_spks_{sim_id}.hdf5"
+    file_path_intrnrn = data_loc + f"intrnrn_spks_{sim_id}.hdf5"
+    with h5py.File(file_path_stell, "r") as file:
+        stellate_spks_arr = np.array(file[f"{sim_num}/stell_spks"][:])
+        stell_spikes_l = [list(cell[~np.isnan(cell)]) for cell in stellate_spks_arr]
+    with h5py.File(file_path_intrnrn, "r") as file:
+        intrnrn_spks_arr = np.array(file[f"{sim_num}/intrnrn_spks"][:])
+        intrnrn_spikes_l = [list(cell[~np.isnan(cell)]) for cell in intrnrn_spks_arr]
+    
+    return stell_spikes_l, intrnrn_spikes_l
+
 
 class ProgressBar:
     """Progress bar for simulations.
