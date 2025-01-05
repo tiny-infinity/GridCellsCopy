@@ -7,6 +7,7 @@ import network_configs.instrumentations.instr_utils as instr_utils
     
 def setup_instrumentation(network):
     params = network.params
+    instr_utils.set_global_variables(params)
     stell_l1_gids = list(range(0, params["N_per_sheet"]))
     stell_l2_gids = list(range(params["N_per_sheet"], 2*params["N_per_sheet"]))
     stell_l3_gids = list(range(2*params["N_per_sheet"], 3*params["N_per_sheet"]))

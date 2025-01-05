@@ -9,6 +9,7 @@ from network import Network
 def setup_instrumentation(network):
     params = network.params
     
+    instr_utils.set_global_variables(params)
     stell_l1_gids = list(range(0,  params["N_per_sheet"]))
     stell_l2_gids = list(range(params["N_per_sheet"],params["N_per_sheet"]*2))
     network.traj = Trajectory1D(params)
