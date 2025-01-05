@@ -18,14 +18,13 @@ class Network():
         self.adj_matrix = adj_matrix
         self.params = params
         self.sim_dur = params['sim_dur']
-        self.N_per_sheet = params['N_per_sheet'] #or ring
         self.n_stell = params['N_stell']
         self.n_intrnrn = params['N_intrnrn']
         self._N = self.n_stell+self.n_intrnrn
         self.stell_gids = list(range(self.n_stell))
         self.intrnrn_gids = list(range(self.n_stell, self._N))
 
-
+    
         self.exc_syn_ss_gmax = params['ss_syn_gmax'] 
         self.exc_syn_si_gmax = params['si_syn_gmax']
         self.inhb_syn_ii_gmax = params['ii_syn_gmax']
