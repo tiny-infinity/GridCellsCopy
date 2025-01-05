@@ -3,7 +3,7 @@ import numpy as np
 from neuron import h
 from neuron.units import ms, mV
 import time
-import sim_hf as s_hf
+import sim_utils as s_utils
 import h5py
 h5py.get_config().track_order = True
 import logging
@@ -12,7 +12,7 @@ import os
 h.nrnmpi_init()
 pc = h.ParallelContext()
 tstart = time.perf_counter()
-args, unknown= s_hf.sim_run_arg_parser().parse_known_args()
+args, unknown= s_utils.sim_run_arg_parser().parse_known_args()
 sim_id = args.sim_id
 if pc.id() == 0:
     logging.basicConfig(handlers=[logging.FileHandler(f"logs/sim_{sim_id}.log",mode='w'),
@@ -23,13 +23,13 @@ else:
     logger = None
 
 #load params file
-mult_params = s_hf.json_read(f"cache/params_{sim_id}.json")
-s_hf.log_from_rank_0(logger,pc.id(),
+mult_params = s_utils.json_read(f"cache/params_{sim_id}.json")
+s_utils.log_from_rank_0(logger,pc.id(),
                     f"Starting simulations. Total Simulations: {len(mult_params)}",
                     level=logging.INFO)
 for sim_num, params in mult_params.items():
     tsim = time.perf_counter()
-    s_hf.log_from_rank_0(logger,pc.id(),
+    s_utils.log_from_rank_0(logger,pc.id(),
                          f"Sim {sim_num}:Building connectivity matrix",
                          level=logging.DEBUG)
     if params["build_conn_matrix"] and pc.id()==0:
@@ -38,23 +38,23 @@ for sim_num, params in mult_params.items():
     elif pc.id()==0:
         logging.info(f"Skipping matrix build. Using matrix_{params['conn_id']}.hdf5")
     tmat = time.perf_counter()
-    s_hf.log_from_rank_0(logger,pc.id(),
+    s_utils.log_from_rank_0(logger,pc.id(),
                          f"Sim {sim_num}:Connectivity matrix built in {round(tmat-tsim,2)}s",
                          level=logging.DEBUG)
     pc.barrier()
     #initialize network
-    s_hf.log_from_rank_0(logger,pc.id(),
+    s_utils.log_from_rank_0(logger,pc.id(),
                          f"Sim {sim_num}:Initializing network",level=logging.DEBUG)
     
-    network = s_hf.network_intialize(params)
+    network = s_utils.network_intialize(params)
     tinit = time.perf_counter()
-    s_hf.log_from_rank_0(logger,pc.id(),
+    s_utils.log_from_rank_0(logger,pc.id(),
                          f"Sim {sim_num}:Network intialized in {round(tinit-tmat,2)}s",
                          level=logging.DEBUG)
     
     #load params
     sim_dur = network.params["sim_dur"]
-    data_root = s_hf.process_data_root(network.params["data_root"])
+    data_root = s_utils.process_data_root(network.params["data_root"])
     data_loc = data_root+f"{sim_id}/"
     
     #run simulation
@@ -79,7 +79,7 @@ for sim_num, params in mult_params.items():
                 for process_data in all_data:
                     data.update(process_data)
                 data = dict(sorted(data.items()))
-                data_arr = s_hf.list_to_numpy(data.values())
+                data_arr = s_utils.list_to_numpy(data.values())
                 with h5py.File(data_loc + f"{param_to_record}_{sim_id}.hdf5", "a") as file:
                     group = file.create_group(sim_num)
                     group.create_dataset(f"{param_to_record}", data=data_arr, compression="gzip",dtype=np.float32)
@@ -99,7 +99,7 @@ for sim_num, params in mult_params.items():
                 for process_data in all_data:
                     data.update(process_data)
                 data = dict(sorted(data.items()))
-                data_arr = s_hf.list_to_numpy(data.values())
+                data_arr = s_utils.list_to_numpy(data.values())
                 with h5py.File(data_loc + f"{param_to_record}_{sim_id}.hdf5", "a") as file:
                     group = file.create_group(sim_num)
                     group.create_dataset(f"{param_to_record}", data=data_arr, compression="gzip",dtype=np.float32)
@@ -109,7 +109,7 @@ for sim_num, params in mult_params.items():
             os.remove(f"cache/matrix_{params["conn_id"]}_{sim_id}_{sim_num}.hdf5")
         except FileNotFoundError as err:
             logging.debug(f"Cannot remove cached matrix file: {err}")
-    s_hf.log_from_rank_0(logger,pc.id(), f"Sim {sim_num}:Completed in {round(time.perf_counter()-tsim, 2)}s")
+    s_utils.log_from_rank_0(logger,pc.id(), f"Sim {sim_num}:Completed in {round(time.perf_counter()-tsim, 2)}s")
     pc.gid_clear(0)
     del network
     pc.barrier()

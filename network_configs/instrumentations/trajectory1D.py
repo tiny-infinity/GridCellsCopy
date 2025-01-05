@@ -2,7 +2,7 @@ import numpy as np
 import h5py as hdf
 import pickle
 from scipy.interpolate import BSpline
-import sim_hf as s_hf
+import sim_utils as s_utils
 from neuron import h
 
 class Trajectory1D:
@@ -28,7 +28,7 @@ class Trajectory1D:
 
     def vel_to_dc_fit(self, input_vel):
         #spline
-        spline_params=s_hf.json_read("input_data/vi_transform/spline_params.json")
+        spline_params=s_utils.json_read("input_data/vi_transform/spline_params.json")
         dc_out=BSpline(*list(spline_params.values()))(input_vel)
         zero_mask = np.abs(input_vel) < 0.0001
         dc_out[zero_mask] = self.params["vel_integ_zero"]

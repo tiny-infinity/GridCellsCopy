@@ -2,14 +2,14 @@
 import subprocess
 import os
 os.environ["NEURON_MODULE_OPTIONS"] = "-nogui" #Stops no gui warnings in output file
-import sim_hf as s_hf
+import sim_utils as s_utils
 import time
 import importlib
 from param import mParam
 import logging
 
 tstart = time.perf_counter()
-args = s_hf.sim_setup_arg_parser().parse_args()
+args = s_utils.sim_setup_arg_parser().parse_args()
 #Process specs file
 fname = args.specs_file
 mod_name = os.path.split(fname)[0] + "." + \
@@ -24,7 +24,7 @@ mult_params.load_update_mult_params(mult_input_params)
 
 sim_id = mult_params["0"]["sim_id"]
 
-n_cpus = 8 #mult_params["0"]["n_cpus"] if mult_params["0"]["n_cpus"] else os.cpu_count()//2
+n_cpus = 32 #mult_params["0"]["n_cpus"] if mult_params["0"]["n_cpus"] else os.cpu_count()//2
 
 #start logger
 logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log",mode="w"),
@@ -32,10 +32,10 @@ logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log",mod
         format=f'%(asctime)s:%(levelname)s:{sim_id}:%(message)s')
 
 # save parameters to cache for running the simulation
-s_hf.json_save(mult_params,f"cache/params_{sim_id}.json")
+s_utils.json_save(mult_params,f"cache/params_{sim_id}.json")
 
 #create data directory in data_root/
-data_root = s_hf.process_data_root(mult_params["0"]["data_root"])
+data_root = s_utils.process_data_root(mult_params["0"]["data_root"])
 data_loc = data_root+f"{sim_id}/"
 over_write_data=True #set to False to prevent overwriting data
 
@@ -71,5 +71,5 @@ except FileNotFoundError as err:
 
 # copy params file to data for future reference
 param_fname = data_loc + f"{sim_id}.json"
-s_hf.json_save(mult_params, param_fname)
+s_utils.json_save(mult_params, param_fname)
 logging.info(f"Total time (s): {round(time.perf_counter() - tstart, 2)}")

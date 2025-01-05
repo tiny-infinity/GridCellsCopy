@@ -4,11 +4,11 @@ os.environ["NEURON_MODULE_OPTIONS"] = "-nogui" #Stops no gui warnings in output 
 import time
 import importlib
 import logging
-import sim_hf as s_hf
+import sim_utils as s_utils
 from param import Param
 
 tstart = time.perf_counter()
-args = s_hf.sim_setup_arg_parser().parse_args()
+args = s_utils.sim_setup_arg_parser().parse_args()
 #Process specs file
 fname = args.specs_file
 mod_name = os.path.split(fname)[0] + "." + \
@@ -24,7 +24,7 @@ params.update_params(input_params)
 params.save_curr_time()
 
 sim_id = params["sim_id"]
-n_cpus = 8 #params["n_cpus"] if params["n_cpus"] else os.cpu_count()//2
+n_cpus = 32 #params["n_cpus"] if params["n_cpus"] else os.cpu_count()//2
 
 #start logger
 logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log",mode="w"),
@@ -32,10 +32,10 @@ logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log",mod
         format=f'%(asctime)s:%(levelname)s:{sim_id}:Sim 0: %(message)s')
 
 # save parameters to cache for running the simulation
-s_hf.json_save(params,f"cache/params_{sim_id}.json")
+s_utils.json_save(params,f"cache/params_{sim_id}.json")
 
 #create data directory in data_root/
-data_root = s_hf.process_data_root(params["data_root"])
+data_root = s_utils.process_data_root(params["data_root"])
 data_loc = data_root+f"{sim_id}/"
 over_write_data=True #set to False to prevent overwriting data
 if over_write_data:
@@ -69,12 +69,13 @@ else:
 
 #run simulation
 logging.debug(f"Launching s_run")
-verbosity = "-v" if args.verbose == logging.DEBUG else None
+verbosity = "-v" if args.verbose == logging.DEBUG else ""
+
 if params["split_sim"][0]:
-    proc=subprocess.run(["mpiexec","-n", f"{n_cpus}","python", "s_run_split.py",f"{sim_id}",verbosity],check=True)
+    proc=subprocess.run(["mpiexec","-n", f"{n_cpus}","python", "s_run_split.py",f"{sim_id}",f"{verbosity}"],check=True)
 else:
     proc=subprocess.run(
-        ["mpiexec","-n", f"{n_cpus}","python", "s_run.py", "--sim_id",f"{sim_id}"],check=True)
+        ["mpiexec","-n", f"{n_cpus}","python", "s_run.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
 
 
 # save simulation time
@@ -98,6 +99,6 @@ except FileNotFoundError as err:
             
 # copy params file to data for future reference
 param_fname = data_loc + f"{params['sim_id']}.json"
-s_hf.json_save(params, param_fname)
+s_utils.json_save(params, param_fname)
 
 logging.info(f"Total time (s): {round(time.perf_counter() - tstart, 2)}")
