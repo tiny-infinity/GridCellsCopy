@@ -16,7 +16,6 @@ import h5py
 h5py.get_config().track_order = True
 import logging
 
-
 h.nrnmpi_init()
 pc = h.ParallelContext()
 
@@ -35,10 +34,10 @@ params = s_hf.json_read(f"cache/params_{sim_id}.json")
 
 #initialize network
 t2 = time.perf_counter()
-s_hf.log_from_rank_0(logger,pc.id(),"Initializing network")
+s_hf.log_from_rank_0(logger,pc.id(),"Initializing network",level=logging.DEBUG)
 network = s_hf.network_intialize(params)
 tinit = time.perf_counter()
-s_hf.log_from_rank_0(logger,pc.id(),f"Network intialized in {round(tinit-t2,2)}s")
+s_hf.log_from_rank_0(logger,pc.id(),f"Network intialized in {round(tinit-t2,2)}s",level=logging.DEBUG)
 
 #load params
 sim_dur = network.params["sim_dur"]
@@ -68,7 +67,7 @@ else:
     if pc.id()==0:
         pbar.finish()        
 tsim = round(time.perf_counter()-t3, 2)
-s_hf.log_from_rank_0(logger,pc.id(),f"Simulation completed")
+s_hf.log_from_rank_0(logger,pc.id(),f"Simulation completed in {tsim}s")
 
 #save data for stellate cells
 for param_to_record,states in network.params['record_handle_stell'].items():
@@ -108,7 +107,7 @@ for param_to_record,states in network.params['record_handle_intrnrn'].items():
                 group = file.create_group(sim_num)
                 group.create_dataset(f"{param_to_record}", data=data_arr, compression="gzip",dtype=np.float32)
 
-s_hf.log_from_rank_0(logger,pc.id(),f"Data saved in {data_loc}")
+s_hf.log_from_rank_0(logger,pc.id(),f"Data saved in {data_loc}",level=logging.DEBUG)
 pc.barrier()
 pc.done()
 h.quit()

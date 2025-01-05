@@ -1,5 +1,6 @@
 import subprocess
 import os
+os.environ["NEURON_MODULE_OPTIONS"] = "-nogui" #Stops no gui warnings in output file
 import time
 import importlib
 import logging
@@ -50,18 +51,21 @@ logging.debug(f"Created data location at {data_loc}")
 
 # copy specs file to data_loc for future reference
 os.system(f"cp {fname} {data_loc}{sim_id}.py".format())
-os.environ["NEURON_MODULE_OPTIONS"] = "-nogui" #Stops no gui warnings in output file
  
 
 
 #build matrix
-logging.info(f"Building connectivity matrix")
 
-t2 = time.perf_counter()
+
+
 if params["build_conn_matrix"]:
+    t2 = time.perf_counter()
+    logging.info(f"Building connectivity matrix")
     cmd = f"python network_configs/connections/{params['conn_id']}_config.py -i {sim_id}"
     proc=subprocess.run(cmd.split(),check=True)
-logging.info(f"Connectivity matrix built in {round(time.perf_counter()-t2,2)}s")
+    logging.info(f"Connectivity matrix built in {round(time.perf_counter()-t2,2)}s")
+else:
+    logging.info(f"Skipping matrix build. Using matrix_{params['conn_id']}.hdf5")
 
 #run simulation
 logging.debug(f"Launching s_run")
@@ -82,14 +86,14 @@ params["t_simulation"]= t_simulation
 try:
     os.remove(f"cache/params_{sim_id}.json")
 except FileNotFoundError as err:
-    logging.warning(f"Cannot not remove cached params file")
-    logging.debug(f"{err}")
+    logging.debug(f"Cannot remove cached params file: {err}")
+
 
 try:
     os.remove(f"cache/matrix_{params["conn_id"]}_{sim_id}_0.hdf5")
 except FileNotFoundError as err:
-    logging.warning(f"Cannot not remove cached matrix file")
-    logging.debug(f"{err}")
+    logging.debug(f"Cannot remove cached matrix file: {err}")
+
 
             
 # copy params file to data for future reference

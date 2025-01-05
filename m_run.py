@@ -24,28 +24,32 @@ else:
 
 #load params file
 mult_params = s_hf.json_read(f"cache/params_{sim_id}.json")
-
+s_hf.log_from_rank_0(logger,pc.id(),
+                    f"Starting simulations. Total Simulations: {len(mult_params)}",
+                    level=logging.INFO)
 for sim_num, params in mult_params.items():
     tsim = time.perf_counter()
     s_hf.log_from_rank_0(logger,pc.id(),
-                         f"Sim {sim_num}: Building connectivity matrix",
+                         f"Sim {sim_num}:Building connectivity matrix",
                          level=logging.DEBUG)
     if params["build_conn_matrix"] and pc.id()==0:
         cmd = f"python network_configs/connections/{params['conn_id']}_config.py -i {sim_id} -n {sim_num}"
-        proc=subprocess.run(cmd.split(),check=True)    
+        proc=subprocess.run(cmd.split(),check=True)
+    elif pc.id()==0:
+        logging.info(f"Skipping matrix build. Using matrix_{params['conn_id']}.hdf5")
     tmat = time.perf_counter()
     s_hf.log_from_rank_0(logger,pc.id(),
-                         f"Sim {sim_num}: Connectivity matrix built in {round(tmat-tsim,2)}s",
+                         f"Sim {sim_num}:Connectivity matrix built in {round(tmat-tsim,2)}s",
                          level=logging.DEBUG)
     pc.barrier()
     #initialize network
     s_hf.log_from_rank_0(logger,pc.id(),
-                         f"Sim {sim_num}: Initializing network",level=logging.DEBUG)
+                         f"Sim {sim_num}:Initializing network",level=logging.DEBUG)
     
     network = s_hf.network_intialize(params)
     tinit = time.perf_counter()
     s_hf.log_from_rank_0(logger,pc.id(),
-                         f"Sim {sim_num}: Network intialized in {round(tinit-tmat,2)}s",
+                         f"Sim {sim_num}:Network intialized in {round(tinit-tmat,2)}s",
                          level=logging.DEBUG)
     
     #load params
@@ -104,9 +108,8 @@ for sim_num, params in mult_params.items():
         try:
             os.remove(f"cache/matrix_{params["conn_id"]}_{sim_id}_{sim_num}.hdf5")
         except FileNotFoundError as err:
-            logging.warning(f"Cannot not remove cached matrix file")
-            logging.debug(f"{err}")
-    s_hf.log_from_rank_0(logger,pc.id(), f"Sim {sim_num}: Completed in {round(time.perf_counter()-tsim, 2)}s")
+            logging.debug(f"Cannot remove cached matrix file: {err}")
+    s_hf.log_from_rank_0(logger,pc.id(), f"Sim {sim_num}:Completed in {round(time.perf_counter()-tsim, 2)}s")
     pc.gid_clear(0)
     del network
     pc.barrier()

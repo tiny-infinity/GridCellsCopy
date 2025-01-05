@@ -1,6 +1,7 @@
 
 import subprocess
 import os
+os.environ["NEURON_MODULE_OPTIONS"] = "-nogui" #Stops no gui warnings in output file
 import sim_hf as s_hf
 import time
 import importlib
@@ -28,7 +29,7 @@ n_cpus = 8 #mult_params["0"]["n_cpus"] if mult_params["0"]["n_cpus"] else os.cpu
 #start logger
 logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log",mode="w"),
         logging.StreamHandler()], encoding='utf-8', level=args.verbose,
-        format=f'%(asctime)s:%(levelname)s:{sim_id}: %(message)s')
+        format=f'%(asctime)s:%(levelname)s:{sim_id}:%(message)s')
 
 # save parameters to cache for running the simulation
 s_hf.json_save(mult_params,f"cache/params_{sim_id}.json")
@@ -48,7 +49,6 @@ logging.debug(f"Created data location at {data_loc}")
 
 # copy specs file to data_loc for future reference
 os.system(f"cp {fname} {data_loc}{sim_id}.py".format())
-os.environ["NEURON_MODULE_OPTIONS"] = "-nogui"
 
 n_cpus = 3 #params["0"]["n_cpus"] if params["0"]["n_cpus"] \
     #else os.cpu_count()//2
@@ -67,8 +67,7 @@ mult_params["0"]["t_simulation"]= t_simulation
 try:
     os.remove(f"cache/params_{sim_id}.json")
 except FileNotFoundError as err:
-    logging.warning(f"Cannot not remove cached params file")
-    logging.debug(f"{err}")
+    logging.debug(f"Cannot remove cached params file: {err}")
 
 # copy params file to data for future reference
 param_fname = data_loc + f"{sim_id}.json"
