@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 import os
 import importlib
+import numpy as np
 
 def file_args():
     """Creates an argument parser for connectivity configuration.
@@ -122,6 +123,20 @@ def find_params(args: argparse.Namespace) -> dict:
     raise  FileNotFoundError("No sim_id or specs_file provided")
 
 
+def assign_positions_rect(N_per_axis):
+    if N_per_axis % 2 == 0:
+        raise ValueError('N_per_axis should be odd')
+    N_per_half_axis = (N_per_axis-1)//2
+    x = np.arange(-N_per_half_axis, N_per_half_axis+1)
+    xv, yv = np.meshgrid(x, x)
+    lin_combs = np.vstack((xv.flatten(), yv.flatten()))
+    unit_vectors = np.array([[1, 0], [0, 1]])
+    coords = unit_vectors@lin_combs
+    return coords.T
 
-        
-
+def gaussian_2D(x, y, x_mean, y_mean, stdev, N):
+    x_stdv = y_stdv = stdev
+    return N*np.exp(-(((x-x_mean)**2)/(2*x_stdv**2) + ((y-y_mean)**2)/(2*y_stdv**2)))
+    
+def gaussian(x, N, mean, stdv):
+    return N * np.exp((-((x - mean) ** 2)) / (2 * (stdv**2)))
