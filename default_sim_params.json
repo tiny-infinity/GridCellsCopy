@@ -4,17 +4,24 @@
     "dt": 0.025,
     "sim_id": 0,
     "sim_num": 0,
+    "split_sim": [
+        false,
+        1000
+    ],
+
     "n_nodes": 1,
-    "vel_type": "const",
-    "x_input": 0,
     "n_cpus":null,
+    
     "post_sim_analysis": false,
     "progress":false,
     "recorder_dt": 1,
     "data_root":"data/",
     "python": "python",
+
     "build_conn_matrix":true,
     "save_conn_matrix":false,
+    "split_built_conn_matrix":false,
+
     "record_handle_stell": {
         "stell_spks": {
             "state": true,
@@ -22,78 +29,93 @@
         },
         "stell_v": {
             "state": false,
+
             "cells_to_record": [
                 12,
                 14
-            ]
+            ],
+            "loc":"soma(0.5):_ref_v"
         },
         "stell_ih": {
             "state": false,
-            "cells_to_record": "all"
+            "cells_to_record": "all",
+            "loc":"soma(0.5):stellate_mech:_ref_ih"
+            
         },
         "stell_ina": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"soma(0.5):_ref_ina"
         },
         "stell_ik": {
             "state": false,
-            "cells_to_record": []
-        },
-        "stell_itheta": {
-            "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"soma(0.5):_ref_ik"
         },
         "stell_nap": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":""
         },
         "stell_gna": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"soma(0.5):stellate_mech:_ref_gna"
         },
         "stell_gh": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":""
         },
         "stell_gnap": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":""
         },
         "stell_ih_mf": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"soma(0.5):stellate_mech:_ref_mhf"
         },
         "stell_ih_ms": {
             "state": false,
-            "cellsncpus_to_record": []
+            "cellsncpus_to_record": [],
+            "loc":"soma(0.5):stellate_mech:_ref_mhs"
         },
         "stell_syn_exc_i": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":""
         },
         "stell_syn_exc_g": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":""
         },
         "stell_syn_inhib_i": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"inhb_syn:_ref_i"
         },
         "stell_syn_inhib_g": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"inhb_syn:_ref_g"
         },
         "stell_ext_dc_i": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"ext_dc:_ref_i"
         },
         "stell_ext_dc_amp": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"ext_dc:_ref_amp"
         },
         "stell_theta_i": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"soma(0.5):i_theta_stell:_ref_itheta"
         }
     },
     "record_handle_intrnrn": {
@@ -103,35 +125,43 @@
         },
         "intrnrn_v": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"soma(0.5):_ref_v"
         },
         "intrnrn_syn_exc_i": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":""
         },
         "intrnrn_syn_exc_g": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"exc_syn:_ref_g"
         },
         "intrnrn_syn_inhib_i": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":""
         },
         "intrnrn_syn_inhib_g": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"inhb_syn:_ref_g"
         },
         "intrnrn_ext_dc_i": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"ext_dc:_ref_i"
         },
         "intrnrn_ext_dc_amp": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"ext_dc:_ref_amp"
         },
         "intrnrn_theta_i": {
             "state": false,
-            "cells_to_record": []
+            "cells_to_record": [],
+            "loc":"soma(0.5):i_theta:_ref_itheta"
         }
     }
 }
