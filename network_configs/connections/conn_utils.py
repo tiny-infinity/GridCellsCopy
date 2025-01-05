@@ -94,7 +94,7 @@ def find_params(args: argparse.Namespace) -> dict:
         
     """
 
-    import sim_hf as s_hf
+    import sim_utils as s_hf
     if args.sim_id:
         
         try:
