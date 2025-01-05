@@ -5,7 +5,7 @@ from scipy.interpolate import BSpline
 import sim_hf as s_hf
 from neuron import h
 
-class Trajectory:
+class Trajectory1D:
     def __init__(self, params, save_mem=True):
         # self.max_vel = 35 * 1e-3  # cm/ms
         self.params = params
