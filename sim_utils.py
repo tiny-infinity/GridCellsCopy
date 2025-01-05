@@ -9,6 +9,7 @@ os.environ["NEURON_MODULE_OPTIONS"] = "-nogui" #Stops no gui warnings
 import argparse
 import importlib
 import logging
+import subprocess
 """
 Helper functions for the simulation setup, runs and data handling
 """
@@ -347,7 +348,6 @@ def load_spikes(sim_id,sim_num=0):
     
     return stell_spikes_l, intrnrn_spikes_l
 
-
 class ProgressBar:
     """Progress bar for simulations.
     
@@ -356,7 +356,6 @@ class ProgressBar:
     :meta private:
     """
     def __init__(self,total):
-        # self.progress_bar = tqdm(total=n_sim,position=0,leave=True,ncols=100)
         self.marker='\x1b[31m█\x1b[39m'
         self.total= total
         self.length=50
@@ -369,8 +368,6 @@ class ProgressBar:
         percent = 100 * (self.iteration / float(self.total))
         filled_length = int(self.length * self.iteration // self.total)
         bar = self.marker * filled_length + '-' * (self.length - filled_length)
-        # sys.stdout.write(f'\rProgress ({self.curr_progress} of {self.total}): |{bar}| {percent:.2f}%')
-        # sys.stdout.flush()
         print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\r")
         
 
@@ -379,8 +376,6 @@ class ProgressBar:
         percent = 100 * (self.iteration / float(self.total))
         filled_length = int(self.length * self.iteration // self.total)
         bar = self.marker * filled_length + '-' * (self.length - filled_length)
-        # sys.stdout.write(f'\rProgress ({iteration} of {self.total}): |{bar}| {percent:.2f}%\n')
-        # sys.stdout.flush()
         print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\n",flush=True)
 
     def increment(self,iteration):
@@ -388,8 +383,6 @@ class ProgressBar:
         percent = 100 * (self.iteration / float(self.total))
         filled_length = int(self.length * self.iteration // self.total)
         bar = self.marker * filled_length + '-' * (self.length - filled_length)
-        # sys.stdout.write(f'\rProgress ({self.iteration} of {self.total}): |{bar}| {percent:.2f}%')
-        # sys.stdout.flush()
         print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\r")
 
 
