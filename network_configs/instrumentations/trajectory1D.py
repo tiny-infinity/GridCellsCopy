@@ -57,7 +57,6 @@ class Trajectory1D:
 
         with hdf.File("input_data/trajectories/traj_{}.hdf5".format(self.params["traj_id"]), "r") as file:
             self.vel_input = np.array(file["vel_rinb"][:])
-            self.vel_input=self.vel_input*self.params["vel_integ_multiple"]   #*1.37
             self.pos_input = np.array(file["pos_rinb"][:])
             self.allothetic_dur = float(file.attrs["allothetic_dur"])
         self.decompose_vel()
@@ -100,7 +99,7 @@ class Trajectory1D:
     def figure_1_pulse_input(self):
         "Used to generate a pulse input that is used for raster plot in figure one of the paper"
         # define step inputs
-        x = [0, 5000, 10000, 15000]
+        x = [0, 2000, 4000, 6000]
         left_ring = [-1.5e-3, -3e-3, 0]
         right_ring = [-1.5e-3, 0, -3e-3]
         self.left_dc = self.create_piecewise(x, left_ring)
