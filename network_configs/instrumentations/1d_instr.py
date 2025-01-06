@@ -3,7 +3,6 @@ from neuron.units import ms, mV
 import numpy as np
 from network_configs.instrumentations.trajectory1D import Trajectory1D
 import network_configs.instrumentations.instr_utils as  instr_utils
-from network import Network
 
 
 def setup_instrumentation(network):
@@ -34,9 +33,9 @@ def setup_instrumentation(network):
             network.ext_amp_left.play(stell.ext_dc._ref_amp, network.ext_t, True)    
         
         # Initial noise
-        instr_utils.set_intial_noise(stell,params["stell_init_noise"])
+        instr_utils.set_intial_noise(stell,params["stell_init_noise"],noise_seed=params["init_noise_seed"])
         # Noise
-        instr_utils.set_noise(stell,params["stell_noise"])
+        instr_utils.set_noise(stell,params["stell_noise"],noise_seed=params["noise_seed"])
         #recorders
         instr_utils.setup_recorders(stell,params["record_handle_stell"],params["recorder_dt"])
 
@@ -48,7 +47,7 @@ def setup_instrumentation(network):
         network.ext_amp_intrnrn.play(interneuron.ext_dc._ref_amp, network.ext_t, True)
         
         instr_utils.set_intrnrn_range_variables(interneuron,params)
-        instr_utils.set_intial_noise(interneuron,params["intrnrn_init_noise"])
-        instr_utils.set_noise(interneuron,params["intrnrn_noise"])
+        instr_utils.set_intial_noise(interneuron,params["intrnrn_init_noise"],noise_seed=params["init_noise_seed"])
+        instr_utils.set_noise(interneuron,params["intrnrn_noise"],noise_seed=params["noise_seed"])
         instr_utils.setup_recorders(interneuron,params["record_handle_intrnrn"],params["recorder_dt"])
 

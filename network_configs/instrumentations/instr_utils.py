@@ -2,9 +2,9 @@
 from neuron import h
 import numpy as np
 
-def set_intial_noise(cell,noise_params):
-    seed_stride = 40
-    seed_init_noise = cell._gid+seed_stride
+def set_intial_noise(cell,noise_params,noise_seed=40):
+
+    seed_init_noise = cell._gid+noise_seed
     cell.init_noise.dur = noise_params[0]
     cell.init_noise_t = np.arange(0, cell.init_noise.dur, h.dt)
     cell.init_noise_t_amp = h.Vector(
@@ -19,12 +19,12 @@ def set_intial_noise(cell,noise_params):
         cell.init_noise._ref_amp, cell.init_noise_t, True
     )
 
-def set_noise(cell,noise_params):
+def set_noise(cell,noise_params,noise_seed=80):
     cell.noise.dur = noise_params[0]
     cell.noise_t = np.arange(
         cell.init_noise.dur, cell.noise.dur, h.dt)
     cell.noise_amp = h.Vector(
-        np.random.default_rng().normal(
+        np.random.default_rng(noise_seed).normal(
             noise_params[1],
             noise_params[2],
             cell.noise_t.shape,
