@@ -2,6 +2,7 @@ import numpy as np
 import h5py
 import conn_utils
 
+
 args = conn_utils.file_args().parse_args()
 conn_utils.add_project_to_sys_path() #to access parent directories
 params = conn_utils.find_params(args)
@@ -24,6 +25,7 @@ ii_mean = params['ii_mean']*((2*np.pi)/N_per_sheet)
 threshold = 1e-7
 
 
+
 #--------------------------------------------------------------------------------#
 
 cnnct_ss = np.zeros((n_stell, n_stell))
@@ -33,31 +35,17 @@ cnnct_si = np.zeros((n_stell, n_intrnrn))
 
 for i in range(N_per_sheet):
     for j in range(N_per_sheet):
-        d_theta = (2*np.pi/N_per_sheet)*(j-i)
-        if abs(d_theta) < np.pi:
-            cnnct_si[i, j] = conn_utils.gaussian(d_theta, si_peak, si_mean, si_stdev)
-        else:
-            if d_theta > 0:
-                cnnct_si[i, j] = conn_utils.gaussian(
-                    d_theta-2*np.pi, si_peak, si_mean, si_stdev)
-            else:
-                cnnct_si[i, j] = conn_utils.gaussian(
-                    2*np.pi-abs(d_theta), si_peak, si_mean, si_stdev)
+        theta_i,theta_j = (2*np.pi/N_per_sheet)*i,(2*np.pi/N_per_sheet)*j
+        delta_theta=conn_utils.signed_arc_length(theta_i,theta_j)
+        cnnct_si[i, j] = conn_utils.gaussian(delta_theta, si_peak, si_mean, si_stdev)
 
 cnnct_si[cnnct_si < threshold] = 0
 temp_mat = np.zeros((N_per_sheet, N_per_sheet))
 for i in range(N_per_sheet):
     for j in range(n_intrnrn):
-        d_theta = (2*np.pi/N_per_sheet)*(j-i)
-        if abs(d_theta) < np.pi:
-            temp_mat[i, j] = conn_utils.gaussian(d_theta, si_peak, -si_mean, si_stdev)
-        else:
-            if d_theta > 0:
-                temp_mat[i, j] = conn_utils.gaussian(
-                    d_theta-2*np.pi, si_peak, -si_mean, si_stdev)
-            else:
-                temp_mat[i, j] = conn_utils.gaussian(
-                    2*np.pi-abs(d_theta), si_peak, -si_mean, si_stdev)
+        theta_i,theta_j = (2*np.pi/N_per_sheet)*i,(2*np.pi/N_per_sheet)*j
+        delta_theta=conn_utils.signed_arc_length(theta_i,theta_j)
+        temp_mat[i, j] = conn_utils.gaussian(delta_theta, si_peak, -si_mean, si_stdev)
 cnnct_si[N_per_sheet:, :] = temp_mat
 cnnct_si[np.abs(cnnct_si) < threshold] = 0
 
@@ -67,12 +55,9 @@ cnnct_is = np.zeros((n_intrnrn, n_stell))
 
 for i in range(n_intrnrn):
     for j in range(N_per_sheet):
-        x = abs((2*np.pi/N_per_sheet)*(j-i))
-        if x < np.pi:
-            cnnct_is[i, j] = conn_utils.gaussian(x, is_peak, is_mean, is_stdev)
-        else:
-            cnnct_is[i, j] = conn_utils.gaussian(
-                (2*np.pi-x), is_peak, is_mean, is_stdev)
+        theta_i,theta_j = (2*np.pi/N_per_sheet)*i,(2*np.pi/N_per_sheet)*j
+        delta_theta=conn_utils.unsigned_arc_length(theta_i,theta_j)
+        cnnct_is[i, j] = conn_utils.gaussian(delta_theta, is_peak, is_mean, is_stdev)
 
 cnnct_is[:, N_per_sheet:] = cnnct_is[:, :N_per_sheet]
 cnnct_is[np.abs(cnnct_is) < threshold] = 0
@@ -83,12 +68,9 @@ cnnct_ii = np.zeros((n_intrnrn, n_intrnrn))
 
 for i in range(n_intrnrn):
     for j in range(n_intrnrn):
-        x = abs((2*np.pi/N_per_sheet)*(j-i))
-        if x < np.pi:
-            cnnct_ii[i, j] = conn_utils.gaussian(x, ii_peak, ii_mean, ii_stdev)
-        else:
-            cnnct_ii[i, j] = conn_utils.gaussian(
-                (2*np.pi-x), ii_peak, ii_mean, ii_stdev)
+        theta_i,theta_j = (2*np.pi/N_per_sheet)*i,(2*np.pi/N_per_sheet)*j
+        delta_theta=conn_utils.unsigned_arc_length(theta_i,theta_j)
+        cnnct_ii[i, j] = conn_utils.gaussian(delta_theta, ii_peak, ii_mean, ii_stdev)
 
 cnnct_ii[np.abs(cnnct_ii) < threshold] = 0
 
@@ -105,6 +87,4 @@ if params["save_conn_matrix"]:
 
 with h5py.File(f"cache/matrix_{conn_id}_{sim_id}_{sim_num}.hdf5", "w") as f:
     z=f.create_dataset(str('matrix'),data=adj_matrix,compression='gzip') 
-
-
 
