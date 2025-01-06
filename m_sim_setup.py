@@ -12,8 +12,7 @@ tstart = time.perf_counter()
 args = s_utils.sim_setup_arg_parser().parse_args()
 #Process specs file
 fname = args.specs_file
-mod_name = os.path.split(fname)[0] + "." + \
-    (os.path.split(fname)[1]).split(".")[0]
+mod_name = s_utils.get_module_from_path(fname)
 
 #load input parameters
 param_file = importlib.import_module(mod_name)
@@ -24,7 +23,7 @@ mult_params.load_update_mult_params(mult_input_params)
 
 sim_id = mult_params["0"]["sim_id"]
 
-n_cpus = 32 #mult_params["0"]["n_cpus"] if mult_params["0"]["n_cpus"] else os.cpu_count()//2
+n_cpus = mult_params["0"]["n_cpus"] if mult_params["0"]["n_cpus"] else os.cpu_count()//2
 
 #start logger
 logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log",mode="w"),
@@ -49,9 +48,6 @@ logging.debug(f"Created data location at {data_loc}")
 
 # copy specs file to data_loc for future reference
 os.system(f"cp {fname} {data_loc}{sim_id}.py".format())
-
-n_cpus = 3 #params["0"]["n_cpus"] if params["0"]["n_cpus"] \
-    #else os.cpu_count()//2
 
 #run simulation
 logging.debug(f"Launching m_run")

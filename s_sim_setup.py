@@ -11,8 +11,7 @@ tstart = time.perf_counter()
 args = s_utils.sim_setup_arg_parser().parse_args()
 #Process specs file
 fname = args.specs_file
-mod_name = os.path.split(fname)[0] + "." + \
-    (os.path.split(fname)[1]).split(".")[0]
+mod_name = s_utils.get_module_from_path(fname)
 
 #load input parameters
 param_file = importlib.import_module(mod_name)
@@ -24,7 +23,7 @@ params.update_params(input_params)
 params.save_curr_time()
 
 sim_id = params["sim_id"]
-n_cpus = 32 #params["n_cpus"] if params["n_cpus"] else os.cpu_count()//2
+n_cpus = params["n_cpus"] if params["n_cpus"] else os.cpu_count()//2
 
 #start logger
 logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log",mode="w"),

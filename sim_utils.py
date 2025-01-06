@@ -242,7 +242,7 @@ def get_sim_num(iters: tuple, n_iters: tuple) -> int:
     return sim_num
 
 
-def sim_setup_arg_parser():
+def sim_setup_arg_parser()->argparse.ArgumentParser:
     """Set up the argument parser for the simulation.
 
     Argument parser is initialzed and processed here to avoid cluttering
@@ -255,16 +255,15 @@ def sim_setup_arg_parser():
     """
     
     parser = argparse.ArgumentParser(description="Run a single simulation")
-    parser.add_argument("-p","--specs_file",
+    parser.add_argument("specs_file",
                     help="specificatons file",
-                    type=str,
-                    required=True)
+                    type=str)
     parser.add_argument("-v","--verbose",
                     help="show verbose output",
                     action="store_const",const=logging.DEBUG,default=logging.INFO)
     return parser
 
-def sim_run_arg_parser():
+def sim_run_arg_parser()->argparse.ArgumentParser:
     """Set up the argument parser for the simulation run.
 
     Argument parser is initialzed and processed here to avoid cluttering
@@ -286,10 +285,12 @@ def sim_run_arg_parser():
                         action="store_const",const=logging.DEBUG,default=logging.INFO)
     return parser
 
-def log_from_rank_0(logger,rank,msg,level=logging.INFO):
+def log_from_rank_0(logger:logging.Logger,rank:int,msg:str,level:int=logging.INFO):
     """Logs a message if the rank is 0.
     
     Parameters:
+        logger : logging.Logger
+            The logger object to use for logging.
         rank : int: 
             The rank of the process.
         msg : str 
@@ -297,24 +298,21 @@ def log_from_rank_0(logger,rank,msg,level=logging.INFO):
     """
     if rank==0:
         logger.log(level,msg)
-        # logger.handlers[1].flush()
 
-def process_data_root(data_root):
+def process_data_root(data_root:str)->str:
     """Processes the given data root path to ensure it ends with a slash.
     
     Parameters:
-        data_root (str): The root path to the data directory.
+    data_root : str
+        The root path to the data directory.
     Returns:
-        str: The data root path ending with a slash.
+    str
+        The data root path ending with a slash.
     """
     return data_root+"/" if data_root[-1]!="/" else data_root
 
-import os
-import sim_utils as s_utils
 
-
-
-def load_spikes(sim_id,sim_num=0):
+def load_spikes(sim_id:str,sim_num:int=0)->tuple:
 
     """Load spike data for a given simulation ID.
     
@@ -327,7 +325,7 @@ def load_spikes(sim_id,sim_num=0):
     
     Returns
     -------
-    spks : tuple
+    tuple
         A tuple containing two lists of lists:
         - stell_spikes_l: List of spike times for stellate cells.
         - intrnrn_spikes_l: List of spike times for interneurons.
@@ -398,4 +396,53 @@ def chunks(data, SIZE=10000):
     for i in range(0, len(data), SIZE):
         res.append(dict(islice(it, SIZE)))
     return res
+def get_module_from_path(file_path: str) -> str:
+    """Convert a file path to a module name.
+
+    Used to import specs file that is passed as as argument to 
+    the simulation setup scripts.
+
+    Parameters:
+    -----------
+    file_path : str
+        The relative file path (e.g., "specs/s_template.py")
+    
+    Returns:
+    --------
+    str
+        The corresponding module name (e.g., "specs.s_template")
+    """
+    # Remove the file extension
+    module_name, _ = os.path.splitext(file_path)
+    # Replace path separators with dots
+    module_name = module_name.replace(os.path.sep, ".")
+
+    return module_name
+
+def load_data(sim_id:str,data_id:str,cell_n:int=0,sim_num:str=0)->np.ndarray:
+    """Load Non-spiking data for a given simulation ID.
+    
+    Parameters:
+    ----------
+    sim_id : str
+        Simulation ID to load data from.
+    data_id : str
+        Data ID. e.g. 'stell_v'
+    cell_n : int, optional
+        Cell number to load data for, by default 0.
+    sim_num : str, optional
+        Simulation number to load data from, by default 0.
+    
+    Returns:
+    --------
+    np.ndarray
+        The data array loaded from the HDF
+    """
+    sim_num = str(sim_num)
+    data_dir = locate_data_dir(sim_id)
+    with h5py.File(f'{data_dir}{sim_id}/{data_id}_{sim_id}.hdf5', 'r') as f:
+            data= np.array(f[str(sim_num)]['{}'.format(data_id)][cell_n])
+    return data
+
+
 

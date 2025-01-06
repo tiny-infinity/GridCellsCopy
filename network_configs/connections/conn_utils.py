@@ -107,8 +107,7 @@ def find_params(args: argparse.Namespace) -> dict:
             return s_hf.load_sim_params(args.sim_id)
     if args.specs_file:
         from param import Param
-        mod_name = os.path.split(args.specs_file)[0] + "." + \
-            (os.path.split(args.specs_file)[1]).split(".")[0]
+        mod_name = s_hf.get_module_from_path(args.specs_file)
         param_file = importlib.import_module(mod_name)
         try:
             input_params = param_file.generate_input_params()
@@ -140,3 +139,41 @@ def gaussian_2D(x, y, x_mean, y_mean, stdev, N):
     
 def gaussian(x, N, mean, stdv):
     return N * np.exp((-((x - mean) ** 2)) / (2 * (stdv**2)))
+
+def signed_arc_length(angle1, angle2):
+    """
+    Compute the signed arc length between two angles.
+
+    Parameters:
+        angle1 (float): The first angle (in degrees or radians).
+        angle2 (float): The second angle (in degrees or radians).
+        radians (bool): Set to True if the angles are in radians, False if in degrees.
+
+    Returns:
+        float: The signed arc length.
+    """
+
+    # Compute the signed difference
+    delta = angle2 - angle1
+    # Normalize to the range [-π, π] for radians
+    delta = (delta + np.pi) % (2 * np.pi) - np.pi
+    return delta
+
+def unsigned_arc_length(angle1, angle2):
+    """
+    Compute the unsigned arc length between two angles.
+
+    Parameters:
+        angle1 (float): The first angle (in degrees or radians).
+        angle2 (float): The second angle (in degrees or radians).
+        radians (bool): Set to True if the angles are in radians, False if in degrees.
+
+    Returns:
+        float: The unsigned arc length.
+    """
+    # Normalize angles to radians if needed
+    # Compute raw difference
+    delta = abs(angle2 - angle1) % (2 * np.pi)
+    # Compute the shortest arc
+    arc_length = min(delta, 2 * np.pi - delta)
+    return arc_length
