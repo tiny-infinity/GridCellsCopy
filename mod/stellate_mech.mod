@@ -111,37 +111,21 @@ DERIVATIVE states {
 
 
 }
-
+UNITSOFF
 PROCEDURE rates(v (mV)) {
-
-    :TABLE amna, bmna,ahna,bhna,ank,bnk,mhfinf,mhftau,mhsinf,mhstau,mnap_alpha,mnap_beta DEPEND hs_tau_input,hf_tau_input FROM -100 TO 100 WITH 200 
-    UNITSOFF
     amna = (.1)*vtrap(-(v+23),10)
     bmna = 4*exp(-(v+48)/18)
-
-
     ahna = 0.07*exp(-(v+37)/20)
     bhna = 1/(exp(-0.1*(v+7))+1)
-
     mnap_alpha=1/(0.15*(exp(-(v+38)/6.5)+1))
     mnap_beta = (exp(-(v+38)/6.5))/(0.15*(exp(-(v+38)/6.5)+1))
-
-
-
-
-
- 
     ank = 0.01*vtrap(-(v+27),10)
     bnk = 0.125 * exp(-(v+37)/80)
-
-
     mhfinf = 1/(1+exp((v+79.2)/9.78))
-
     mhftau = ((hf_tau_input / ((exp((v-1.7)/10)) + exp(-(v+340)/52))) + 1) :0.51
-
     mhsinf = 1/(1+exp((v+71.3)/7.9))
-
     mhstau = ((hs_tau_input/ ((exp((v-1.7)/14)) + exp(-(v+260)/43))) + 1 ) :5.6
+    
     
 
 
