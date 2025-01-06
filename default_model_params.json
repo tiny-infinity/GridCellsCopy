@@ -87,7 +87,8 @@
     "si_asym_factor":[1,1],
     "is_asym_factor":[1,1],
     "is_peak_asym_fact":1,
-    "is_mean_asym_factor":0
+    "is_mean_asym_factor":0,
+    "extra_params":{}
     
 }
 
