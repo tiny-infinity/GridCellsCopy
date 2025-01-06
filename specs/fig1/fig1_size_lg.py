@@ -18,5 +18,7 @@ def generate_input_params():
         "n_phases":int((mean_shift)*2),
         "init_noise_seed":500,
         "noise_seed":1000,
+        "n_cpus":40,
+
     }
     return input_params
