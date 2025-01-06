@@ -75,7 +75,7 @@ for param_to_record,states in network.params['record_handle_stell'].items():
     if states['state']==True:
         local_data={}
         for cell in network.stellate_cells:
-            if cell.recorder.get(f'{param_to_record}',None):
+            if cell.recorder.get(f'{param_to_record}',None) is not None:
                 local_data[cell._gid]= list(cell.recorder[f'{param_to_record}'])   
         all_data = pc.py_alltoall([local_data] + [None] * (pc.nhost() - 1)) 
         pc.barrier()
@@ -94,7 +94,7 @@ for param_to_record,states in network.params['record_handle_intrnrn'].items():
     if states['state']==True:
         local_data={}
         for cell in network.interneurons:
-            if cell.recorder.get(f'{param_to_record}',None):
+            if cell.recorder.get(f'{param_to_record}',None) is not None:
                 local_data[cell._gid]= list(cell.recorder[f'{param_to_record}'])
         all_data = pc.py_alltoall([local_data] + [None] * (pc.nhost() - 1))
         pc.barrier()
