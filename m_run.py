@@ -106,7 +106,7 @@ for sim_num, params in mult_params.items():
     
     if pc.id() == 0:
         try:
-            os.remove(f"cache/matrix_{params["conn_id"]}_{sim_id}_{sim_num}.hdf5")
+            os.remove(f"cache/matrix_{params['conn_id']}_{sim_id}_{sim_num}.hdf5")
         except FileNotFoundError as err:
             logging.debug(f"Cannot remove cached matrix file: {err}")
     s_utils.log_from_rank_0(logger,pc.id(), f"Sim {sim_num}:Completed in {round(time.perf_counter()-tsim, 2)}s")
