@@ -38,16 +38,17 @@ s_utils.json_save(mult_params,f"cache/params_{sim_id}.json")
 data_root = s_utils.process_data_root(mult_params["0"]["data_root"])
 data_loc = data_root+f"{sim_id}/"
 
-if args.overwrite_data:
-    logging.info(f"Overwriting data at {data_loc}")
-    shutil.rmtree(data_loc)
-    os.makedirs(data_loc)
-else:
-    try:
+try:
+    if args.overwrite_data:
+        logging.info(f"Overwriting data at {data_loc}")
+        if os.path.exists(data_loc):
+            shutil.rmtree(data_loc)
         os.makedirs(data_loc)
-    except FileExistsError as err:
-        logging.error(f"Simulation data already exists at {data_loc}")
-        raise err
+    else:
+        os.makedirs(data_loc)
+except FileExistsError:
+    logging.error(f"Simulation data already exists at {data_loc}")
+    raise
 
 logging.debug(f"Created data location at {data_loc}")
 
