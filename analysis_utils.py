@@ -179,7 +179,7 @@ def calc_fft(x,T = 0.025 * 1e-3):
     power = (np.abs(y) ** 2)[: N // 2]
     return f, y, power
 
-def decode_pos(stell_spikes_l,params,t_start=0,t_end=None,win_size=100):
+def decode_pos(stell_spikes_l,params,t_start=None,t_end=None,win_size=100):
     """Decode position for neuronal activity.
     
     Parameters:
