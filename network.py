@@ -29,11 +29,12 @@ class Network():
         self.exc_syn_si_gmax = params['si_syn_gmax']
         self.inhb_syn_ii_gmax = params['ii_syn_gmax']
         self.inhb_syn_is_gmax = params['is_syn_gmax']
-        
+    
         
         self._set_gids()
         self._create_cells()
         self._connect_cells()
+
         self.id = id  # network id
 
     def __repr__(self):
@@ -72,7 +73,7 @@ class Network():
                     elif self.i_or_s(source_gid) == 'Interneuron' and target.name=="Interneuron": #II
                         nc = pc.gid_connect(source_gid, target.inhb_syn)
                         nc.weight[0] = weight*self.inhb_syn_ii_gmax
-                    nc.delay = 1 # important for parallel
+                    nc.delay = self.params["netcon_delay"]
                     target._ncs.append(nc)
 
 
@@ -88,3 +89,5 @@ class Network():
             return "StellateCell"
         elif x >= self.n_stell:
             return "Interneuron"
+
+

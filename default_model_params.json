@@ -76,10 +76,9 @@
     "n_phases": 64,
     "lambda0": 6.2831,
 
-    "allothetic_input":true,
+    "init_allothetic_input":true,
     "allothetic_stell_dc": -0.00265,
     "allothetic_nrn_n": 10,
-    "allothetic_dur": 8000,
 
     "vel_integ_zero": -0.002633,
     "vel_integ_or": -0.002906,
@@ -88,8 +87,9 @@
     "is_asym_factor":[1,1],
     "is_peak_asym_fact":1,
     "is_mean_asym_factor":0,
-    "extra_params":{}
     
+    "extra_params":{},
+    "netcon_delay":5,
 }
 
 
