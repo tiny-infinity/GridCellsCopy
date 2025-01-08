@@ -261,6 +261,10 @@ def sim_setup_arg_parser()->argparse.ArgumentParser:
     parser.add_argument("-v","--verbose",
                     help="show verbose output",
                     action="store_const",const=logging.DEBUG,default=logging.INFO)
+    
+    parser.add_argument("-o","--overwrite_data",
+                    help="overwrite data",
+                    action="store_true")
     return parser
 
 def sim_run_arg_parser()->argparse.ArgumentParser:
