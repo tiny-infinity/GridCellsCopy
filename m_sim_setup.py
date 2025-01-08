@@ -7,9 +7,10 @@ import time
 import importlib
 from param import mParam
 import logging
+import shutil
 
 tstart = time.perf_counter()
-args = s_utils.sim_setup_arg_parser().parse_args()
+args,unk = s_utils.sim_setup_arg_parser().parse_known_args()
 #Process specs file
 fname = args.specs_file
 mod_name = s_utils.get_module_from_path(fname)
@@ -36,13 +37,17 @@ s_utils.json_save(mult_params,f"cache/params_{sim_id}.json")
 #create data directory in data_root/
 data_root = s_utils.process_data_root(mult_params["0"]["data_root"])
 data_loc = data_root+f"{sim_id}/"
-over_write_data=True #set to False to prevent overwriting data
 
-try:
+if args.overwrite_data:
+    logging.info(f"Overwriting data at {data_loc}")
+    shutil.rmtree(data_loc)
     os.makedirs(data_loc)
-except FileExistsError as err:
-    logging.error(f"Simulation data already exists at {data_loc}")
-    raise err
+else:
+    try:
+        os.makedirs(data_loc)
+    except FileExistsError as err:
+        logging.error(f"Simulation data already exists at {data_loc}")
+        raise err
 
 logging.debug(f"Created data location at {data_loc}")
 

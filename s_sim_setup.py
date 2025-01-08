@@ -8,7 +8,7 @@ import sim_utils as s_utils
 from param import Param
 
 tstart = time.perf_counter()
-args = s_utils.sim_setup_arg_parser().parse_args()
+args,unk = s_utils.sim_setup_arg_parser().parse_known_args()
 #Process specs file
 fname = args.specs_file
 mod_name = s_utils.get_module_from_path(fname)
@@ -36,9 +36,9 @@ s_utils.json_save(params,f"cache/params_{sim_id}.json")
 #create data directory in data_root/
 data_root = s_utils.process_data_root(params["data_root"])
 data_loc = data_root+f"{sim_id}/"
-over_write_data=True #set to False to prevent overwriting data
-if over_write_data:
-    os.makedirs(data_loc, exist_ok=True) 
+
+if args.overwrite_data:
+    os.makedirs(data_loc, exist_ok=True)
 else:
     try:
         os.makedirs(data_loc)
