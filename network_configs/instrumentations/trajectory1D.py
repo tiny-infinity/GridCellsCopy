@@ -30,8 +30,7 @@ class Trajectory1D:
         #spline
         spline_params=s_utils.json_read("input_data/vi_transform/spline_params.json")
         dc_out=BSpline(*list(spline_params.values()))(input_vel)
-        zero_mask = np.abs(input_vel) < 0.0001
-        dc_out[zero_mask] = self.params["vel_integ_zero"]
+
         other_ring_mask = np.isnan(input_vel)
         dc_out[other_ring_mask] = self.params["vel_integ_or"]
 

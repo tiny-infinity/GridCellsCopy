@@ -21,7 +21,6 @@ def generate_mult_input_params():
             "stell_const_dc":[-2.453e-3,-2.75e-3],
             "Amp_i_theta":8e-5,
             "n_phases":64,
-            "vel_integ_zero":-0.002633,
             "vel_integ_or":-0.002906,
             "lambda0":2*np.pi,
             "allothetic_nrn_n":10,
