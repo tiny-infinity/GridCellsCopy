@@ -4,11 +4,11 @@ import numpy as np
 
 def set_intial_noise(cell,noise_params,noise_seed=40):
 
-    seed_init_noise = cell._gid+noise_seed
+    noise_seed = cell._gid+noise_seed
     cell.init_noise.dur = noise_params[0]
     cell.init_noise_t = np.arange(0, cell.init_noise.dur, h.dt)
     cell.init_noise_t_amp = h.Vector(
-        np.random.default_rng(seed_init_noise).normal(
+        np.random.default_rng(noise_seed).normal(
             noise_params[1],
             noise_params[2],
             cell.init_noise_t.shape,
@@ -20,6 +20,7 @@ def set_intial_noise(cell,noise_params,noise_seed=40):
     )
 
 def set_noise(cell,noise_params,noise_seed=80):
+    noise_seed = cell._gid+noise_seed
     cell.noise.dur = noise_params[0]
     cell.noise_t = np.arange(
         cell.init_noise.dur, cell.noise.dur, h.dt)
@@ -80,7 +81,6 @@ def setup_recorders(cell,recorder_handle,recorder_dt):
         if not record.endswith("spks") and recorder_handle[record]['state']==True and \
         (recorder_handle[record]['cells_to_record']=='all' or \
             cell._gid in list(recorder_handle[f'{record}']['cells_to_record'])):
-            
             cell.recorder[f'{record}'] = h.Vector().record( \
                 recursive_getattr(cell,recorder_handle[record]["loc"]),recorder_dt)
         
