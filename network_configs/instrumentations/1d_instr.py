@@ -29,6 +29,7 @@ def setup_instrumentation(network):
                 
         if stell._gid in stell_l2_gids:
             stell.ext_dc.dur = params["sim_dur"]
+            #init allothetic input
             network.ext_amp_left.play(stell.ext_dc._ref_amp, network.ext_t, True)
 
         
@@ -45,12 +46,10 @@ def setup_instrumentation(network):
         #range variables
         interneuron.ext_dc.dur = params['sim_dur'] - interneuron.ext_dc.delay
 
-        if not params["vel_type"] == 'input':
-            network.ext_amp_intrnrn.play(interneuron.ext_dc._ref_amp, network.ext_t, True)            
-        elif interneuron._gid in network.traj.active_cells and params["vel_type"] == 'input':
+        if interneuron._gid in network.traj.active_cells and params["vel_type"] == 'input':
             network.traj.ext_amp_intnrn_allo.play(interneuron.ext_dc._ref_amp, network.ext_t, True)
-            
-            
+        else:
+            network.ext_amp_intrnrn.play(interneuron.ext_dc._ref_amp, network.ext_t, True)
         instr_utils.set_intrnrn_range_variables(interneuron,params)
         instr_utils.set_intial_noise(interneuron,params["intrnrn_init_noise"],noise_seed=params["init_noise_seed"])
         instr_utils.set_noise(interneuron,params["intrnrn_noise"],noise_seed=params["noise_seed"])

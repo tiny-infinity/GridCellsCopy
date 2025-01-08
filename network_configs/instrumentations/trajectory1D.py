@@ -14,6 +14,7 @@ class Trajectory1D:
         self.t = np.arange(0, self.sim_dur + self.dt, self.dt)
         self.N_per_sheet = self.params["N_per_sheet"]
         self.save_mem = save_mem
+        self.active_cells = []
         if self.params["vel_type"] == "const":
             self.const_vel()
         elif self.params["vel_type"] == "input":

@@ -1,7 +1,7 @@
 import numpy as np
 
 def generate_mult_input_params():
-    n_trials = 1
+    n_trials = 10
     sim_num = 0
     multiple_input_params = {}
     sim_dur = float(30000)
@@ -9,8 +9,8 @@ def generate_mult_input_params():
         input_params = {
             "sim_num":str(sim_num),
             "sim_dur": sim_dur,
-            "sim_id": "VALD-VI-TRAJ-S-m-1a", #"VI-TI-SIMS-S-1a"
-            "traj_id": '503',
+            "sim_id": "VALD-PI-TRAJ-S-m-1a",
+            "traj_id": '1',
             "vel_type": "input",
             "init_allothetic_input": True,
             "allothetic_stell_dc":-0.0027,
@@ -19,6 +19,7 @@ def generate_mult_input_params():
             "intrnrn_noise":[sim_dur,0,2e-3],
             "stell_noise":[sim_dur,0,1e-3],
             "stell_const_dc":[-2.453e-3,-2.75e-3],
+            "Amp_i_theta":8e-5,
             "n_phases":64,
             "vel_integ_zero":-0.002633,
             "vel_integ_or":-0.002906,
@@ -27,9 +28,9 @@ def generate_mult_input_params():
             "init_noise_seed":np.random.randint(0,100000),
             "noise_seed":np.random.randint(0,100000),
             "n_cpus":40,
-            "netcon_delay":5,
-            "record_handle_stell":{"stell_syn_inhib_g":{"state":True,"cells_to_record":[46,64]},
-                                     "stell_ext_dc_amp":{"state":True,"cells_to_record":[46,64]}}
+            "netcon_delay":1,
+            "record_handle_stell":{"stell_syn_inhib_g":{"state":False,"cells_to_record":[46,64]},
+                                     "stell_ext_dc_amp":{"state":False,"cells_to_record":[46,64]}}
         }
         multiple_input_params[str(sim_num)] = input_params
         sim_num +=1
