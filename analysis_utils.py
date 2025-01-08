@@ -178,3 +178,35 @@ def calc_fft(x,T = 0.025 * 1e-3):
     y = fft(x)[: N // 2]
     power = (np.abs(y) ** 2)[: N // 2]
     return f, y, power
+
+def decode_pos(stell_spikes_l,params,t_start=0,t_end=None,win_size=100):
+    """Decode position for neuronal activity.
+    
+    Parameters:
+    -----------
+        stell_spikes_l : list of list
+            List of list of spike times for each neuron.
+        params : dict
+            Parameter dictionary of simulation parameters.
+        t_start : int, optional
+            Start time for decoding. Default is 0.
+        t_end : int, optional
+            End time for decoding. Default is None.
+        win_size : int, optional
+            Window size for calculating the instantaneous rate. Default is 150.
+    
+    Returns:
+    --------
+        decoded_pos : np.ndarray
+            The decoded position from.
+    """
+    N_per_sheet= params['N_per_sheet']
+    n_phases= params['n_phases']
+    sim_dur= params['sim_dur']
+    lamb= params['lambda0']
+    cell_phases = (np.arange(0,N_per_sheet)*(2*np.pi/n_phases))%(2*np.pi)
+    cell_phases = np.concatenate((cell_phases,cell_phases))
+    t_stell=instant_rate_all(stell_spikes_l,sim_dur,win_size)[:,t_start:t_end]
+    #decode position
+    decoded_pos=((lamb/(2*np.pi))*((np.angle(np.sum((t_stell*np.exp(1j*cell_phases[:,np.newaxis])),axis=0)))))%lamb
+    return decoded_pos
