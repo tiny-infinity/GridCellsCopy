@@ -9,6 +9,7 @@ h5py.get_config().track_order = True
 import logging
 import subprocess
 import os
+
 h.nrnmpi_init()
 pc = h.ParallelContext()
 tstart = time.perf_counter()
@@ -45,8 +46,10 @@ for sim_num, params in mult_params.items():
     #initialize network
     s_utils.log_from_rank_0(logger,pc.id(),
                          f"Sim {sim_num}:Initializing network",level=logging.DEBUG)
-    
+    h.celsius = 37
     network = s_utils.network_intialize(params)
+    # network = network_intialize(params)
+
     tinit = time.perf_counter()
     s_utils.log_from_rank_0(logger,pc.id(),
                          f"Sim {sim_num}:Network intialized in {round(tinit-tmat,2)}s",
@@ -58,7 +61,7 @@ for sim_num, params in mult_params.items():
     data_loc = data_root+f"{sim_id}/"
     
     #run simulation
-    h.celsius = 37
+    
     t = h.Vector().record(h._ref_t)
     pc.set_maxstep(10 * ms)
     h.finitialize(-65 * mV)
