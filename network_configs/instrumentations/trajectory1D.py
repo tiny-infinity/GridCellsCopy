@@ -27,7 +27,7 @@ class Trajectory1D:
 
     def vel_to_dc_fit(self, input_vel):
         #spline
-        spline_params=s_utils.json_read("input_data/vi_transform/spline_params_02.json")
+        spline_params=s_utils.json_read("input_data/vi_transform/spline_params.json")
         dc_out=BSpline(*list(spline_params.values()))(input_vel)
         zero_mask = np.abs(input_vel) < 0.0001
         dc_out[zero_mask] = self.params["vel_integ_zero"]
