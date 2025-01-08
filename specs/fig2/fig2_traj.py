@@ -10,10 +10,9 @@ def generate_mult_input_params():
             "sim_num":str(sim_num),
             "sim_dur": sim_dur,
             "sim_id": "VALD-VI-TRAJ-S-m-1a", #"VI-TI-SIMS-S-1a"
-            "traj_id": '502',
+            "traj_id": '503',
             "vel_type": "input",
             "init_allothetic_input": True,
-            "Amp_i_theta":8e-5,
             "allothetic_stell_dc":-0.0027,
             "intrnrn_init_noise":[100,0,0.5],
             "stell_init_noise":[100,0,0.5],
@@ -28,6 +27,7 @@ def generate_mult_input_params():
             "init_noise_seed":np.random.randint(0,100000),
             "noise_seed":np.random.randint(0,100000),
             "n_cpus":40,
+            "netcon_delay":5,
             "record_handle_stell":{"stell_syn_inhib_g":{"state":True,"cells_to_record":[46,64]},
                                      "stell_ext_dc_amp":{"state":True,"cells_to_record":[46,64]}}
         }
