@@ -13,7 +13,8 @@ spec_files = {"1":[
                     ["fig1_stdn_res.py","s"],
                     ["fig1_stdn_sag.py","m"],
                     ["fig1_stdn_subthresh.py","s"]],
-                "1_lg":[["fig1_2D.py","s"]]}
+                "1_lg":[["fig1_2D.py","s"]],
+                "2":[["fig2_traj.py","s"]],}
 
 for i,fig in enumerate(args.figures):
     print(f"Generating figure {fig}")
