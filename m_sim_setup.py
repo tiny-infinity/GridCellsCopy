@@ -46,9 +46,10 @@ try:
         os.makedirs(data_loc)
     else:
         os.makedirs(data_loc)
-except FileExistsError:
+except FileExistsError as err:
     logging.error(f"Simulation data already exists at {data_loc}")
-    raise
+    err.add_note(f"Simulation data already exists at {data_loc}. Use -o to overwrite data")
+    raise err
 
 logging.debug(f"Created data location at {data_loc}")
 
