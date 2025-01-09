@@ -30,7 +30,6 @@ class Trajectory1D:
         #spline
         spline_params=s_utils.json_read("input_data/vi_transform/spline_params.json")
         dc_out=BSpline(*list(spline_params.values()))(input_vel)
-
         other_ring_mask = np.isnan(input_vel)
         dc_out[other_ring_mask] = self.params["vel_integ_or"]
 
@@ -90,7 +89,7 @@ class Trajectory1D:
         self.left_dc[: self.init_idx+int(0/0.025)] =self.params["allothetic_stell_dc"]
         self.right_dc[: self.init_idx+int(0/0.025)]=self.params["allothetic_stell_dc"]
         
-        #Find cells that shoudl be active during allothetic input
+        #Find cells that should be active during allothetic input
         phi = np.round(
             (self.init_position*self.params["n_phases"]) / (self.params["lambda0"])
         ).astype("int")
