@@ -86,7 +86,7 @@
     "is_mean_asym_factor":0,
     
     "extra_params":{},
-    "netcon_delay":5
+    "netcon_delay":1
 }
 
 
