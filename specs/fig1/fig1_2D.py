@@ -35,7 +35,6 @@ def generate_input_params():
         "init_noise_seed": 2000,
         "ii_stdev": 1.05,
         "ii_mean": 10,
-        "progress":True,
         "stell_noise": [sim_dur, 0, 0.005],
         "intrnrn_dc_amp": 1e-3,
         "intrnrn_noise": [sim_dur, 0, 0.005],
