@@ -158,8 +158,9 @@ data/**/*
 cache/**/*
 !cache/.placeholder
 
-input_data/**/*
-!input_data/.placeholder
+input_data/trajectories/**/*
+
+
 
 network_configs/connections/saved_matrices/**/*
 network_configs/connections/saved_matrices/**/*
