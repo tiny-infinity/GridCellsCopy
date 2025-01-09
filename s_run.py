@@ -54,7 +54,7 @@ pc.set_maxstep(10 * ms)
 s_utils.log_from_rank_0(logger,pc.id(),f"Simulation started")
 h.finitialize(-65 * mV)
 
-if not params["progress"]:
+if not params["show_progress_bar"]:
     pc.psolve(sim_dur * ms)
 else:
     pbar=s_utils.ProgressBar(total=int(sim_dur),pc=pc)

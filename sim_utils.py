@@ -3,13 +3,12 @@ import numpy as np
 from itertools import zip_longest
 import h5py
 import json
-from itertools import islice
 import os
 os.environ["NEURON_MODULE_OPTIONS"] = "-nogui" #Stops no gui warnings
 import argparse
 import importlib
 import logging
-import subprocess
+
 """
 Helper functions for the simulation setup, runs and data handling
 """
@@ -357,49 +356,43 @@ class ProgressBar:
     
     :meta private:
     """
-    def __init__(self,total):
-        self.marker='\x1b[31m█\x1b[39m'
-        self.total= total
-        self.length=50
-        self.curr_progress=0
-        
-    def update(self):
-        self.curr_progress=self.curr_progress+1
-
-        self.iteration=self.curr_progress
-        percent = 100 * (self.iteration / float(self.total))
-        filled_length = int(self.length * self.iteration // self.total)
-        bar = self.marker * filled_length + '-' * (self.length - filled_length)
-        print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\r")
+    def __init__(self,total,pc=None):
+        rank0=self._check_rank(pc)
+        if rank0:
+            self.marker='\x1b[31m█\x1b[39m'
+            self.total= total
+            self.length=50
+            self.curr_progress=0
         
 
-    def finish(self):
-        self.iteration=self.total
-        percent = 100 * (self.iteration / float(self.total))
-        filled_length = int(self.length * self.iteration // self.total)
-        bar = self.marker * filled_length + '-' * (self.length - filled_length)
-        print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\n",flush=True)
+    def finish(self,pc=None):
+        rank0=self._check_rank(pc)
+        if rank0:
+            self.iteration=self.total
+            percent = 100 * (self.iteration / float(self.total))
+            filled_length = int(self.length * self.iteration // self.total)
+            bar = self.marker * filled_length + '-' * (self.length - filled_length)
+            print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\n",flush=True)
 
-    def increment(self,iteration):
-        self.iteration=iteration
-        percent = 100 * (self.iteration / float(self.total))
-        filled_length = int(self.length * self.iteration // self.total)
-        bar = self.marker * filled_length + '-' * (self.length - filled_length)
-        print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\r")
+    def increment(self,iteration,pc=None,flush=False):
+        rank0=self._check_rank(pc)
+        if rank0:
+            self.iteration=iteration
+            percent = 100 * (self.iteration / float(self.total))
+            filled_length = int(self.length * self.iteration // self.total)
+            bar = self.marker * filled_length + '-' * (self.length - filled_length)
+            print(f"Progress ({self.iteration} of {self.total} ms): |{bar}| {percent:.2f}%",end="\r",flush=flush)
+
+    def _check_rank(self,pc):
+        if pc is not None:
+            if pc.id()==0:
+                return True
+            return False
+        else:
+            return True
 
 
 
-
-def invrtd_gaussian(x, N, mean, stdv):
-    return -N * np.exp((-((x - mean) ** 2)) / (2 * (stdv**2))) + N 
-
-
-def chunks(data, SIZE=10000):
-    it = iter(data.items())
-    res = []
-    for i in range(0, len(data), SIZE):
-        res.append(dict(islice(it, SIZE)))
-    return res
 def get_module_from_path(file_path: str) -> str:
     """Convert a file path to a module name.
 
@@ -440,7 +433,7 @@ def load_data(sim_id:str,data_id:str,cell_n:int=0,sim_num:str=0)->np.ndarray:
     Returns:
     --------
     np.ndarray
-        The data array loaded from the HDF
+        The data array loaded from the HDF5 file
     """
     sim_num = str(sim_num)
     data_dir = locate_data_dir(sim_id)
@@ -450,3 +443,27 @@ def load_data(sim_id:str,data_id:str,cell_n:int=0,sim_num:str=0)->np.ndarray:
 
 
 
+def load_full_data(sim_id,data_id,sim_num=0):
+    """Load Non-spiking data of all cells for a given simulation ID and number.
+    
+    Parameters:
+    ----------
+    sim_id : str
+        Simulation ID to load data from.
+    data_id : str
+        Data ID. e.g. 'stell_v'
+    cell_n : int, optional
+        Cell number to load data for, by default 0.
+    sim_num : str, optional
+        Simulation number to load data from, by default 0.
+    
+    Returns:
+    --------
+    np.ndarray
+        The data array loaded from the HDF5 file.
+    """
+    
+    data_dir = locate_data_dir(sim_id)
+    with h5py.File(f'{data_dir}{sim_id}/{data_id}_{sim_id}.hdf5', 'r') as f:
+            data= np.array(f[str(sim_num)]['{}'.format(data_id)])
+    return data
