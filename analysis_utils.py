@@ -4,6 +4,7 @@ import h5py
 import os
 import subprocess
 import sim_utils as s_utils
+import copy
 
 def periodic_activity_all(stell_spikes_l, sim_dur, window_t, stdev):
     '''compute rates along the cells for all time window'''
@@ -210,3 +211,144 @@ def decode_pos(stell_spikes_l,params,t_start=None,t_end=None,win_size=100):
     #decode position
     decoded_pos=((lamb/(2*np.pi))*((np.angle(np.sum((t_stell*np.exp(1j*cell_phases[:,np.newaxis])),axis=0)))))%lamb
     return decoded_pos
+
+def clean_spikes(stell_spikes_l,order=0.5):
+    """Cleans spikes from the given spike trains using a threshold-based approach.
+
+    Parameters:
+    -----------
+    stell_spikes_l : list
+        List of list of spike times for each neuron.
+    order : float, optional
+        Factor to determine the strictness of threshold.
+        
+
+    Returns:
+    --------
+        list: 
+            A list of spike trains with cleaned spikes, where each spike train 
+            is represented as a list of spike times.
+
+    """
+    stell_spks_clean = copy.deepcopy(stell_spikes_l)
+    thresholds = []
+    for i, stell in enumerate(stell_spikes_l):
+        if len(stell) > 5:
+            prev_spike = stell[0]
+            sorted_isi = np.sort(np.diff(stell))
+            thresholds.append(
+                np.mean(sorted_isi[np.argmax(
+                    np.diff(np.diff(sorted_isi))) + 2:])
+            )  # from largest change in slope of ISI to the largest ISI
+    threshold = np.abs(np.mean(thresholds))
+
+    for i, stell in enumerate(stell_spikes_l):
+        if len(stell) > 5:
+            for j in range(len(stell) - 2):
+                spk = stell[j + 1]
+                prev_spike = stell[j]
+                next_spike = stell[j + 2]
+                delta_minus = spk - prev_spike
+                delta_plus = next_spike - spk
+                if (delta_minus + delta_plus > (order * threshold)) and abs(
+                    delta_plus - delta_minus
+                ) < threshold:
+                    stell_spks_clean[i][j] = 0
+    res_spks_clean = [[] for x in range(len(stell_spikes_l))]
+
+    for i, stell in enumerate(stell_spks_clean):
+        for spks in stell:
+            if spks != 0:
+                res_spks_clean[i].append(spks)
+    return res_spks_clean
+
+
+
+def separate_fields(stell_spikes_l,order=0.5):
+    """
+    Separates spike trains into grid fields based on a threshold.
+
+    Parameters:
+    -----------
+    stell_spikes_l : list
+        List of list of spike times for each neuron.
+
+    Returns:
+    --------
+    dict: 
+        A dictionary with keys as cell indices and values as 
+        lists of lists of separated grid fields,
+    """
+    grid_fields_all = {i: None for i in range(len(stell_spikes_l))}
+    stell_spikes_l = clean_spikes(stell_spikes_l,order=order)
+    for i, stell in enumerate(stell_spikes_l):
+        if len(stell) > 5:
+            prev_spike = stell[0]
+            fields = [[prev_spike]]
+            sorted_isi = np.sort(np.diff(stell))
+            idx = np.argmax(np.diff(sorted_isi)) + 1
+            threshold = sorted_isi[idx] - (sorted_isi[idx] % 10)
+            for j, spk in enumerate(stell[1:]):
+                delta = spk - prev_spike
+                if abs(delta) < abs(threshold):
+                    fields[-1].append(spk)
+                    prev_spike = spk
+                else:
+                    fields.append([spk])
+                    prev_spike = spk
+            grid_fields_all[i] = fields
+    return grid_fields_all
+
+def calc_grid_field_sizes_time(stell_spikes_l, avg=True):
+    """Calculate the sizes of grid fields along the time axis.
+
+    Parameters:
+    ----------
+    stell_spikes_l : list
+        List of list of spike times for each neuron.
+    avg : bool, optional
+        Whether to return the average field size. Defaults to True.
+
+    Returns:
+    float or list: 
+        If avg is True, returns the median field size. Otherwise, returns a list of all field sizes.
+    """
+    grid_fields_all = separate_fields(stell_spikes_l)
+    all_field_size = []
+    for cell, fields in grid_fields_all.items():
+        if fields != None:
+            cell_field_size = []
+            for a_field in fields:
+                if len(a_field) > 3:
+                    cell_field_size.append(a_field[-1] - a_field[0])
+            all_field_size.extend(cell_field_size[1:-1])
+    if avg:
+        return np.median(all_field_size)
+    else:
+        return all_field_size
+
+def shift_fields_to_center(stell_spikes):
+    """Shift the separated grid fields of spike trains to center them around zero.
+
+    Parameters:
+    -----------
+    stell_spikes : list
+        List of list of spike times for each neuron.
+
+    Returns:
+    --------
+    dict:
+        A dictionary with keys as cell indices and values as lists of shifted grid fields.
+    """
+
+    separated_fields = separate_fields(stell_spikes)
+    shifted_fields = {}.fromkeys(separated_fields.keys())
+    for cell, fields in separated_fields.items():
+        if fields != None:
+            shifted_field_cell = []
+            for a_field in fields[1:-1]:
+                if len(a_field) > 0:
+                    field_center = np.median(a_field)
+                    shifted_field_cell.append(np.array(a_field) - field_center)
+            shifted_fields[cell] = shifted_field_cell
+    return shifted_fields
