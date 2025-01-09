@@ -52,21 +52,16 @@ h.celsius = 37
 t = h.Vector().record(h._ref_t)
 pc.set_maxstep(10 * ms)
 s_utils.log_from_rank_0(logger,pc.id(),f"Simulation started")
-if pc.id() == 0:
-    if params["progress"]:
-        pbar=s_utils.ProgressBar(total=int(sim_dur))
+h.finitialize(-65 * mV)
+
 if not params["progress"]:
-    #main simulatiion run without progress bar
-    h.finitialize(-65 * mV)
     pc.psolve(sim_dur * ms)
 else:
-    h.finitialize(-65 * mV)
+    pbar=s_utils.ProgressBar(total=int(sim_dur),pc=pc)
     for i in range(int(sim_dur)):
         pc.psolve(i * ms)
-        if pc.id()==0:
-            pbar.increment(int(pc.t(0)))
-    if pc.id()==0:
-        pbar.finish()        
+        pbar.increment(int(pc.t(0)),pc)
+    pbar.finish(pc)        
 tsim = round(time.perf_counter()-t3, 2)
 s_utils.log_from_rank_0(logger,pc.id(),f"Simulation completed in {tsim}s")
 

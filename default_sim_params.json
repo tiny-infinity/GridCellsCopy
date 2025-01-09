@@ -13,7 +13,7 @@
     "n_cpus":null,
     
     "post_sim_analysis": false,
-    "progress":false,
+    "show_progress_bar":false,
     "recorder_dt": 1,
     "data_root":"data/",
     "python": "python",
