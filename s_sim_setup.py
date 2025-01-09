@@ -76,7 +76,7 @@ logging.debug(f"Launching s_run")
 verbosity = "-v" if args.verbose == logging.DEBUG else ""
 
 if params["split_sim"][0]:
-    proc=subprocess.run(["mpiexec","-n", f"{n_cpus}","python", "s_run_split.py",f"{sim_id}",f"{verbosity}"],check=True)
+    proc=subprocess.run(["mpiexec","-n", f"{n_cpus}","python", "s_run_split.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
 else:
     proc=subprocess.run(
         ["mpiexec","-n", f"{n_cpus}","python", "s_run.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
