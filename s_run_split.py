@@ -1,0 +1,131 @@
+import numpy as np
+from neuron import h
+from neuron.units import ms, mV
+import time
+import sim_utils as s_utils
+import h5py
+h5py.get_config().track_order = True
+import logging
+
+
+
+
+
+h.nrnmpi_init()
+pc = h.ParallelContext()
+
+tstart = time.perf_counter()
+args, unknown = s_utils.sim_run_arg_parser().parse_known_args()
+sim_id = args.sim_id
+
+if pc.id() == 0:
+    logging.basicConfig(handlers=[logging.FileHandler(f"logs/sim_{sim_id}.log",mode='w'),
+            logging.StreamHandler()], encoding='utf-8', level=args.verbose,
+            format=f'%(asctime)s:%(levelname)s:{sim_id}:Sim 0: %(message)s')
+    logger = logging.getLogger()
+else:
+    logger = None
+#load params file
+params = s_utils.json_read(f"cache/params_{sim_id}.json")
+
+#initialize network
+t2 = time.perf_counter()
+s_utils.log_from_rank_0(logger,pc.id(),"Initializing network",level=logging.DEBUG)
+network = s_utils.network_intialize(params)
+tinit = time.perf_counter()
+s_utils.log_from_rank_0(logger,pc.id(),f"Network intialized in {round(tinit-t2,2)}s",level=logging.DEBUG)
+
+sim_dur = network.params["sim_dur"]
+sim_num = str(network.params["sim_num"])
+data_root = s_utils.process_data_root(network.params["data_root"])
+data_loc = data_root+f"{sim_id}/"
+forward_steps = network.params["split_sim"][1]
+
+#run simulation
+t3 = time.perf_counter()
+h.celsius = 37
+t = h.Vector().record(h._ref_t)
+pc.set_maxstep(10 * ms)
+s_utils.log_from_rank_0(logger,pc.id(),f"Simulation started")
+
+h.finitialize(-65 * mV)
+sim_time_vec = np.concatenate(
+    (np.arange(forward_steps, sim_dur, forward_steps), [sim_dur])
+)
+data = 0
+pbar=s_utils.ProgressBar(total=int(sim_dur),pc=pc)
+for sim_chunk_i, next_sim in enumerate(sim_time_vec):
+    pc.psolve(next_sim * ms)
+    pbar.increment(int(pc.t(0)),pc,flush=True)
+    for param_to_record,states in network.params['record_handle_stell'].items():
+        if states['state']==True:
+            local_data={}
+            for cell in network.stellate_cells:
+                if cell.recorder.get(f'{param_to_record}',None) is not None:
+                    local_data[cell._gid]= list(cell.recorder[f'{param_to_record}'])
+            all_data = pc.py_alltoall([local_data] + [None] * (pc.nhost() - 1))
+            pc.barrier()
+            if pc.id() == 0:
+                data = {}
+                for process_data in all_data:
+                    data.update(process_data)
+                data = dict(sorted(data.items()))
+                data_arr = s_utils.list_to_numpy(data.values())
+                if sim_chunk_i == 0:
+                    with h5py.File(data_loc + f"{param_to_record}_{sim_id}.hdf5", "w") as file:
+                        group = file.create_group(sim_num)
+                        group.create_dataset(f"{param_to_record}", data=data_arr, compression="gzip",maxshape=(network.params["N_stell"], None),dtype=np.float32)
+                else:
+                    with h5py.File(data_loc + f"{param_to_record}_{sim_id}.hdf5", "a") as file:            
+                        if len(data_arr.shape)>1:
+                            file[sim_num][f"{param_to_record}"].resize((file[sim_num][f"{param_to_record}"].shape[1]+ data_arr.shape[1]),axis=1)
+                            if (file[sim_num][f"{param_to_record}"].shape[0]!= data_arr.shape[0]):
+                                file[sim_num][f"{param_to_record}"].resize((data_arr.shape[0]), axis=0)
+                            file[sim_num][f"{param_to_record}"][:, -data_arr.shape[1]:] = data_arr
+
+    for param_to_record,states in network.params['record_handle_intrnrn'].items():
+        if states['state']==True:
+            local_data={}
+            for cell in network.interneurons:
+                if cell.recorder.get(f'{param_to_record}',None) is not None:
+                    local_data[cell._gid]= list(cell.recorder[f'{param_to_record}'])
+            all_data = pc.py_alltoall([local_data] + [None] * (pc.nhost() - 1))
+            pc.barrier()
+            if pc.id() == 0:
+                data = {}
+                for process_data in all_data:
+                    data.update(process_data)
+                data = dict(sorted(data.items()))
+                data_arr = s_utils.list_to_numpy(data.values())
+                if sim_chunk_i == 0:
+                    with h5py.File(data_loc + f"{param_to_record}_{sim_id}.hdf5", "w") as file:
+                        group = file.create_group(sim_num)
+                        group.create_dataset(f"{param_to_record}", data=data_arr, compression="gzip",maxshape=(network.params["N_intrnrn"], None),dtype=np.float32)
+                else:
+                    with h5py.File(data_loc + f"{param_to_record}_{sim_id}.hdf5", "a") as file:            
+                        if len(data_arr.shape)>1:
+                            file[sim_num][f"{param_to_record}"].resize((file[sim_num][f"{param_to_record}"].shape[1]+ data_arr.shape[1]),axis=1)
+                            if (file[sim_num][f"{param_to_record}"].shape[0]!= data_arr.shape[0]):
+                                file[sim_num][f"{param_to_record}"].resize((data_arr.shape[0]), axis=0)
+                            file[sim_num][f"{param_to_record}"][:, -data_arr.shape[1]:] = data_arr
+
+    
+
+
+            
+    for cell in network.stellate_cells:
+        for param_to_record,states in network.params['record_handle_stell'].items():
+            if cell.recorder.get(f'{param_to_record}',None) is not None:
+                cell.recorder[f"{param_to_record}"].resize(0)
+
+    for cell in network.interneurons:
+        for param_to_record,states in network.params['record_handle_intrnrn'].items():
+            if cell.recorder.get(f'{param_to_record}',None) is not None:
+                cell.recorder[f"{param_to_record}"].resize(0)
+pbar.finish(pc)
+tsim = round(time.perf_counter()-t3, 2)
+s_utils.log_from_rank_0(logger,pc.id(),f"Simulation completed in {tsim}s")
+s_utils.log_from_rank_0(logger,pc.id(),f"Data saved in {data_loc}",level=logging.DEBUG)
+pc.barrier()
+pc.done()
+h.quit()
