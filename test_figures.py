@@ -21,14 +21,14 @@ spec_files = {"1":[
 for i,fig in enumerate(args.figures):
     print(f"Generating figure {fig}")
     for fig_num in spec_files[fig]:
-        print(f"Running sim {fig_num[0]}")
+        print(f"Running specs/fig{fig}/{fig_num[0]}")
         proc=subprocess.run(["python",f"{fig_num[1]}_sim_setup.py",f"specs/fig{fig}/{fig_num[0]}","-v","-o"],capture_output=True)
         if proc.returncode != 0:
             print(proc.stderr)
             raise Exception(f"Error in sim {fig_num[0]}")
     if args.all:
         for fig_num in spec_files[f"{fig}_lg"]:
-            print(f"Running sim {fig_num[0]}")
+            print(f"Running specs/fig{fig}/{fig_num[0]}")
             proc=subprocess.run(["python",f"{fig_num[1]}_sim_setup.py",f"specs/fig{fig}/{fig_num[0]}","-v","-o"],capture_output=True)
             if proc.returncode != 0:
                 print(proc.stderr)
