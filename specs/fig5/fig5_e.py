@@ -18,6 +18,7 @@ def generate_mult_input_params():
                     "vel_type": "PRED-IHD",
                     "g_h_bar":0.0015,
                     "n_nodes":10,
+                    "data_root":"data/",
                     "intrnrn_init_noise":[100,0,0.5],
                     "stell_init_noise":[100,0,0.5],
                     "stell_const_dc":[0.002,-2.75e-3],
