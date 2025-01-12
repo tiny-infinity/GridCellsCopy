@@ -80,7 +80,9 @@ class mParam(dict):
       
       """
       _default_params=self.get_default_params()
+      
       for sim_num,input_params in mult_input_params.items():
+         sim_num=str(sim_num)
          self[sim_num]=copy.deepcopy(_default_params)
          self.update_mult_params(sim_num,input_params)
          self[sim_num]["sim_date_time"]=time.strftime("%Y-%m-%d, %X",time.localtime())
