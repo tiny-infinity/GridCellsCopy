@@ -212,7 +212,7 @@ def decode_pos(stell_spikes_l,params,t_start=None,t_end=None,win_size=100):
     decoded_pos=((lamb/(2*np.pi))*((np.angle(np.sum((t_stell*np.exp(1j*cell_phases[:,np.newaxis])),axis=0)))))%lamb
     return decoded_pos
 
-def clean_spikes(stell_spikes_l,order=0.5):
+def clean_spikes(stell_spikes_l,order=1):
     """Cleans spikes from the given spike trains using a threshold-based approach.
 
     Parameters:
@@ -240,7 +240,7 @@ def clean_spikes(stell_spikes_l,order=0.5):
                 np.mean(sorted_isi[np.argmax(
                     np.diff(np.diff(sorted_isi))) + 2:])
             )  # from largest change in slope of ISI to the largest ISI
-    threshold = np.abs(np.mean(thresholds))
+    threshold = order*np.abs(np.mean(thresholds))
 
     for i, stell in enumerate(stell_spikes_l):
         if len(stell) > 5:
@@ -250,9 +250,9 @@ def clean_spikes(stell_spikes_l,order=0.5):
                 next_spike = stell[j + 2]
                 delta_minus = spk - prev_spike
                 delta_plus = next_spike - spk
-                if (delta_minus + delta_plus > (order * threshold)) and abs(
+                if (delta_minus + delta_plus > (threshold)) and abs(
                     delta_plus - delta_minus
-                ) < threshold:
+                ) < threshold: #remove spikes that are in the middle of two fields
                     stell_spks_clean[i][j] = 0
     res_spks_clean = [[] for x in range(len(stell_spikes_l))]
 
@@ -264,7 +264,7 @@ def clean_spikes(stell_spikes_l,order=0.5):
 
 
 
-def separate_fields(stell_spikes_l,order=0.5):
+def separate_fields(stell_spikes_l,order=1):
     """
     Separates spike trains into grid fields based on a threshold.
 
@@ -280,14 +280,14 @@ def separate_fields(stell_spikes_l,order=0.5):
         lists of lists of separated grid fields,
     """
     grid_fields_all = {i: None for i in range(len(stell_spikes_l))}
-    stell_spikes_l = clean_spikes(stell_spikes_l,order=order)
+    stell_spikes_l = clean_spikes(stell_spikes_l)
     for i, stell in enumerate(stell_spikes_l):
         if len(stell) > 5:
             prev_spike = stell[0]
             fields = [[prev_spike]]
             sorted_isi = np.sort(np.diff(stell))
             idx = np.argmax(np.diff(sorted_isi)) + 1
-            threshold = sorted_isi[idx] - (sorted_isi[idx] % 10)
+            threshold = (sorted_isi[idx] - (sorted_isi[idx] % 10))*order
             for j, spk in enumerate(stell[1:]):
                 delta = spk - prev_spike
                 if abs(delta) < abs(threshold):
@@ -326,6 +326,37 @@ def calc_grid_field_sizes_time(stell_spikes_l, avg=True):
         return np.median(all_field_size)
     else:
         return all_field_size
+
+def calc_grid_scales_time(stell_spikes,avg=True):
+    """Calculate the scale of grid fields along the time axis.
+
+    Parameters:
+    ----------
+    stell_spikes_l : list
+        List of list of spike times for each neuron.
+    avg : bool, optional
+        Whether to return the average scale size. Defaults to True.
+
+    Returns:
+    float or list: 
+        If avg is True, returns the median scale size. Otherwise, returns a list of all scale sizes.
+    """    
+    grid_fields_all = separate_fields(stell_spikes)
+    all_cell_scales = []
+    for cell, fields in grid_fields_all.items():
+        if fields != None:
+            cell_field_scales = []
+            for a_field in fields:
+                if len(a_field) > 3:
+                    cell_field_scales.append(np.mean(a_field))
+
+            all_cell_scales.extend(np.diff(cell_field_scales)[1:-1])
+
+    # returns nan if number of fields too low
+    if avg:
+        return np.median(all_cell_scales)
+    else:
+        return all_cell_scales
 
 def shift_fields_to_center(stell_spikes):
     """Shift the separated grid fields of spike trains to center them around zero.
