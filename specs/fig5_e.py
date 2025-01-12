@@ -20,6 +20,7 @@ def generate_mult_input_params():
                     "n_nodes":10,
                     "data_root":"data/",
                     "netcon_delay":5,
+                    "Amp_i_theta":8e-5,
                     "intrnrn_init_noise":[100,0,0.5],
                     "stell_init_noise":[100,0,0.5],
                     "stell_const_dc":[0.002,-2.75e-3],
