@@ -21,6 +21,9 @@ class Trajectory1D:
             self.input_velocity()
         elif self.params["vel_type"] == "ACVT-1DAC":
             self.figure_1_pulse_input()
+        elif self.params["vel_type"] == "PRED-IHD":
+            self.predictive_inputs()
+
 
 
     def vel_to_dc(self, vel_input, min_dc, max_dc):
@@ -125,3 +128,14 @@ class Trajectory1D:
             l.append(np.logical_and(t_ >= x[i], t_ <= x[i + 1]))
 
         return np.piecewise(t_, l, y)
+    
+    def predictive_inputs(self):
+        """Pulse inputs for predictive coding (no initial input)"""
+        step_curr_t = np.arange(0, self.sim_dur + self.dt, self.dt)
+        # define step inputs
+        x = [0, self.params["extra_params"]["dir_change_t"], self.params["sim_dur"]]
+        left_ring = [-3e-2, self.params["extra_params"]["stell_dc"]]
+        right_ring = [self.params["extra_params"]["stell_dc"], -3e-2]
+        self.left_dc = self.create_piecewise(x, left_ring)
+        self.right_dc = self.create_piecewise(x, right_ring)
+        self.intrnrn_dc=np.full_like(self.t, self.params["intrnrn_dc_amp"])

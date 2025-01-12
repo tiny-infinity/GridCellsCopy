@@ -79,6 +79,7 @@
     "init_allothetic_input":true,
     "allothetic_stell_dc": -0.00265,
     "allothetic_nrn_n": 10,
+    "allothetic_dur":0,
     "vel_integ_or": -0.002906,
     "si_asym_factor":[1,1],
     "is_asym_factor":[1,1],

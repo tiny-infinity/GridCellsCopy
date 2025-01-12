@@ -1,5 +1,5 @@
 import numpy as np
-from scipy import signal,ndimage,integrate
+from scipy import signal,ndimage,integrate,stats
 import h5py
 import os
 import subprocess
@@ -75,6 +75,21 @@ def grid_scale_neurons(stell_spikes_l, sim_dur, win_size=1000, stdev=3,avg=True)
 def integrate_array(arr, dx=1, axis=-1):
     return integrate.simpson(arr, dx=dx, axis=axis)
 
+def calc_speed_of_network(stell_spks_l,params,win_size=100):
+    N_per_sheet= params['N_per_sheet']
+    n_phases= params['n_phases']
+    sim_dur= params['sim_dur']
+    lamb = (2*np.pi) #params['n_phases']
+    cell_phases = (np.arange(0,N_per_sheet)*(2*np.pi/n_phases))%(2*np.pi)
+    # print(cell_phases)
+    cell_phases = np.concatenate((cell_phases,cell_phases))
+    #instantaneous rates
+    t_stell=instant_rate_all(stell_spks_l[:],sim_dur,win_size)
+    decoded_pos=((lamb/(2*np.pi))*((np.angle(np.sum((t_stell*np.exp(1j*cell_phases[:,np.newaxis])),axis=0)))))%lamb
+    decoded_pos_unwrapped=np.unwrap(decoded_pos,period=lamb)
+    x= (np.arange(0,params['sim_dur'])[:])/1000
+    slope=stats.linregress(x[:],np.unwrap(decoded_pos_unwrapped[:])).slope
+    return slope
 
 def build_and_return_matrix(sim_id:str=None,specs_file:str=None)->np.ndarray:
     """Builds and returns an connectivity matrix for a given simulation ID.
