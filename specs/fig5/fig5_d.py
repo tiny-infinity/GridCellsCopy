@@ -9,7 +9,7 @@ def generate_mult_input_params():
     for gh in gh_range_arr:
         for tr in range(n_trials):
             input_params = {
-                "sim_num":sim_num,
+                "sim_num":str(sim_num),
                 "sim_dur": sim_dur,
                 "sim_id": "VALD-PRED-INT-S-m-1a",
                 "g_h_bar":gh,
@@ -26,7 +26,7 @@ def generate_mult_input_params():
                 "init_noise_seed":np.random.randint(0,100000),
                 "record_handle_stell":{"stell_syn_inhib_g":{"state": True,"cells_to_record":"all"}},
                 }
-            mult_input_params[sim_num] = input_params
+            mult_input_params[str(sim_num)] = input_params
             sim_num +=1
 
     return mult_input_params
