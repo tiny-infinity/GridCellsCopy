@@ -91,6 +91,13 @@ def calc_speed_of_network(stell_spks_l,params,win_size=100):
     slope=stats.linregress(x[:],np.unwrap(decoded_pos_unwrapped[:])).slope
     return slope
 
+
+def calc_firing_rates(spk_list,sim_dur):
+    avg_fr_rates = []
+    for cell in spk_list:
+        avg_fr_rates.append(len(cell)/(sim_dur/1000))
+    return np.mean(avg_fr_rates) #in Hz
+
 def build_and_return_matrix(sim_id:str=None,specs_file:str=None)->np.ndarray:
     """Builds and returns an connectivity matrix for a given simulation ID.
     
