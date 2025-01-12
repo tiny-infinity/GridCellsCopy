@@ -2,7 +2,7 @@ import numpy as np
 
 
 def generate_mult_input_params():
-    sim_dur = float(300000)
+    sim_dur = float(360000)
     fast_tau_arr = np.linspace(0.51,2.5,10)
     slow_tau_arr = np.linspace(5.6,53.1,10)
     n_trials = 1
@@ -29,7 +29,7 @@ def generate_mult_input_params():
                     "hf_tau": tau_f,
                     "conn_id":"asym",   
                     "init_noise_seed":np.random.randint(0,100000),
-                    "extra_params":{"stell_dc":0,"dir_change_t":150000}, # -0.0006799 0.0016496
+                    "extra_params":{"stell_dc":0,"dir_change_t":180000}, # -0.0006799 0.0016496
                     }
                 mult_input_params[str(sim_num)] = input_params
                 sim_num +=1
