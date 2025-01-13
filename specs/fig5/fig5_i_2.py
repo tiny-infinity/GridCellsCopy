@@ -9,7 +9,7 @@ def generate_mult_input_params():
     for asym_fact in asym_factor_arr:
         for tr in range(n_trials):
             input_params = {
-                "sim_num":sim_num,
+                "sim_num":str(sim_num),
                 "sim_dur": sim_dur,
                 "sim_id": "VALD-PRED-NET-S-m-2a",
                 "vel_type": "PRED-IHD",
@@ -34,6 +34,6 @@ def generate_mult_input_params():
                 "is_mean_asym_factor":0,
                 "extra_params":{"stell_dc":0.0019,"dir_change_t":40000},
                 }
-            mult_input_params[sim_num] = input_params
+            mult_input_params[str(sim_num)] = input_params
             sim_num +=1
     return mult_input_params
