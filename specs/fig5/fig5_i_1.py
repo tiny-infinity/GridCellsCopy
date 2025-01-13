@@ -32,7 +32,7 @@ def generate_mult_input_params():
                 "is_asym_factor":[1-asym_fact,1+asym_fact],
                 "is_peak_asym_fact":1,
                 "is_mean_asym_factor":0,
-                "xtra_params":{"stell_dc":0.0019,"dir_change_t":40000}, # -0.0006799 0.0016496
+                "extra_params":{"stell_dc":0.0019,"dir_change_t":40000},
                 }
             mult_input_params[sim_num] = input_params
             sim_num +=1
