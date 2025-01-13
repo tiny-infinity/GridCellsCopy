@@ -4,5 +4,5 @@ Helper Functions
 .. toctree::
    :maxdepth: 2
 
-   sim_hf
+   sim_utils
    conn_utils

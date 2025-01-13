@@ -11,4 +11,4 @@ Welcome to GridCellsCond's documentation!
    :caption: Contents:
 
    installation
-   helper_functions
+   utility_functions
