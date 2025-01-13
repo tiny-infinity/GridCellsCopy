@@ -27,7 +27,7 @@ def generate_mult_input_params():
                     "lambda0":2*np.pi,
                     "conn_id":"asym",   
                     "init_noise_seed":np.random.randint(0,100000),
-                    "xtra_params":{"stell_dc":dc,"dir_change_t":40000},
+                    "extra_params":{"stell_dc":dc,"dir_change_t":40000},
                     }
                 mult_input_params[str(sim_num)] = input_params
                 sim_num +=1
