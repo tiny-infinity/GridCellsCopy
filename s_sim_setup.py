@@ -96,7 +96,7 @@ except FileNotFoundError as err:
 
 
 try:
-    os.remove(f"cache/matrix_{params["conn_id"]}_{sim_id}_0.hdf5")
+    os.remove(f"cache/matrix_{params['conn_id']}_{sim_id}_0.hdf5")
 except FileNotFoundError as err:
     logging.debug(f"Cannot remove cached matrix file: {err}")
 
