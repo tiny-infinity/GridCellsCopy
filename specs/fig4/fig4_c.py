@@ -2,7 +2,7 @@ import numpy as np
 
 def generate_mult_input_params():
     dc_range_arr = np.linspace(-2.7e-3,1e-2,1000,endpoint=True)
-    coeffs=np.array([-2.56290623e+03,  6.04362519e+01, -4.62960821e-01,  3.14888925e-03])
+    coeffs=np.array([-1.52693750e+03,4.03324107e+01,-3.61752429e-01,2.69720560e-03])
     n_trials = 1
     sim_num = 0
     multiple_input_params = {}
