@@ -19,6 +19,7 @@
     "python": "python",
     "build_conn_matrix":true,
     "save_conn_matrix":false,
+    "matrix_id":null,
     "split_built_conn_matrix":false,
 
     "record_handle_stell": {

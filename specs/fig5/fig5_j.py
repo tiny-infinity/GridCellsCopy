@@ -1,28 +1,32 @@
 import numpy as np
+
 def generate_input_params():
     sim_dur = float(80000)
+    asym_fact=0.5
+    is_asym_fact=[1+asym_fact,1-asym_fact]
     input_params = {
         "sim_dur": sim_dur,
-        "sim_id": "VALD-PRED-INT-S-s-2a",
+        "sim_id": "VALD-PRED-NET-S-s-2a",
         "vel_type": "PRED-IHD",
         "g_h_bar":0,
+        "save_conn_matrix":True,
+        "matrix_id":"retro",
         "intrnrn_init_noise":[100,0,0.5],
         "stell_init_noise":[100,0,0.5],
         "stell_const_dc":[1.4e-3,-2.75e-3],
         "stell_noise": [sim_dur,0,0],
         "intrnrn_noise": [sim_dur,0,0],
-        "init_noise_seed":np.random.randint(100000),
-        "n_phases":64,
+        "allothetic_dur":3000,
+        "conn_id":"asym", 
+        "init_noise_seed":np.random.randint(20000),
         "recorder_dt":0.25,
-        "hs_tau": 5.6,
-        "hf_tau": 0.51,
-        "conn_id":"asym", #defualt asym parameters specify the symmetric network.
-        "allothetic_dur":3000, 
         "si_asym_factor":[1,1],
-        "is_asym_factor":[1,1],
+        "is_asym_factor":is_asym_fact,
         "is_peak_asym_fact":1,
         "is_mean_asym_factor":0,
-        "extra_params":{"stell_dc":1.315e-3,"dir_change_t":40000},
+        "extra_params":{"stell_dc":0.0019,"dir_change_t":40000},
         "record_handle_stell":{"stell_syn_inhib_g":{"state": True,"cells_to_record":"all"}}
+
+
     }
     return input_params

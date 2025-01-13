@@ -5,6 +5,8 @@ def generate_input_params():
         "sim_dur": sim_dur,
         "sim_id": "VALD-PRED-INT-S-s-1a",
         "vel_type": "PRED-IHD",
+        "save_conn_matrix":True,
+        "matrix_id":"default",
         "g_h_bar":0.0015,
         "intrnrn_init_noise":[100,0,0.5],
         "stell_init_noise":[100,0,0.5],
@@ -15,7 +17,7 @@ def generate_input_params():
         "n_phases":64,
         "recorder_dt":0.25,
         "hs_tau": 5.6,
-        "hf_tau": 0.51,
+        "hf_tau": 0.51, 
         "conn_id":"asym", ##defualt asym parameters specify the symmetric network.
         "allothetic_dur":3000, 
         "si_asym_factor":[1,1],
