@@ -6,21 +6,15 @@ def generate_input_params()-> dict:
     Returns:
         dict: A dictionary containing the provided input parameters:
     """
-    sim_dur=60000 #in ms
-    input_params = {
+    sim_dur=20000 #in ms
+    input_params = {   
         "sim_dur": sim_dur,
-        "N_intrnrn": 196,
-        "N_stell": int(196*2),
-        "N_per_sheet": 196, #or ring in 1D
         "sim_id": "BaseModel", #Important. This is used to save the simulation data
         "vel_type": "const",
-        "progress":True, #show progress bar. (only for single simulations)
-        "init_noise_seed":1000,
-        "noise_seed":500,
-        "save_conn_matrix":True,
-        "traj_id": "502",
-        "n_cpus":30,
-        # "record_handle_stell": {"stell_v": {"state": False}},
+        "init_noise_seed":np.random.randint(0,100000),
+        "intrnrn_init_noise":[100,0,0.5],
+        "stell_init_noise":[100,0,0.5],
+        "stell_const_dc":[-7.5e-4,-3e-2],
 
     }
     return input_params

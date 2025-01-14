@@ -1,31 +1,37 @@
 import numpy as np
 
+
 def generate_mult_input_params():
-    dc_range_arr = np.linspace(-2.7e-3,1e-2,100,endpoint=True)
-    coeffs=np.array([-2.56290623e+03,  6.04362519e+01, -4.62960821e-01,  3.14888925e-03])
+    sim_dur = float(360000)
+    fast_tau_arr = np.linspace(0.51,2.5,10)
+    slow_tau_arr = np.linspace(5.6,53.1,10)
     n_trials = 1
     sim_num = 0
-    multiple_input_params = {}
-    sim_dur = float(20000)
-    for i,dc in enumerate(dc_range_arr):
-        for tr in range(n_trials):
-            input_params = {
-                "sim_num":str(sim_num),
-                "sim_dur": sim_dur,
-                "sim_id": "VALD-HCN-SHRK-S-m-2a",
-                "intrnrn_init_noise":[100,0,0.5],
-                "stell_init_noise":[100,0,0.5],
-                "intrnrn_noise":[sim_dur,0,0],
-                "stell_noise":[sim_dur,0,0],
-                "stell_const_dc":[dc,-1],
-                "Amp_i_theta":8e-5,
-                "g_h_bar":0,
-                "intrnrn_dc_amp":np.polyval(coeffs,dc),
-                "init_noise_seed":np.random.randint(0,100000),
-                "noise_seed":np.random.randint(0,100000),
-                "n_nodes":10,
-                "data_root":"data/",
-            }
-            multiple_input_params[str(sim_num)] = input_params
-            sim_num +=1
-    return multiple_input_params
+    mult_input_params = {}
+    for tau_s in slow_tau_arr:
+        for tau_f in fast_tau_arr:
+            for tr in range(n_trials):
+                input_params = {
+                    "sim_num":str(sim_num),
+                    "sim_dur": sim_dur,
+                    "sim_id": "DEBUG-PRED-INT-S-m-2c",
+                    "vel_type": "PRED-IHD",
+                    "g_h_bar":0.0015,
+                    "n_nodes":10,
+                    "data_root":"data/",
+                    "intrnrn_init_noise":[100,0,0.5],
+                    "stell_init_noise":[100,0,0.5],
+                    "stell_const_dc":[0.002,-2.75e-3],
+                    "n_phases":64,
+                    "allothetic_dur":3000,
+                    "lambda0":2*np.pi,
+                    "hs_tau":tau_s,
+                    "hf_tau": tau_f,
+                    "conn_id":"asym",   
+                    "init_noise_seed":np.random.randint(0,100000),
+                    "extra_params":{"stell_dc":-7.5e-4,"dir_change_t":180000}, # -0.0006799 0.0016496
+                    }
+                mult_input_params[str(sim_num)] = input_params
+                sim_num +=1
+
+    return mult_input_params
