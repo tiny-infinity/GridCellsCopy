@@ -28,6 +28,8 @@ mult_params = s_utils.json_read(f"cache/params_{sim_id}.json")
 s_utils.log_from_rank_0(logger,pc.id(),
                     f"Starting simulations. Total Simulations: {len(mult_params)}",
                     level=logging.INFO)
+total_sims = len(mult_params)
+running_sim = 0
 for sim_num, params in mult_params.items():
     tsim = time.perf_counter()
     s_utils.log_from_rank_0(logger,pc.id(),
@@ -66,7 +68,6 @@ for sim_num, params in mult_params.items():
     pc.set_maxstep(10 * ms)
     h.finitialize(-65 * mV)
     pc.psolve(sim_dur * ms)
-    
     #save data for stellate cells
     for param_to_record,states in network.params['record_handle_stell'].items():
         if states['state']==True:
@@ -112,7 +113,8 @@ for sim_num, params in mult_params.items():
             os.remove(f"cache/matrix_{params['conn_id']}_{sim_id}_{sim_num}.hdf5")
         except FileNotFoundError as err:
             logging.debug(f"Cannot remove cached matrix file: {err}")
-    s_utils.log_from_rank_0(logger,pc.id(), f"Sim {sim_num}:Completed in {round(time.perf_counter()-tsim, 2)}s")
+    s_utils.log_from_rank_0(logger,pc.id(), f"Sim {sim_num}:Completed in {round(time.perf_counter()-tsim, 2)}s ({running_sim} of {total_sims})")
+    running_sim+=1
     pc.gid_clear(0)
     del network
     pc.barrier()
