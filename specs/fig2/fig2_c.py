@@ -10,7 +10,7 @@ def generate_mult_input_params():
             "sim_num":str(sim_num),
             "sim_dur": sim_dur,
             "sim_id": "VALD-PI-TRAJ-S-m-1a",
-            "traj_id": '2',
+            "traj_id": '1',
             "vel_type": "input",
             "init_allothetic_input": True,
             "allothetic_stell_dc":-0.0027,
