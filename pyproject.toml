@@ -1,0 +1,14 @@
+[project]
+name = "GridCellsCond"
+version = "0.1.0"
+description = "Conductance-based model of grid cells"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "NEURON>=8.2",
+    "scipy>=1.13",
+    "numpy>=1.26.4",
+    "h5py>=3.12",
+    "matplotlib>=3.9",
+    "seaborn>=0.13.2",
+]
