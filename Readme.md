@@ -1,5 +1,10 @@
 # Grid Cells Conductance-based Model
-A biophysically detailed conductance-based model of Grid cells built with the NEURON simulation environment.
+A conductance-based model of [Grid cells](https://en.wikipedia.org/wiki/Grid_cell), implemented using the [NEURON](https://www.neuron.yale.edu/neuron/) simulator with parallelized functionality for efficient simulations. Grid cells are crucial for spatial navigation, and this model replicates their dynamics with biologically realistic conductances.
+
+Key Features:
+- Conductance-based implementation of Stellate cells and Inhibitory Interneurons of the medial entorhinal cortex.
+- Parallelized Simulation: leveraging NEURON for multi-core simulations to handle large networks efficiently.
+- User-Friendly Code: Clear structure with modular components for easy setup, modification, and analysis.
 
 # Prerequisites
 
@@ -42,11 +47,7 @@ dependencies = [
     <strike>"NEURON>=8.2",</strike>
     "scipy>=1.13",
     "numpy>=1.26.4",
-    "h5py>=3.12",
-    "matplotlib>=3.9",
-    "seaborn>=0.13.2",
-    "ipykernel>=6.29.5",
-    "pickleshare>=0.7.5",
+    ...
 ]
 </pre>
 
@@ -59,6 +60,9 @@ uv sync
 ```
 ### Activate env
 ```bash
-source .venv/bin/activate 
+source .venv/bin/activate
 ```
-Needs to be executed in every new terminal. You can configure [VS Code](https://code.visualstudio.com/docs/python/environments) to do this automatically.
+This must be executed in every instance of the terminal. You can configure [VS Code](https://code.visualstudio.com/docs/python/environments) to handle python environments.
+
+# Cite
+# Funding
