@@ -153,6 +153,16 @@ def instant_rate_all(stell_spikes_l:list, sim_dur:float, stdev:float)->np.ndarra
     filtered = signal.fftconvolve(binned_spikes, kernal, mode="same")
     return filtered
 
+def instant_rate(spike_train, sim_dur, stdev):
+    t_stell = np.zeros(int(sim_dur))
+    for i in spike_train:
+        t_stell[int(np.floor(i))] = 1
+    win = signal.windows.gaussian(len(t_stell), stdev)
+
+    filtered = signal.convolve(
+        t_stell, win, mode="same", method="fft") / sum(win)
+    return filtered
+
 def spks_to_rate_reshaped(spks_l:list,params:dict,win_size:float=200)->np.ndarray:
     """Convert spike times to firing rates and reshape based on cell position.
     

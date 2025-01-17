@@ -213,7 +213,7 @@ def calc_field_size(stell_spks_l,true_pos,params,bounds):
     return np.mean(field_sizes)
 
 
-#write a function to calculate circular difference
+
 def circular_difference(angle1, angle2,period=None):
     """
     Calculate the circular difference between two angles in degrees.
