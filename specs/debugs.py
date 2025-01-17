@@ -29,7 +29,7 @@ def generate_mult_input_params():
                     "hf_tau": tau_f,
                     "conn_id":"asym",   
                     "init_noise_seed":np.random.randint(0,100000),
-                    "extra_params":{"stell_dc":-7.5e-4,"dir_change_t":180000}, # -0.0006799 0.0016496
+                    "extra_params":{"stell_dc":1e-3,"dir_change_t":180000}, # -0.0006799 0.0016496
                     }
                 mult_input_params[str(sim_num)] = input_params
                 sim_num +=1
