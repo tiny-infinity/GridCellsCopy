@@ -18,7 +18,7 @@ Key Features:
 
 
 # Running a simulation
-To run a simulation pass a `specs` file to `s_sim_setup.py`.
+To run a simulation, pass a `specs` file to `s_sim_setup.py`.
 ```
 python s_sim_setup.py specs/s_template.py
 ```
@@ -26,12 +26,12 @@ A `specs` file contains a subset of parameters that override the default paramet
 
 Check out `analysis\examples\base_model.ipynb` for some basic plots generated from the simulated data.
 
-Refer the Wiki for details on the project's structure and details on individual parameters.
+Refer to the Wiki for details on the project's structure and details on individual parameters.
 
 ## Dependency Issues?
-We use [`uv`](https://github.com/astral-sh/uv) package manager to manage dependecies in this project. You can use `uv.lock` to sync your local environment to the exact state in which these simulations were run. However before running `uv` ensure, 
+We use [`uv`](https://github.com/astral-sh/uv) package manager to manage dependencies in this project. You can use `uv.lock` to sync your local environment to the exact state in which these simulations were run. However, before running `uv` ensure, 
 
-#### For macOS and linux:
+#### For macOS and Linux:
 You have OpenMPI/MPICH
 ```bash
 which mpiexec
@@ -45,9 +45,9 @@ Remove "NEURON>=8.2" from `pyproject.toml`.
 <pre>
 dependencies = [
     <strike>"NEURON>=8.2",</strike>
-    "scipy>=1.13",
-    "numpy>=1.26.4",
-    ...
+ "scipy>=1.13",
+ "numpy>=1.26.4",
+ ...
 ]
 </pre>
 
