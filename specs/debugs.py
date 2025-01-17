@@ -14,7 +14,7 @@ def generate_mult_input_params():
                 input_params = {
                     "sim_num":str(sim_num),
                     "sim_dur": sim_dur,
-                    "sim_id": "DEBUG-PRED-INT-S-m-2c",
+                    "sim_id": "DEBUG-PRED-INT-S-m-2d",
                     "vel_type": "PRED-IHD",
                     "g_h_bar":0.0015,
                     "n_nodes":10,
