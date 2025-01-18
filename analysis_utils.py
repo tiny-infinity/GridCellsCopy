@@ -125,6 +125,9 @@ def build_and_return_matrix(sim_id:str=None,specs_file:str=None)->np.ndarray:
         return adj_matrix
     elif specs_file:
         raise NotImplementedError
+
+
+
     
 def instant_rate_all(stell_spikes_l:list, sim_dur:float, stdev:float)->np.ndarray:
     """Calculate the instantaneous firing rate for all cells using Gaussian kernel convolution.
@@ -163,6 +166,68 @@ def instant_rate(spike_train, sim_dur, stdev):
         t_stell, win, mode="same", method="fft") / sum(win)
     return filtered
 
+def grid_props_2D(inst_rates_reshaped,t=-1000):
+    """Calculate 2D grid properties.
+    Calculate the grid score, grid scale, and grid size from the 2D autocorrelation of firing rate map.
+
+    Parameters:
+    inst_rates_reshaped (numpy.ndarray): 3D array of reshaped instantaneous rates (cellxcellxtime).
+    t (int): Time index to use for the calculation. Default is -1000.
+    Returns:
+    tuple: A tuple containing:
+        - auto_corr (numpy.ndarray): Normalized 2D autocorrelation matrix.
+        - grid_score (float): Grid score calculated from the autocorrelation matrix.
+        - grid_scale (float): Median distance of the closest objects from the center.
+        - grid_size (float): Median size of the grid cells.
+    """
+
+    auto_corr=signal.correlate2d(inst_rates_reshaped[:,:,t],inst_rates_reshaped[:,:,t],mode='full',boundary='wrap')
+    auto_corr_mod = auto_corr.copy()
+    auto_corr_mod[auto_corr_mod<(0.25*np.max(auto_corr))]=0
+    features,nclusters=ndimage.label(auto_corr_mod,np.array([[1,1,1],[1,1,1],[1,1,1]]))
+    obj = ndimage.find_objects(features)
+    obj_dist_from_centre = np.zeros(nclusters)
+    grid_size=[]
+    center_object_idx = np.array([len(features)//2,len(features)//2])
+    for i in range(nclusters):
+        xdist=obj[i][0].stop-obj[i][0].start
+        ydist=obj[i][1].stop-obj[i][1].start
+        grid_size.append(np.mean([xdist,ydist]))
+        row_cent_idx=int((obj[i][0].stop+obj[i][0].start)/2)
+        col_cent_idx=int((obj[i][1].stop+obj[i][1].start)/2)
+        obj_idx = np.array([row_cent_idx,col_cent_idx])
+        obj_dist_from_centre[i]=np.linalg.norm(np.abs(obj_idx-center_object_idx))
+
+
+    closest_obj_idx = np.argsort(obj_dist_from_centre)[1:7] #obj idx
+    closest_obj = closest_obj_idx+1 #object number
+    closest_obj_lims = np.zeros((len(closest_obj_idx),2,2))
+    for i,idx in enumerate(closest_obj_idx):
+        closest_obj_lims[i,:,0]=obj[idx][0].start,obj[idx][0].stop
+        closest_obj_lims[i,:,1]=obj[idx][1].start,obj[idx][1].stop
+    try:
+        xmin,xmax=int(np.min(closest_obj_lims[:,:,0])),int(np.max(closest_obj_lims[:,:,0]))
+        ymin,ymax=int(np.min(closest_obj_lims[:,:,1])),int(np.max(closest_obj_lims[:,:,1]))
+    
+        auto_corr_cropped=auto_corr_mod[xmin:xmax,ymin:ymax]
+        rotations = [30,60,90,120,150]
+        auto_corr_cropped_rotated = {}
+        for i in rotations:
+            auto_corr_cropped_rotated[i]=ndimage.rotate(auto_corr_cropped,i,reshape = False)
+
+        correlations = {}
+        for key,val in auto_corr_cropped_rotated.items():  
+            correlations[key]=(stats.pearsonr(auto_corr_cropped.flatten(),val.flatten()))[0]
+
+        min_corr = min(correlations[60],correlations[120])
+        max_corr = max(correlations[30],correlations[90],correlations[150])
+        grid_score= min_corr-max_corr
+        grid_scale = np.median(np.sort(obj_dist_from_centre)[1:7])
+        grid_size = np.median(grid_size)
+        return  auto_corr/np.max(auto_corr),np.round(grid_score,2),round(grid_scale,2),round(grid_size,2)
+    except:
+        return auto_corr/np.max(auto_corr),np.nan,np.nan,np.nan
+
 def spks_to_rate_reshaped(spks_l:list,params:dict,win_size:float=200)->np.ndarray:
     """Convert spike times to firing rates and reshape based on cell position.
     
@@ -180,7 +245,7 @@ def spks_to_rate_reshaped(spks_l:list,params:dict,win_size:float=200)->np.ndarra
             Reshaped matrix of instantaneous firing rates.
     """
     
-    inst_rate=instant_rate_all(spks_l,params['sim_dur'],win_size)
+    inst_rate = instant_rate_all(spks_l, params['sim_dur'], win_size)
     inst_rate_reshaped=inst_rate.reshape(params['N_per_axis'],params['N_per_axis'],inst_rate.shape[1])
     inst_rate_reshaped = np.flip(inst_rate_reshaped,axis=0)
     return inst_rate_reshaped
@@ -415,3 +480,49 @@ def shift_fields_to_center(stell_spikes):
                     shifted_field_cell.append(np.array(a_field) - field_center)
             shifted_fields[cell] = shifted_field_cell
     return shifted_fields
+
+
+
+def generate_2d_video(sim_id,sheet_to_save=0):
+    import matplotlib.pyplot as plt
+    import time
+    import matplotlib.animation as animation
+    import seaborn as sns
+    t1 = time.perf_counter()
+    stell_spikes_l,intrnrn_spikes_l=s_utils.load_spikes(sim_id=sim_id)
+    params=s_utils.load_sim_params(sim_id=sim_id)   
+    if list(params.keys())[0] == '0':
+        params = params['0']
+    n_per_sheet=params["N_per_sheet"]
+    idx = np.full((4,2),n_per_sheet)*np.array([[0,1],[1,2],[2,3],[3,4]])
+    print("Reshaping array")
+    if sheet_to_save <=3:
+        stell_spikes_arr =spks_to_rate_reshaped(
+            stell_spikes_l[idx[sheet_to_save][0]:idx[sheet_to_save][1]], params, win_size=100)
+    else:
+        stell_spikes_arr = spks_to_rate_reshaped(
+            intrnrn_spikes_l, params, win_size=100)
+    print(f"Generating video for {sim_id}, sheet: {sheet_to_save}")
+    fig= plt.figure()
+    plot = plt.imshow(stell_spikes_arr[:,:,0],cmap=sns.cubehelix_palette(as_cmap=True,reverse=True),vmax=np.max(stell_spikes_arr[:,:,int(params["stell_init_noise"][0]+500):int(params["sim_dur"])]))
+    plt.colorbar(label="Hz")
+    plt.suptitle("Left Bias")
+    plt.xlabel("Neurons")
+    plt.ylabel("Neurons")
+
+    def animate(i):
+        stell_spikes_i = stell_spikes_arr[:,:,i]
+        plot.set_data(stell_spikes_i)
+        return [plot,]
+
+    fps = 30 #higher fps higher temporal resolution (longer encoding time, displays might not support)
+    total_samples = int(fps*(params['sim_dur']/1000))
+    plot_frames =np.linspace(0,params['sim_dur']-1,total_samples,dtype='int')
+    anim = animation.FuncAnimation(fig, animate,frames = plot_frames, interval =1, blit = True)
+    writer = animation.FFMpegWriter(fps=fps,bitrate=8000) #bitrate: quality vs file_size
+    anim.save(f'data/{params['sim_id']}/{params['sim_id']}_{sheet_to_save}.mp4', writer=writer)
+    plt.close(fig)
+    print(f"Video saved in data/{params['sim_id']}/{params['sim_id']}_{sheet_to_save}.mp4 ",
+          "t_total (s):",round(time.perf_counter()-t1,2))
+
+   
