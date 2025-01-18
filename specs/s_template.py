@@ -10,11 +10,8 @@ def generate_input_params()-> dict:
     input_params = {   
         "sim_dur": sim_dur,
         "sim_id": "BaseModel", #Important. This is used to save the simulation data
-        "vel_type": "const",
         "init_noise_seed":np.random.randint(0,100000),
-        "intrnrn_init_noise":[100,0,0.5],
-        "stell_init_noise":[100,0,0.5],
-        "stell_const_dc":[-7.5e-4,-3e-2],
+        "stell_const_dc":[-2e-3,-7e-3],
 
     }
     return input_params
