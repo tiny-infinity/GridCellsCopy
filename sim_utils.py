@@ -32,9 +32,13 @@ def network_intialize(params):
         )
         adj_matrix = file["matrix"]
     else:
-        file = h5py.File(
-            f"network_configs/connections/saved_matrices/matrix_{params['conn_id']}_{params['matrix_id']}.hdf5", "r"
-        )
+        try:
+            file = h5py.File(
+                f"network_configs/connections/saved_matrices/matrix_{params['conn_id']}_{params['matrix_id']}.hdf5", "r"
+            )
+        except FileNotFoundError as err:
+            err.add_note(f"Cannot find saved matrix network_configs/connections/saved_matrices/matrix_{params['conn_id']}_{params['matrix_id']}.hdf5")
+            raise err
         adj_matrix = file["matrix"]
     network = Network(0, adj_matrix, params)  # initialize grid cells
     file.close()
