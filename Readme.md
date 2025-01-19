@@ -26,7 +26,7 @@ A `specs` file contains a subset of parameters that override the default paramet
 
 Check out `analysis\examples\base_model.ipynb` for some basic plots generated from the simulated data.
 
-Refer to the Wiki for details on the project's structure and details on individual parameters.
+**Refer the [docs](https://inayath-sh.github.io/GridCellsCond/) for details on the project's structure and parameters.**
 
 ## Dependency Issues?
 We use [`uv`](https://github.com/astral-sh/uv) package manager to manage dependencies in this project. You can use `uv.lock` to sync your local environment to the exact state in which these simulations were run. However, before running `uv` ensure, 
