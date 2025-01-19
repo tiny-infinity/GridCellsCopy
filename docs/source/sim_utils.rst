@@ -1,5 +1,5 @@
-sim_utils module
-=================
+Simulation Utilities
+====================
 
 .. automodule:: sim_utils
    :members:

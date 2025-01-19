@@ -17,7 +17,7 @@ def generate_input_params():
         "recorder_dt":0.1,
         "hs_tau": 5.6,
         "hf_tau": 0.51,
-        "conn_id":"asym", #defualt asym parameters specify the symmetric network.
+        "conn_id":"1d",
         "allothetic_dur":3000, 
         "si_asym_factor":[1,1],
         "is_asym_factor":[1,1],

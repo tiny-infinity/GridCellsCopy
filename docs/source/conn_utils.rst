@@ -1,4 +1,4 @@
-conn_utils module
+Conn utils
 =================
 
 .. automodule:: network_configs.connections.conn_utils

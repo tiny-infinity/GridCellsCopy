@@ -10,5 +10,5 @@ Welcome to GridCellsCond's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   installation
    utility_functions
+   param

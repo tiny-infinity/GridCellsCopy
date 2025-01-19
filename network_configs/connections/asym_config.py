@@ -44,27 +44,22 @@ cnnct_ss = np.zeros((n_stell, n_stell))
 #--------------------------------------------------------------------------------#
 cnnct_si = np.zeros((n_stell, n_intrnrn))
 
+
 for i in range(N_per_sheet):
     for j in range(N_per_sheet):
-        d_theta = (2*np.pi/N_per_sheet)*(j-i)
-        i_rad = (2*np.pi/N_per_sheet)*i
-        j_rad = (2*np.pi/N_per_sheet)*j
-        dtheta=conn_utils.signed_arc_length(i_rad,j_rad)
-        cnnct_si[i, j] = asymmetric_gaussian(dtheta, si_peak, si_mean, si_stdev*si_asym_factor[0],si_stdev*si_asym_factor[1])
+        theta_i,theta_j = (2*np.pi/N_per_sheet)*i,(2*np.pi/N_per_sheet)*j
+        delta_theta=conn_utils.signed_arc_length(theta_i,theta_j)
+        cnnct_si[i, j] = conn_utils.gaussian(delta_theta, si_peak, si_mean, si_stdev)
 
-
+cnnct_si[cnnct_si < threshold] = 0
 temp_mat = np.zeros((N_per_sheet, N_per_sheet))
 for i in range(N_per_sheet):
     for j in range(n_intrnrn):
-        d_theta = (2*np.pi/N_per_sheet)*(j-i)
-        i_rad = (2*np.pi/N_per_sheet)*i
-        j_rad = (2*np.pi/N_per_sheet)*j
-        dtheta=conn_utils.signed_arc_length(i_rad,j_rad)
-
-        
-        temp_mat[i, j] = asymmetric_gaussian((-2*si_mean-dtheta), si_peak, -si_mean, si_stdev*si_asym_factor[0],si_stdev*si_asym_factor[1])
+        theta_i,theta_j = (2*np.pi/N_per_sheet)*i,(2*np.pi/N_per_sheet)*j
+        delta_theta=conn_utils.signed_arc_length(theta_i,theta_j)
+        temp_mat[i, j] = conn_utils.gaussian(delta_theta, si_peak, -si_mean, si_stdev)
 cnnct_si[N_per_sheet:, :] = temp_mat
-cnnct_si[cnnct_si < threshold] = 0
+cnnct_si[np.abs(cnnct_si) < threshold] = 0
 
 
 #---------------------------------------------------------------------------------#
@@ -87,11 +82,10 @@ for i in range(n_intrnrn):
         i_rad = (2*np.pi/N_per_sheet)*i
         j_rad = (2*np.pi/N_per_sheet)*j
         dtheta=conn_utils.signed_arc_length(i_rad,j_rad)
-        
         if dtheta >= 0:
-            temp_mat[i, j] = asymmetric_gaussian((2*is_mean-dtheta), is_peak*is_peak_asym_fact, is_mean+is_mean_asym_factor, is_stdev*is_asym_factor[0],is_stdev*is_asym_factor[1])
+            temp_mat[i, j] = asymmetric_gaussian((2*np.pi-dtheta), is_peak*is_peak_asym_fact, is_mean+is_mean_asym_factor, is_stdev*is_asym_factor[0],is_stdev*is_asym_factor[1])
         else:
-            temp_mat[i, j] = asymmetric_gaussian((-2*is_mean-dtheta), is_peak*is_peak_asym_fact, -is_mean+is_mean_asym_factor, is_stdev*is_asym_factor[0],is_stdev*is_asym_factor[1])
+            temp_mat[i, j] = asymmetric_gaussian((-2*np.pi-dtheta), is_peak*is_peak_asym_fact, -is_mean+is_mean_asym_factor, is_stdev*is_asym_factor[0],is_stdev*is_asym_factor[1])
 cnnct_is[:, N_per_sheet:] = temp_mat
             
 cnnct_is[cnnct_is < threshold] = 0
@@ -103,18 +97,11 @@ cnnct_ii = np.zeros((n_intrnrn, n_intrnrn))
 
 for i in range(n_intrnrn):
     for j in range(n_intrnrn):
-        i_rad = (2*np.pi/N_per_sheet)*i
-        j_rad = (2*np.pi/N_per_sheet)*j
-        dtheta=conn_utils.signed_arc_length(i_rad,j_rad)
-        
-        if dtheta >= 0:
-            cnnct_ii[i, j] = conn_utils.gaussian(dtheta, ii_peak, ii_mean, ii_stdev)
-        else:
-            cnnct_ii[i, j] = conn_utils.gaussian(dtheta, ii_peak, -ii_mean, ii_stdev) 
-            
-cnnct_ii[cnnct_ii < threshold] = 0
-np.fill_diagonal(cnnct_ii,0)
+        theta_i,theta_j = (2*np.pi/N_per_sheet)*i,(2*np.pi/N_per_sheet)*j
+        delta_theta=conn_utils.unsigned_arc_length(theta_i,theta_j)
+        cnnct_ii[i, j] = conn_utils.gaussian(delta_theta, ii_peak, ii_mean, ii_stdev)
 
+cnnct_ii[np.abs(cnnct_ii) < threshold] = 0
 
 
 #----------------------------------------------------------------------------------#

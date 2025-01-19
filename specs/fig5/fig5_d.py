@@ -11,7 +11,7 @@ def generate_mult_input_params():
             input_params = {
                 "sim_num":str(sim_num),
                 "sim_dur": sim_dur,
-                "sim_id": "VALD-PRED-INT-S-m-1a",
+                "sim_id": "VALD-PRED-INT-S-m-1b",
                 "g_h_bar":gh,
                 "n_nodes":3,
                 "data_root":"data/",
@@ -22,7 +22,7 @@ def generate_mult_input_params():
                 "n_phases":64,
                 "hs_tau": 5.6,
                 "hf_tau": 0.51,
-                "conn_id":"asym", #defualt asym parameters specify the symmetric network.   
+                "conn_id":"1d",  
                 "init_noise_seed":np.random.randint(0,100000),
                 "record_handle_stell":{"stell_syn_inhib_g":{"state": True,"cells_to_record":"all"}},
                 }

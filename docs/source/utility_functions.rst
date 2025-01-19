@@ -1,5 +1,5 @@
-Helper Functions
-================
+Utility Functions
+=================
 
 .. toctree::
    :maxdepth: 2
