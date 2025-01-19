@@ -11,7 +11,7 @@ def generate_mult_input_params():
             input_params = {
                 "sim_num":str(sim_num),
                 "sim_dur": sim_dur,
-                "sim_id": "VALD-PRED-INT-S-m-1b",
+                "sim_id": "VALD-PRED-INT-S-m-1a",
                 "g_h_bar":gh,
                 "n_nodes":3,
                 "data_root":"data/",
