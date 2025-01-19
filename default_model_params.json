@@ -31,21 +31,10 @@
     "is_syn_gmax":1e-4,
 
     "intrnrn_dc_amp": 1.5e-3,
-    "stell_const_dc": [
-        1.5e-3,
-        -2.75e-3
-    ],
+    "stell_const_dc": [1.5e-3,-2.75e-3],
 
-    "stell_noise": [
-        150,
-        0,
-        0
-    ],
-    "stell_init_noise": [
-        100,
-        0,
-        0.5
-    ],
+    "stell_noise": [150,0,0],
+    "stell_init_noise": [100,0,0.5],
     "intrnrn_noise": [
         150,
         0,
