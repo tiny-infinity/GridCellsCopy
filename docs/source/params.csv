@@ -4,20 +4,20 @@ N_stell,Number of stellate cells,384
 N_per_sheet,Number of cells in a ring (1D) or sheet(2D),192
 is_peak,Normalised synaptic strength of interneuron to stellate (I->S),2
 is_stdev,Width of I->S synapse ,0.136
-is_mean,Shift of the gaussian from the source for I->S synapse. Symmetric on both sides of the source cell (neuron units).,32
+is_mean,Shift of the gaussian from the source for I->S synapse. |br| Symmetric on both sides of the source cell (neuron units).,32
 si_peak,Normalised synaptic strength of stellate to interneurons,2.43
 si_stdev,Width of S->I synapse ,0.29
 si_mean,Amount of offset from stellate to interneurons (neuron units),22
 ii_peak,Normalised synaptic strength of interneuron to interneuron,2
 ii_stdev,Width of I->I synapse ,0.136
-ii_mean,Shift of the gaussian from the source for I->I synapse. Symmetric on both sides of the source cell (neuron units).,32
+ii_mean,Shift of the gaussian from the source for I->I synapse. |br| Symmetric on both sides of the source cell (neuron units).,32
 N_per_axis,(For 2D) Number of cells along the length (or width) of each sheet,51
 N_sheets_stell,(For Debugging) Number sheets of stellate cells,4
 conn_id,ID for the configuration file for connectivity matrix,1d
 instr_id,ID for the instrumentation config,1d
 traj_id,(For 1D) Trajectory ID,
 vel_type,"Type of velocity input to the network. (``const``, ``input``, ``PRED-IHD``, ``ACVT-1DAC``)",const
-input_id,(For single cell) Different types of pulse inputs used for single cell sims.,FALSE
+input_id,(For single cell) Different types of pulse inputs used for single cell sims.,False
 ss_syn_gmax,Peak S->S synaptic strength (:math:`\mu S`),6.00E-06
 si_syn_gmax,Peak S->I synaptic strength (:math:`\mu S`),6.00E-06
 ii_syn_gmax,Peak I->I synaptic strength (:math:`\mu S`),0.0004
@@ -39,35 +39,35 @@ g_h_bar,HCN maximal conductance (:math:`S/cm^2`),0.0015
 gnap_bar,Nap maximal conductance (:math:`S/cm^2`),0.0005
 hs_tau,Factor for HCN (:math:`\tau _s`),5.6
 hf_tau,Factor for HCN (:math:`\tau _f`),0.51
-n_phases,,64
-lambda0,,6.2831
-init_allothetic_input,,TRUE
-allothetic_stell_dc,,-0.00265
-allothetic_nrn_n,,10
-allothetic_dur,,0
-vel_integ_or,,-0.002906
-si_asym_factor,,"[1, 1]"
-is_asym_factor,,"[1, 1]"
-is_peak_asym_fact,,1
-is_mean_asym_factor,,0
-extra_params,,{}
-netcon_delay,,1
-sim_date_time,,
-sim_dur,,4500
-dt,,0.025
-sim_id,,0
-sim_num,,0
-split_sim,,"[False, 1000]"
-n_nodes,,1
-n_cpus,,40
-post_sim_analysis,,FALSE
-show_progress_bar,,FALSE
-recorder_dt,,1
-data_root,,data/
-python,,python
-build_conn_matrix,,TRUE
-save_conn_matrix,,FALSE
-matrix_id,,
-split_built_conn_matrix,,FALSE
-record_handle_stell,,"{'stell_spks': {'state': True, 'cells_to_record': 'all'}, 'stell_v': {'state': False, 'cells_to_record': [12, 14], 'loc': 'soma(0.5):_ref_v'}, 'stell_ih': {'state': False, 'cells_to_record': 'all', 'loc': 'soma(0.5):stellate_mech:_ref_ih'}, 'stell_ina': {'state': False, 'cells_to_record': [], 'loc': 'soma(0.5):_ref_ina'}, 'stell_ik': {'state': False, 'cells_to_record': [], 'loc': 'soma(0.5):_ref_ik'}, 'stell_nap': {'state': False, 'cells_to_record': [], 'loc': ''}, 'stell_gna': {'state': False, 'cells_to_record': [], 'loc': 'soma(0.5):stellate_mech:_ref_gna'}, 'stell_gh': {'state': False, 'cells_to_record': [], 'loc': ''}, 'stell_gnap': {'state': False, 'cells_to_record': [], 'loc': ''}, 'stell_ih_mf': {'state': False, 'cells_to_record': [], 'loc': 'soma(0.5):stellate_mech:_ref_mhf'}, 'stell_ih_ms': {'state': False, 'cellsncpus_to_record': [], 'loc': 'soma(0.5):stellate_mech:_ref_mhs'}, 'stell_syn_exc_i': {'state': False, 'cells_to_record': [], 'loc': ''}, 'stell_syn_exc_g': {'state': False, 'cells_to_record': [], 'loc': ''}, 'stell_syn_inhib_i': {'state': False, 'cells_to_record': [], 'loc': 'inhb_syn:_ref_i'}, 'stell_syn_inhib_g': {'state': False, 'cells_to_record': [], 'loc': 'inhb_syn:_ref_g'}, 'stell_ext_dc_i': {'state': False, 'cells_to_record': [], 'loc': 'ext_dc:_ref_i'}, 'stell_ext_dc_amp': {'state': False, 'cells_to_record': [], 'loc': 'ext_dc:_ref_amp'}, 'stell_theta_i': {'state': False, 'cells_to_record': [], 'loc': 'soma(0.5):i_theta_stell:_ref_itheta'}}"
-record_handle_intrnrn,,"{'intrnrn_spks': {'state': True, 'cells_to_record': 'all'}, 'intrnrn_v': {'state': False, 'cells_to_record': [], 'loc': 'soma(0.5):_ref_v'}, 'intrnrn_syn_exc_i': {'state': False, 'cells_to_record': [], 'loc': ''}, 'intrnrn_syn_exc_g': {'state': False, 'cells_to_record': [], 'loc': 'exc_syn:_ref_g'}, 'intrnrn_syn_inhib_i': {'state': False, 'cells_to_record': [], 'loc': ''}, 'intrnrn_syn_inhib_g': {'state': False, 'cells_to_record': [], 'loc': 'inhb_syn:_ref_g'}, 'intrnrn_ext_dc_i': {'state': False, 'cells_to_record': [], 'loc': 'ext_dc:_ref_i'}, 'intrnrn_ext_dc_amp': {'state': False, 'cells_to_record': [], 'loc': 'ext_dc:_ref_amp'}, 'intrnrn_theta_i': {'state': False, 'cells_to_record': [], 'loc': 'soma(0.5):i_theta:_ref_itheta'}}"
+n_phases,(Path integration) Number of cells between two grid fields,64
+lambda0,(Path integration) Circumference of the circular enclosure,6.2831
+init_allothetic_input,(Path integration) Turn on allothetic input,True
+allothetic_stell_dc,(Path integration) DC to inactive stellate cells during allothetic input,-0.00265
+allothetic_nrn_n,(Path integration) Number of neurons to pin for allothetic input,10
+allothetic_dur,Duration of allothetic input,0
+vel_integ_or,(Path integration) DC to inactive ring for path integration,-0.002906
+si_asym_factor,Asym factor for S->I widths (Default values gives the original network),"[1, 1]"
+is_asym_factor,Asym factor for I->S widths (Default values gives the original network),"[1, 1]"
+is_peak_asym_fact,Asym factor for I->S peaks (Default values gives the original network),1
+is_mean_asym_factor,Asym factor for I->S mean(Default values gives the original network),0
+extra_params,Extra miscellaneous parameters,{}
+netcon_delay,Delay for netcon spike transmission. (should >0 for parallel simulations),1
+sim_date_time,Date and time when the simulation was run,
+sim_dur,Duration of simulation,4500
+dt,dt for NEURON integrator,0.025
+sim_id,Simulation ID. Data files are named based on simulation ID.,0
+sim_num,Simulation number for multiple simulations,0
+split_sim,"To split the sims into chunks for memory intensive simulation. |br| [`state`, `duration_of_chunks`]. Data is saved at the end every chunk. only for single simulations. ","[False, 1000]"
+n_nodes,FF,1
+n_cpus,Number of cores to utilize for simulations. If ``None`` then all available cores.,40
+post_sim_analysis,`Not applicable`,False
+show_progress_bar,Show progress bar for single simulation,False
+recorder_dt,Time interval for recorders,1
+data_root,Base location to save data. In case data needs |br| to saved at location different than the project root,data/
+python,`Not applicable`,python
+build_conn_matrix,To build connection matrix for every simulation. Alternative is to use a saved |br|  matrix at `network_configs/connections/saved_matrices/`,True
+save_conn_matrix,To save the built matrix,False
+matrix_id,Matrix ID. Use to differentiate same matrix config built with different set of parameters.,
+split_built_conn_matrix,`Not applicable`,False
+record_handle_stell,"Recorder handle to record data from stellate cells. |br|  {``data_id``: {""state"":False, ""cells_to_record"":""all"", ""loc"":""location of the reference variable""}","check ``default_sim_params.json`` for examples."
+record_handle_intrnrn,"Recorder handle to record data from interneurons.  |br| {``data_id``: {""state"":False, ""cells_to_record"":""all"", ""loc"":""location of the reference variable""}|br| ","check ``default_sim_params.json`` for examples."
