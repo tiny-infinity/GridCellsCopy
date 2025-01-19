@@ -488,6 +488,10 @@ def generate_2d_video(sim_id,sheet_to_save=0):
     import time
     import matplotlib.animation as animation
     import seaborn as sns
+    plt.style.use('analysis/config/paper.mplstyle')
+    plt.rcParams["ytick.labelsize"] = 22
+    plt.rcParams["xtick.labelsize"] = 22
+    
     t1 = time.perf_counter()
     stell_spikes_l,intrnrn_spikes_l=s_utils.load_spikes(sim_id=sim_id)
     params=s_utils.load_sim_params(sim_id=sim_id)   
@@ -502,14 +506,17 @@ def generate_2d_video(sim_id,sheet_to_save=0):
     else:
         stell_spikes_arr = spks_to_rate_reshaped(
             intrnrn_spikes_l, params, win_size=100)
+    stell_spikes_arr= np.flip(stell_spikes_arr,axis=0) # let matplotlib handle origin
     print(f"Generating video for {sim_id}, sheet: {sheet_to_save}")
-    fig= plt.figure()
-    plot = plt.imshow(stell_spikes_arr[:,:,0],cmap=sns.cubehelix_palette(as_cmap=True,reverse=True),vmax=np.max(stell_spikes_arr[:,:,int(params["stell_init_noise"][0]+500):int(params["sim_dur"])]))
-    plt.colorbar(label="Hz")
-    plt.suptitle("Left Bias")
-    plt.xlabel("Neurons")
-    plt.ylabel("Neurons")
-
+    fig,axs= plt.subplots(1,1)
+    fig.set_tight_layout(True)
+    plot = plt.imshow(stell_spikes_arr[:,:,0],cmap=sns.cubehelix_palette(as_cmap=True,reverse=True),origin="lower",
+                      vmax=np.max(stell_spikes_arr[:,:,int(params["stell_init_noise"][0]+500):int(params["sim_dur"])]))
+    
+    axs.set(xticks=np.arange(1,params["N_per_axis"],20),xticklabels=np.arange(1,params["N_per_axis"],20),
+            yticks=np.arange(1,params["N_per_axis"],20),yticklabels=np.arange(1,params["N_per_axis"],20))
+    axs.tick_params(which="both",direction="out",pad=0.5)
+    axs.grid(False)
     def animate(i):
         stell_spikes_i = stell_spikes_arr[:,:,i]
         plot.set_data(stell_spikes_i)
@@ -520,6 +527,7 @@ def generate_2d_video(sim_id,sheet_to_save=0):
     plot_frames =np.linspace(0,params['sim_dur']-1,total_samples,dtype='int')
     anim = animation.FuncAnimation(fig, animate,frames = plot_frames, interval =1, blit = True)
     writer = animation.FFMpegWriter(fps=fps,bitrate=8000) #bitrate: quality vs file_size
+    
     anim.save(f'data/{params['sim_id']}/{params['sim_id']}_{sheet_to_save}.mp4', writer=writer)
     plt.close(fig)
     print(f"Video saved in data/{params['sim_id']}/{params['sim_id']}_{sheet_to_save}.mp4 ",
