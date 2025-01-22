@@ -1,3 +1,5 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # Grid Cells Conductance-based Model
 A conductance-based model of [Grid cells](https://en.wikipedia.org/wiki/Grid_cell), implemented using the [NEURON](https://www.neuron.yale.edu/neuron/) simulator with parallelized functionality for efficient simulations. Grid cells are crucial for spatial navigation, and this model replicates their dynamics with biologically realistic conductances.
 
@@ -28,7 +30,7 @@ Check out `analysis\examples\base_model.ipynb` for some basic plots generated fr
 
 **Refer the [docs](https://inayath-sh.github.io/GridCellsCond/) for details on the project's structure and parameters.**
 
-## Dependency Issues?
+# Dependency Issues?
 We use [`uv`](https://github.com/astral-sh/uv) package manager to manage dependencies in this project. You can use `uv.lock` to sync your local environment to the exact state in which these simulations were run. However, before running `uv` ensure, 
 
 #### For macOS and Linux:
