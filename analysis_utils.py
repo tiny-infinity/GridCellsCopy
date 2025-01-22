@@ -528,7 +528,7 @@ def generate_2d_video(sim_id,sheet_to_save=0):
     anim = animation.FuncAnimation(fig, animate,frames = plot_frames, interval =1, blit = True)
     writer = animation.FFMpegWriter(fps=fps,bitrate=8000) #bitrate: quality vs file_size
     
-    anim.save(f'data/{params['sim_id']}/{params['sim_id']}_{sheet_to_save}.mp4', writer=writer)
+    anim.save(f"data/{params['sim_id']}/{params['sim_id']}_{sheet_to_save}.mp4", writer=writer)
     plt.close(fig)
     print(f"Video saved in data/{params['sim_id']}/{params['sim_id']}_{sheet_to_save}.mp4 ",
           "t_total (s):",round(time.perf_counter()-t1,2))
