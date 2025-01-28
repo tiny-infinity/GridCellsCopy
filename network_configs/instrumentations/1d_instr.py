@@ -1,3 +1,11 @@
+"""
+Instrumentation for 1D network
+1. Set global variables and range variables.
+2. Set initial and simulation noise
+3. Setup recorders.
+4. Setup external inputs by intializing Trajectory1D and playing it into the 
+    network IClamps.
+"""
 from neuron import h
 from neuron.units import ms, mV
 import numpy as np

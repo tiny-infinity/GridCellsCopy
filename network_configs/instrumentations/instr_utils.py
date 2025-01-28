@@ -1,4 +1,7 @@
-
+"""
+Utility functions for setting up recorders, noise, global variables and range 
+variables in the network.
+"""
 from neuron import h
 import numpy as np
 

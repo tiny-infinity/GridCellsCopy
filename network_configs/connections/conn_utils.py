@@ -1,3 +1,6 @@
+"""
+Utility functions for building connectivity matrices.
+"""
 import argparse
 import sys
 from pathlib import Path

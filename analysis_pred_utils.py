@@ -1,3 +1,6 @@
+"""
+Analysis functions for predictive coding
+"""
 import numpy as np
 from scipy import signal,stats
 from scipy.signal import butter, sosfilt

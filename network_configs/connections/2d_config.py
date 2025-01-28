@@ -1,3 +1,13 @@
+"""
+Adjacency matrix for base 2D network.
+The network consists of 4 sheets. 3 of stellate cells and 1 of inhibitory cells 
+connected through mexican hat-type connection.
+-----------
+|s->s|s->i|
+|i->s|i->i|
+-----------
+"""
+
 import sys
 import time
 from multiprocessing import Pool

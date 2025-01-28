@@ -1,3 +1,7 @@
+"""
+Template specs file to run multiple simulations.
+"""
+
 import numpy as np
 
 def generate_mult_input_params()-> dict:

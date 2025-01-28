@@ -1,3 +1,13 @@
+"""
+Main simulation run for multi simulations. 
+This file,
+1. Runs multiple simulations based on multi_input_params
+2. Initializes network based on params by calling 
+    network_initialize from network_init.py
+2. Runs simulation.
+3. Saves data in hdf5 format.
+"""
+
 import sys
 import numpy as np
 from neuron import h

@@ -1,3 +1,12 @@
+"""
+Adjacency matrix for base 1D network.
+The network consists of three rings 2 stellate and 1 inhibitory connected 
+through mexican hat-type connection.
+-----------
+|s->s|s->i|
+|i->s|i->i|
+-----------
+"""
 import numpy as np
 import h5py
 import conn_utils

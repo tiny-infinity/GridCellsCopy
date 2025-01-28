@@ -1,3 +1,12 @@
+"""
+Trajectory1D class is used to generate different types of input to the network.
+    - Constant velocity
+    - Input velocity: variable velocity with allothetic input
+    - Constant velocity for predictive coding
+    - Pulse input 
+        for raster plot in figure 1 of the paper
+"""
+
 import numpy as np
 import h5py as hdf
 import pickle

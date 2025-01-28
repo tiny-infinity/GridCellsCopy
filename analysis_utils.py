@@ -1,3 +1,6 @@
+"""
+Analysis functions
+"""
 import numpy as np
 from scipy import signal,ndimage,integrate,stats
 import h5py

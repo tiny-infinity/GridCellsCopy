@@ -1,6 +1,7 @@
+#stellate class
+
 from neuron import h
 from cell import Cell
-
 
 class Stellate(Cell):
     name = "StellateCell"

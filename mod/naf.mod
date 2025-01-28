@@ -1,3 +1,8 @@
+COMMENT
+Wang, X.-J. and Buzsaki G. (1996) Gamma oscillations by synaptic
+inhibition in a hippocampal interneuronal network.  J. Neurosci. 16,
+6402-6413.
+ENDCOMMENT
 : $Id: naf.mod,v 1.7 2003/07/29 21:23:39 billl Exp $
 
 NEURON { SUFFIX naf }

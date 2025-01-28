@@ -1,3 +1,12 @@
+"""
+Main simulation run for split simulation.
+1. Initializes network based on params by calling 
+    network_initialize from network_init.py
+2. Runs simulation in chunks of forward_steps where after each chunk data is 
+    saved and simulation is continued.
+"""
+
+
 import numpy as np
 from neuron import h
 from neuron.units import ms, mV

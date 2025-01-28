@@ -1,3 +1,17 @@
+"""
+Setup for single simulations
+This file,
+1. Gets input params from specs file
+2. Generates full parameter dict from specs file 
+    and default parameters.
+3. Builds connectivity matrix if required.
+4. Saves params file and matrix in cache/
+5. Calls s_run.py to run simulation
+6. Clears cache files
+7. Saves specs file and params dict in 
+    data directory for future reference
+"""
+
 import subprocess
 import os
 os.environ["NEURON_MODULE_OPTIONS"] = "-nogui" #Stops no gui warnings in output file

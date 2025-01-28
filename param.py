@@ -1,11 +1,19 @@
+"""
+Global Parameter object
+- Load default parameters from default_model_params.json and 
+   default_sim_params.json
+- Update and return the default parameters with the input parameters
+
+mParam:
+   - Contains nested dictionaries of parameters for multiple simulations with keys 
+   as simulation numbers
+"""
 
 import json
 import time
 import copy
 
-"""
-Global Parameter object to access all parameters in the simulation.
-"""
+
 
 class Param(dict):
    def __init__(self):

@@ -1,3 +1,6 @@
+"""
+Template specs file to run 1D simulation.
+"""
 import numpy as np
 
 def generate_input_params()-> dict:

@@ -1,3 +1,6 @@
+"""
+Utility functions for simulation setup, running and handling data.
+"""
 
 import numpy as np
 from itertools import zip_longest
@@ -9,9 +12,6 @@ import argparse
 import importlib
 import logging
 
-"""
-Helper functions for the simulation setup, runs and data handling
-"""
 def network_intialize(params):
     """Initialize network and setup instrumentation
 

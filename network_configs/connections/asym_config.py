@@ -1,4 +1,10 @@
-
+"""
+Adjacency matrix for base 1D network with asymmetric gaussian.
+-----------
+|s->s|s->i|
+|i->s|i->i|
+-----------
+"""
 import numpy as np
 import h5py
 import conn_utils

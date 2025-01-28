@@ -1,6 +1,6 @@
-from neuron import h
 #Parent Class for all cells
 
+from neuron import h
 class Cell:
     def __init__(self,gid):
         self._gid = gid               #global id of the cell

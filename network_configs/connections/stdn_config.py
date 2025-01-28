@@ -1,3 +1,11 @@
+"""
+Adjacency matrix for single cell simulations (Fig1A)
+-----------
+|s->s|s->i|
+|i->s|i->i|
+-----------
+"""
+
 import numpy as np
 import h5py
 import conn_utils

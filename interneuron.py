@@ -1,3 +1,5 @@
+#Interneuron class
+
 from neuron import h
 from cell import Cell
 

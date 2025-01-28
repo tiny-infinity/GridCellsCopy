@@ -1,6 +1,7 @@
 
 """
-Initialize cells and connect them based on the connectivity matrix. Called by network_init.py
+Initialize cells and connect them based on the connectivity matrix. 
+Called by network_init()
 """
 from neuron import h
 import numpy as np

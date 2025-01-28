@@ -1,3 +1,6 @@
+"""
+Instrumentation for single cell simulations for Fig1A
+"""
 from neuron import h
 from neuron.units import ms, mV
 import numpy as np

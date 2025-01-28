@@ -1,6 +1,5 @@
 """
 Main simulation run. 
-This file,
 1. Initializes network based on params by calling 
     network_initialize from network_init.py
 2. Runs simulation.

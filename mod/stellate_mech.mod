@@ -1,3 +1,10 @@
+COMMENT
+Acker, Corey D., Nancy Kopell, and John A. White. “Synchronization of Strongly 
+Coupled Excitatory Neurons: Relating Network Behavior to Biophysics.” 
+Journal of Computational Neuroscience 15, no. 1 (July 1, 2003): 71–90. 
+https://doi.org/10.1023/A:1024474819512.
+ENDCOMMENT
+
 TITLE Stellate cells mechanism :acker
 
 

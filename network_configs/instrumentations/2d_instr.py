@@ -1,3 +1,11 @@
+"""
+Instrumentation for 2D network
+1. Set global variables and range variables.
+2. Set initial and simulation noise
+3. Setup recorders.
+4. Setup external inputs for all sheets
+"""
+
 from neuron import h
 from neuron.units import ms, mV
 import numpy as np
