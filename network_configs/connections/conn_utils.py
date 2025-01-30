@@ -1,5 +1,5 @@
-"""
-Utility functions for building connectivity matrices.
+
+"""Utility functions for building connectivity matrices.
 """
 import argparse
 import sys
@@ -11,14 +11,13 @@ import numpy as np
 def file_args():
     """Creates an argument parser for connectivity configuration.
 
-    Returns : argparse.ArgumentParser: 
-        The argument parser with the following arguments:
-    
-        - -i, --sim_id (str, optional): Simulation ID.
-        - -c, --conn_id (str, optional): Connection ID.
-        - -t, --sim_type (str, optional): Simulation type. Default is "single".
-        - -n, --sim_num (int, optional): Simulation number. Default is 0.
-        - -p, --specs_file (str, optional): Path to the specifications file.
+    Returns:
+        argparse.ArgumentParser: The argument parser with the following arguments:
+            - ``-i``, ``--sim_id`` (str, optional): Simulation ID.
+            - ``-c``, ``--conn_id`` (str, optional): Connection ID.
+            - ``-t``, ``--sim_type`` (str, optional): Simulation type. Default is "single".
+            - ``-n``, ``--sim_num`` (int, optional): Simulation number. Default is 0.
+            - ``-p``, ``--specs_file`` (str, optional): Path to the specifications file.
     """
     
     parser = argparse.ArgumentParser()
@@ -70,18 +69,16 @@ def add_project_to_sys_path():
 def find_params(args: argparse.Namespace) -> dict:
     """Finds and returns simulation parameters based on the provided arguments.
     
-    Parameters:
-        args : argparse.Namespace 
-            The arguments namespace containing either a 
+    Args:
+        args (argparse.Namespace ):The arguments namespace containing either a 
             simulation ID or a specifications file.
     
     Returns:
-        dict: 
-            A dictionary containing the simulation parameters.
+        dict: A dictionary containing the simulation parameters.
     
     Raises:
         FileNotFoundError: If neither ``sim_id`` nor ``specs_file`` is provided, or if 
-        the specified files are not found.
+            the specified files are not found.
     
     Notes:
         Parameter dict is generated based on following order of precedence.
@@ -126,6 +123,21 @@ def find_params(args: argparse.Namespace) -> dict:
 
 
 def assign_positions_rect(N_per_axis):
+    """Assigns positions in a rectangular grid centered at the origin.
+    
+    This function generates a set of coordinates for a rectangular grid with 
+    ``N_per_axis`` points along each axis. The number of points along each 
+    axis must be odd.
+
+    Args:
+        N_per_axis (int): The number of points along each axis. Must be an odd number.
+    Returns:
+        numpy.ndarray: A 2D array of shape (``N_per_axis``:math:`^2`, 2) containing the 
+            coordinates of the grid points.
+    Raises:
+        ValueError: If ``N_per_axis`` is not an odd number.
+    """
+    
     if N_per_axis % 2 == 0:
         raise ValueError('N_per_axis should be odd')
     N_per_half_axis = (N_per_axis-1)//2
@@ -137,20 +149,44 @@ def assign_positions_rect(N_per_axis):
     return coords.T
 
 def gaussian_2D(x, y, x_mean, y_mean, stdev, N):
+    """2D Gaussian function.
+
+    Args:
+        x (float): The x-coordinate at which to evaluate the Gaussian.
+        y (float): The y-coordinate at which to evaluate the Gaussian.
+        x_mean (float): The mean of the Gaussian in the x-direction.
+        y_mean (float): The mean of the Gaussian in the y-direction.
+        stdev (float): The standard deviation of the Gaussian in both x and y directions.
+        N (float): The amplitude of the Gaussian.
+    Returns:
+        float: The value of the 2D Gaussian function at the given (x, y) coordinates.
+    """
+
     x_stdv = y_stdv = stdev
     return N*np.exp(-(((x-x_mean)**2)/(2*x_stdv**2) + ((y-y_mean)**2)/(2*y_stdv**2)))
     
 def gaussian(x, N, mean, stdv):
+    """1D Gaussian function.
+
+    Args:
+        x (float): The input value for which the Gaussian function is evaluated.
+        N (float): The amplitude of the Gaussian function.
+        mean (float): The mean (center) of the Gaussian function.
+        stdv (float): The standard deviation (spread or width) of the Gaussian function.
+    Returns:
+        float: The value of the Gaussian function at x.
+    """
+
     return N * np.exp((-((x - mean) ** 2)) / (2 * (stdv**2)))
 
 def signed_arc_length(angle1, angle2):
-    """
-    Compute the signed arc length between two angles.
+    """Compute the signed arc length between two angles.
 
-    Parameters:
+    Args:
         angle1 (float): The first angle (in degrees or radians).
         angle2 (float): The second angle (in degrees or radians).
-        radians (bool): Set to True if the angles are in radians, False if in degrees.
+        radians (bool): Set to True if the angles are in radians, 
+            False if in degrees.
 
     Returns:
         float: The signed arc length.
@@ -163,10 +199,9 @@ def signed_arc_length(angle1, angle2):
     return delta
 
 def unsigned_arc_length(angle1, angle2):
-    """
-    Compute the unsigned arc length between two angles.
+    """Compute the unsigned arc length between two angles.
 
-    Parameters:
+    Args:
         angle1 (float): The first angle (in degrees or radians).
         angle2 (float): The second angle (in degrees or radians).
         radians (bool): Set to True if the angles are in radians, False if in degrees.

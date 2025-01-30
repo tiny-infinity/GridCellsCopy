@@ -10,7 +10,17 @@ import sim_utils as s_utils
 import copy
 
 def periodic_activity_all(stell_spikes_l, sim_dur, window_t, stdev):
-    '''compute rates along the cells for all time window'''
+    """Instantaneous firing rate for all cells using Gaussian kernel convolution.
+    
+    Args:
+        stell_spikes_l (list of lists): Spike times for stellate cells.
+        sim_dur (int): Total duration of the simulation in milliseconds.
+        window_t (int): Time window for binning spikes in milliseconds.
+        stdev (float): Standard deviation for the Gaussian kernel used in convolution.
+    Returns:
+        numpy.ndarray: Filtered spike activity array with periodic activity highlighted.
+    """
+
     binned_spikes = bin_spike_ms(stell_spikes_l, sim_dur)
     binned_spikes_lim = np.array(
         np.hsplit(binned_spikes, sim_dur//window_t)).sum(axis=-1)
@@ -22,19 +32,15 @@ def periodic_activity_all(stell_spikes_l, sim_dur, window_t, stdev):
 def bin_spike_ms(stell_spks_l:list, sim_dur:float)->np.ndarray:
     """Bin spike times into a binary matrix with millisecond resolution.
     
-    Parameters
-    ----------
-    stell_spikes_l : list of lists  
-        List of list where each sub-list corresponds to spike times of a cell.
-    
-    sim_dur : float or int
-        Duration of the simulation in milliseconds.
-    Returns
-    -------
-    t_stell : ndarray
-        A binary matrix of shape (number of cells, sim_dur) where each row corresponds to 
-        a cell and each column corresponds to a millisecond. A value of 1 indicates a spike 
-        at that millisecond, and 0 indicates no spike.
+    Args:
+        stell_spikes_l (list of lists):Spike times for each neuron.
+        sim_dur (float or int): Duration of the simulation in milliseconds.
+
+    Returns:
+        ndarray: A binary matrix of shape (number of cells, sim_dur) 
+        where each row corresponds to a cell and each column corresponds to 
+        a millisecond. A value of 1 indicates a spike at that millisecond, 
+        and 0 indicates no spike.
     """
     
     t_stell = np.zeros((len(stell_spks_l), int(sim_dur)))
@@ -44,6 +50,22 @@ def bin_spike_ms(stell_spks_l:list, sim_dur:float)->np.ndarray:
     return t_stell
 
 def grid_field_sizes_neurons(stell_spks,sim_dur,avg=True,win_size_t=1000,win_size_n=3):
+    """Calculate the grid field sizes along the neuron axis.
+
+    Args:
+        stell_spks (list of lists): Spike times for each neuron.
+        sim_dur (float): Duration of the simulation in milliseconds.
+        avg (bool, optional): If True, return the average grid field size. 
+            If False, return all grid field sizes. Defaults to True.
+        win_size_t (int, optional): Time window size in milliseconds for analysis. 
+            Defaults to 1000.
+        win_size_n (int, optional): Number of windows for analysis. Defaults to 3.
+
+    Returns:
+        float or list: Average grid field size if avg is True, otherwise a list 
+        of all grid field sizes.
+    """
+
     period = grid_scale_neurons(stell_spks,sim_dur,win_size_t,win_size_n)
     cell_axis = np.arange(0,len(stell_spks))
     periodic_activity=periodic_activity_all(stell_spks,sim_dur,win_size_t,win_size_n)
@@ -63,6 +85,23 @@ def grid_field_sizes_neurons(stell_spks,sim_dur,avg=True,win_size_t=1000,win_siz
         return auc
 
 def grid_scale_neurons(stell_spikes_l, sim_dur, win_size=1000, stdev=3,avg=True):
+    """Calculate the grid scale along the neuron axis.
+
+    Args:
+        stell_spikes_l (list of lists): Spike times for stellate neurons.
+        sim_dur (int): Duration of the simulation in milliseconds.
+        win_size (int, optional): Size of the window for periodic activity 
+            calculation in milliseconds. Defaults to 1000.
+        stdev (int, optional): Standard deviation for smoothing the periodic 
+            activity. Defaults to 3.
+        avg (bool, optional): If True, returns the average difference between peaks. 
+            If False, returns all differences. Defaults to True.
+
+    Returns:
+        float or list: If `avg` is True, returns the average difference between peaks as a float.
+        If `avg` is False, returns a list of differences between peaks.
+    """
+
     period_all = periodic_activity_all(
         stell_spikes_l, sim_dur, win_size, stdev)
     x = []
@@ -76,15 +115,31 @@ def grid_scale_neurons(stell_spikes_l, sim_dur, win_size=1000, stdev=3,avg=True)
         return x
 
 def integrate_array(arr, dx=1, axis=-1):
+    """Integrate an array using Simpson's rule.
+    """
     return integrate.simpson(arr, dx=dx, axis=axis)
 
 def calc_speed_of_network(stell_spks_l,params,win_size=100):
+    """Calculate the speed of the network.
+
+    This function calculates the speed of the network by decoding the position 
+    of the network and calculating the slope of the unwrapped position. 
+    It assumes the input DC to network was constant
+    
+    Args:
+        stell_spks_l (list): List of spike timings for stellate cells.
+        params (dict): Dictionary containing the simulation parameters.
+        win_size (int, optional): Window size for instantaneous rate calculation. 
+            Defaults to 100.
+    Returns:
+        float: The slope representing the speed of the network.
+    """
+
     N_per_sheet= params['N_per_sheet']
     n_phases= params['n_phases']
     sim_dur= params['sim_dur']
-    lamb = (2*np.pi) #params['n_phases']
+    lamb = (2*np.pi)
     cell_phases = (np.arange(0,N_per_sheet)*(2*np.pi/n_phases))%(2*np.pi)
-    # print(cell_phases)
     cell_phases = np.concatenate((cell_phases,cell_phases))
     #instantaneous rates
     t_stell=instant_rate_all(stell_spks_l[:],sim_dur,win_size)
@@ -96,6 +151,15 @@ def calc_speed_of_network(stell_spks_l,params,win_size=100):
 
 
 def calc_firing_rates(spk_list,sim_dur):
+    """Calculate the average firing rates of neurons.
+
+    Args:
+        spk_list (list of lists): Spike times of each neuron
+        sim_dur (float): The duration of the simulation in milliseconds.
+    Returns:
+        float: The average firing rate of the neurons in Hz.
+    """
+
     avg_fr_rates = []
     for cell in spk_list:
         avg_fr_rates.append(len(cell)/(sim_dur/1000))
@@ -106,15 +170,11 @@ def build_and_return_matrix(sim_id:str=None,specs_file:str=None)->np.ndarray:
     
     Used to analyze the connectivity of a simulation.
     
-    Parameters:
-    -----------
-        sim_id : str 
-            The ID of the simulation to load parameters for.
-        specs_file : str
-            The path to a specifications file (not implemented).
+    Args:
+        sim_id (str): The ID of the simulation to load parameters for.
+        specs_file (str): The path to a specifications file (not implemented).
     
     Returns:
-    --------
         np.ndarray: The adjacency matrix generated for the given simulation.
 
     """
@@ -135,17 +195,14 @@ def build_and_return_matrix(sim_id:str=None,specs_file:str=None)->np.ndarray:
 def instant_rate_all(stell_spikes_l:list, sim_dur:float, stdev:float)->np.ndarray:
     """Calculate the instantaneous firing rate for all cells using Gaussian kernel convolution.
     
-    Parameters:
-        stell_spikes_l : list of lists  
-            List of list where each sub-list corresponds to spike times of a cell.
-        sim_dur : float 
-            The duration of the simulation in milliseconds.
-        stdev : float
-            The standard deviation of the Gaussian kernel used for convolution.
+    Args:
+        stell_spikes_l (list of lists): Spike times for each neuron.
+        sim_dur (float): The duration of the simulation in milliseconds.
+        stdev (float): The standard deviation of the Gaussian kernel used for convolution.
     
     Returns:
-        instantaneous rates : numpy.ndarray
-            A 2D array (cell X t_ms) where each row corresponds to the instantaneous firing rate of a cell.
+        numpy.ndarray: A 2D array (cell X t_ms) where each 
+        row corresponds to the instantaneous firing rate of a cell.
     """
     
     binned_spikes = bin_spike_ms(stell_spikes_l, sim_dur)
@@ -160,6 +217,16 @@ def instant_rate_all(stell_spikes_l:list, sim_dur:float, stdev:float)->np.ndarra
     return filtered
 
 def instant_rate(spike_train, sim_dur, stdev):
+    """Calculate the instantaneous firing rate from a spike train using Gaussian convolution.
+
+    Args:
+        spike_train (list or array-like): A list or array of spike times.
+        sim_dur (float): The duration of the simulation in milliseconds.
+        stdev (float): The standard deviation of the Gaussian window.
+    Returns:
+        numpy.ndarray: The instantaneous firing rate as a numpy array.
+    """
+
     t_stell = np.zeros(int(sim_dur))
     for i in spike_train:
         t_stell[int(np.floor(i))] = 1
@@ -171,17 +238,19 @@ def instant_rate(spike_train, sim_dur, stdev):
 
 def grid_props_2D(inst_rates_reshaped,t=-1000):
     """Calculate 2D grid properties.
+    
     Calculate the grid score, grid scale, and grid size from the 2D autocorrelation of firing rate map.
 
-    Parameters:
-    inst_rates_reshaped (numpy.ndarray): 3D array of reshaped instantaneous rates (cellxcellxtime).
-    t (int): Time index to use for the calculation. Default is -1000.
+    Args:
+        inst_rates_reshaped (numpy.ndarray): 3D array of reshaped instantaneous 
+            rates (cellxcellxtime).
+        t (int): Time index to use for the calculation. Default is -1000.
     Returns:
-    tuple: A tuple containing:
-        - auto_corr (numpy.ndarray): Normalized 2D autocorrelation matrix.
-        - grid_score (float): Grid score calculated from the autocorrelation matrix.
-        - grid_scale (float): Median distance of the closest objects from the center.
-        - grid_size (float): Median size of the grid cells.
+        tuple: A tuple containing:
+            - ``auto_corr`` (numpy.ndarray): Normalized 2D autocorrelation matrix.
+            - ``grid_score`` (float): Grid score calculated from the autocorrelation matrix.
+            - ``grid_scale`` (float): Median distance of the closest objects from the center.
+            - ``grid_size`` (float): Median size of the grid cells.
     """
 
     auto_corr=signal.correlate2d(inst_rates_reshaped[:,:,t],inst_rates_reshaped[:,:,t],mode='full',boundary='wrap')
@@ -234,18 +303,13 @@ def grid_props_2D(inst_rates_reshaped,t=-1000):
 def spks_to_rate_reshaped(spks_l:list,params:dict,win_size:float=200)->np.ndarray:
     """Convert spike times to firing rates and reshape based on cell position.
     
-    Parameters:
-    -----------
-        spks_l : list 
-            List of list of spike times for each neuron.
-        params : dict 
-            Parameter dictionary containing simulation parameters.
-        win_size : float, optional
-            Window size for calculating the instantaneous rate. Default is 200.
+    Args:
+        spks_l (list of lists): Spike times for each neuron.
+        params (dict): Parameter dictionary containing simulation parameters.
+        win_size (float, optional): Window size for calculating the 
+            instantaneous rate. Default is 200.
     Returns:
-    --------
-        Instantaneous firing rates : np.ndarray
-            Reshaped matrix of instantaneous firing rates.
+        np.ndarray: Reshaped matrix of instantaneous firing rates.
     """
     
     inst_rate = instant_rate_all(spks_l, params['sim_dur'], win_size)
@@ -256,20 +320,14 @@ def spks_to_rate_reshaped(spks_l:list,params:dict,win_size:float=200)->np.ndarra
 def calc_fft(x,T = 0.025 * 1e-3):
     """Calculate the Fast Fourier Transform for a given signal.
 
-    Parameters:
-    -----------
-        x : np.ndarray
-            The signal to calculate the FFT for.
-        T : float, optional
-            The time step of the signal. Default is 0.000025s default dt for neuron.
+    Args:
+        x (np.ndarray): The signal to calculate the FFT for.
+        T (float, optional): The time step of the signal. Default is 0.000025s default dt for neuron.
     Returns:
-    --------
-        f : np.ndarray
-            The frequency array.
-        y : np.ndarray
-            The FFT of the signal.
-        power : np.ndarray
-            The power spectrum of the signal.
+        tuple: A tuple containing:
+            - f (np.ndarray): The frequency array.
+            - y (np.ndarray): The FFT of the signal.
+            - power (np.ndarray): The power spectrum of the signal.
     """
 
     from scipy.fft import fft, fftfreq
@@ -283,23 +341,15 @@ def calc_fft(x,T = 0.025 * 1e-3):
 def decode_pos(stell_spikes_l,params,t_start=None,t_end=None,win_size=100):
     """Decode position for neuronal activity.
     
-    Parameters:
-    -----------
-        stell_spikes_l : list of list
-            List of list of spike times for each neuron.
-        params : dict
-            Parameter dictionary of simulation parameters.
-        t_start : int, optional
-            Start time for decoding. Default is 0.
-        t_end : int, optional
-            End time for decoding. Default is None.
-        win_size : int, optional
-            Window size for calculating the instantaneous rate. Default is 150.
-    
+    Args:
+        stell_spikes_l (list of lists): Spike times for each neuron.
+        params (dict): Parameter dictionary of simulation parameters.
+        t_start (int, optional): Start time for decoding. Default is 0.
+        t_end (int, optional): End time for decoding. Default is None.
+        win_size (int, optional): Window size for calculating the instantaneous 
+            rate. Default is 150.
     Returns:
-    --------
-        decoded_pos : np.ndarray
-            The decoded position from.
+        np.ndarray: The decoded position
     """
     N_per_sheet= params['N_per_sheet']
     n_phases= params['n_phases']
@@ -315,19 +365,13 @@ def decode_pos(stell_spikes_l,params,t_start=None,t_end=None,win_size=100):
 def clean_spikes(stell_spikes_l,order=1):
     """Cleans spikes from the given spike trains using a threshold-based approach.
 
-    Parameters:
-    -----------
-    stell_spikes_l : list
-        List of list of spike times for each neuron.
-    order : float, optional
-        Factor to determine the strictness of threshold.
-        
-
+    Args:
+        stell_spikes_l (list of lists): Spike times for each neuron.
+        order (float, optional): Factor to determine the strictness of threshold.
+            
     Returns:
-    --------
-        list: 
-            A list of spike trains with cleaned spikes, where each spike train 
-            is represented as a list of spike times.
+        list: A list of spike trains with cleaned spikes, where each spike train 
+        is represented as a list of spike times.
 
     """
     stell_spks_clean = copy.deepcopy(stell_spikes_l)
@@ -368,15 +412,11 @@ def separate_fields(stell_spikes_l,order=1):
     """
     Separates spike trains into grid fields based on a threshold.
 
-    Parameters:
-    -----------
-    stell_spikes_l : list
-        List of list of spike times for each neuron.
+    Args:
+        stell_spikes_l (list of lists): Spike times for each neuron.
 
     Returns:
-    --------
-    dict: 
-        A dictionary with keys as cell indices and values as 
+        dict: A dictionary with keys as cell indices and values as 
         lists of lists of separated grid fields,
     """
     grid_fields_all = {i: None for i in range(len(stell_spikes_l))}
@@ -402,16 +442,13 @@ def separate_fields(stell_spikes_l,order=1):
 def calc_grid_field_sizes_time(stell_spikes_l, avg=True):
     """Calculate the sizes of grid fields along the time axis.
 
-    Parameters:
-    ----------
-    stell_spikes_l : list
-        List of list of spike times for each neuron.
-    avg : bool, optional
-        Whether to return the average field size. Defaults to True.
+    Args:
+        stell_spikes_l (list of lists): Spike times for each neuron.
+        avg (bool, optional): Whether to return the average field size. Defaults to True.
 
     Returns:
-    float or list: 
-        If avg is True, returns the median field size. Otherwise, returns a list of all field sizes.
+        float or list: If avg is True, returns the median field size. 
+        Otherwise, returns a list of all field sizes.
     """
     grid_fields_all = separate_fields(stell_spikes_l)
     all_field_size = []
@@ -430,16 +467,13 @@ def calc_grid_field_sizes_time(stell_spikes_l, avg=True):
 def calc_grid_scales_time(stell_spikes,avg=True):
     """Calculate the scale of grid fields along the time axis.
 
-    Parameters:
-    ----------
-    stell_spikes_l : list
-        List of list of spike times for each neuron.
-    avg : bool, optional
-        Whether to return the average scale size. Defaults to True.
+    Args:
+        stell_spikes_l (list of lists): Spike times for each neuron.
+        avg (bool, optional): Whether to return the average scale size. Defaults to True.
 
     Returns:
-    float or list: 
-        If avg is True, returns the median scale size. Otherwise, returns a list of all scale sizes.
+        float or list: If avg is True, returns the median scale size. Otherwise, 
+        returns a list of all scale sizes.
     """    
     grid_fields_all = separate_fields(stell_spikes)
     all_cell_scales = []
@@ -461,15 +495,12 @@ def calc_grid_scales_time(stell_spikes,avg=True):
 def shift_fields_to_center(stell_spikes):
     """Shift the separated grid fields of spike trains to center them around zero.
 
-    Parameters:
-    -----------
-    stell_spikes : list
-        List of list of spike times for each neuron.
+    Args:
+        stell_spikes (list of lists): Spike times for each neuron.
 
     Returns:
-    --------
-    dict:
-        A dictionary with keys as cell indices and values as lists of shifted grid fields.
+        dict: A dictionary with keys as cell indices and values as lists of 
+        shifted grid fields.
     """
 
     separated_fields = separate_fields(stell_spikes)
@@ -487,6 +518,20 @@ def shift_fields_to_center(stell_spikes):
 
 
 def generate_2d_video(sim_id,sheet_to_save=0):
+    """Generates a video for the 2D model
+
+    Video is saved as data/{sim_id}/{sim_id}_{sheet_to_save}.mp4
+
+    Args:
+        sim_id (str): The simulation ID to load spikes and parameters.
+        sheet_to_save (int, optional): The sheet index to save (1-4). Defaults to 0. 
+            Index 4 is the interneuron sheet.
+    Returns:
+        None
+    Example:
+        generate_2d_video("BaseModel2D", sheet_to_save=2)
+    """
+    
     import matplotlib.pyplot as plt
     import time
     import matplotlib.animation as animation

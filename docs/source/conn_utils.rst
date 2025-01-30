@@ -1,5 +1,5 @@
-Conn utils
-=================
+Connectivity Utilities
+======================
 
 .. automodule:: network_configs.connections.conn_utils
    :members:

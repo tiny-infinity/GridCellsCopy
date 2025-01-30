@@ -1,5 +1,4 @@
-"""
-Utility functions for simulation setup, running and handling data.
+"""Utility functions for simulation setup, runs and handling data.
 """
 
 import numpy as np
@@ -15,13 +14,11 @@ import logging
 def network_intialize(params):
     """Initialize network and setup instrumentation
 
-    Parameters:
-        params : dict or Param
-            Parameter dictionary
+    Args:
+        params (dict or Param): Parameter dictionary
 
     Returns:
-        network 
-            Network object that includes cells and instrumentations
+        network: Network object that includes cells and instrumentations
 
     """
     from network import Network
@@ -34,33 +31,35 @@ def network_intialize(params):
     else:
         try:
             file = h5py.File(
-                f"network_configs/connections/saved_matrices/matrix_{params['conn_id']}_{params['matrix_id']}.hdf5", "r"
+                f"network_configs/connections/saved_matrices/ \
+                matrix_{params['conn_id']}_{params['matrix_id']}.hdf5", "r"
             )
         except FileNotFoundError as err:
-            err.add_note(f"Cannot find saved matrix network_configs/connections/saved_matrices/matrix_{params['conn_id']}_{params['matrix_id']}.hdf5")
+            err.add_note(f"Cannot find saved matrix network_configs/connections/ \
+                         saved_matrices/matrix_{params['conn_id']}_{params['matrix_id']}.hdf5")
             raise err
         adj_matrix = file["matrix"]
     network = Network(0, adj_matrix, params)  # initialize grid cells
     file.close()
     
     #Add instrumentation
-    setup_instrumentation = importlib.import_module(f"network_configs.instrumentations.{params['instr_id']}_instr").setup_instrumentation
+    setup_instrumentation = importlib.import_module(f"network_configs. \
+                                                    instrumentations \
+                                                    .{params['instr_id']}_instr").setup_instrumentation
     setup_instrumentation(network)
     return network
 
 def load_sim_params(sim_id: str, file_path: str = None) -> dict:
     """Load simulation parameters.
 
-    Parameters:
-        sim_id : str
-            Simulation ID to load the parameters for.
-        file_path : str, optional 
-            Direct path to the JSON file containing the simulation parameters. 
-            If not provided, the parameters are located for the given `sim_id`.
+    Args:
+        sim_id (str): Simulation ID to load the parameters for.
+        file_path (str, optional: Direct path to the JSON file containing 
+            the simulation parameters. If not provided, the parameters are 
+            located for the given `sim_id`.
 
     Returns:
-        dict 
-            The simulation parameters loaded from the JSON file.
+        dict: The simulation parameters loaded from the JSON file.
 
     """
 
@@ -74,20 +73,20 @@ def locate_data_dir(sim_id: str) -> str:
     """Find the location of the data directory for a given simulation ID.
 
 
-    The function checks for the existence of the data directory in several predefined locations.
+    The function checks for the existence of the data directory in several 
+    predefined locations.
     
     1. "data/" (local)
     2. "/data/{user}/data/" (global)
 
-    The {user} placeholder is replaced with the current user's username obtained from the environment variables "USERNAME" or "USER".
+    The {user} placeholder is replaced with the current user's username obtained 
+    from the environment variables "USERNAME" or "USER".
     
-    Parameters:
-        sim_id : str
-            The sim ID to locate the data directory for.
+    Args:
+        sim_id (str): The sim ID to locate the data directory for.
 
     Returns:
-        str
-            The location of the data directory.
+        str: The location of the data directory.
     """
 
     user= os.getenv("USERNAME") or os.getenv("USER")
@@ -103,11 +102,9 @@ def locate_data_dir(sim_id: str) -> str:
 def json_save(obj: dict, fname: str):
     """Wrapper function to save a dictionary object to a JSON file.
     
-    Parameters:
-        obj : dict 
-            The dictionary object to save.
-        fname: str
-            The file name to save the dictionary to.
+    Args:
+        obj (dict): The dictionary object to save.
+        fname (str): The file name to save the dictionary to.
     """
 
     with open(fname, "w") as file:
@@ -116,12 +113,10 @@ def json_save(obj: dict, fname: str):
 def json_read(fname: str) -> dict:
     """Wrapper function to read a JSON file and return the dictionary object.
     
-    Parameters:
-        fname : str
-            The file name to read the dictionary from.
+    Args:
+        fname (str): The file name to read the dictionary from.
     Returns:
-        dict 
-            The dictionary object read from the JSON file.
+        dict: The dictionary object read from the JSON file.
     """
     with open(fname, "r") as file:
         obj = json.load(file)
@@ -132,12 +127,11 @@ def json_modify(obj: dict, fname: str):
     
     If the file exists, it updates the file with the key-value pairs from the object.
     If the file does not exist, it creates a new file with the given object.
-    
-    Parameters
-        obj : dict
-            The dictionary object containing key-value pairs to be added or updated in the JSON file.
-        fname : str
-            The file name (including path) of the JSON file to be modified.
+
+    Args:
+        obj (dict): The dictionary object containing key-value pairs to be 
+            added or updated in the JSON file.
+        fname (str): The file name (including path) of the JSON file to be modified.
     """
     if os.path.isfile(fname):
         file_dict = json_read(fname)
@@ -153,11 +147,9 @@ def list_to_numpy(LoL: list, fill:float = np.nan) -> np.ndarray:
     
     Used for to convert list spike times with non-homogeneous lengths to a NumPy array to save in hdf5 format.
 
-    Parameters
-        LoL : list of lists
-            The input list of lists to be converted to a NumPy array.
-        fill : float, optional
-            The value to use for filling missing values. Defaults to np.nan.
+    Args:
+        LoL (list of lists): The input list of lists to be converted to a NumPy array.
+        fill (float, optional): The value to use for filling missing values. Defaults to np.nan.
     
     Returns
         numpy.ndarray: A NumPy array with the contents of the input list of lists, with missing values filled.
@@ -168,14 +160,11 @@ def list_to_numpy(LoL: list, fill:float = np.nan) -> np.ndarray:
 def check_sim_dup(sim_id: str, sim_num: int)->bool:
     """Checks if a simulation number exists in the HDF5 file for a given simulation ID.
 
-    Parameters:
-        sim_id : int 
-            The ID of the simulation.
-        sim_num : int
-            The number of the simulation to check for duplication.
+    Args:
+        sim_id (int): The ID of the simulation.
+        sim_num (int): The number of the simulation to check for duplication.
     Returns:
-        bool: 
-            True if the simulation number exists in the file, False otherwise.
+        bool: True if the simulation number exists in the file, False otherwise.
     """
 
     fname = "data/sim_spikes_data_m_{}.hdf5".format(sim_id)
@@ -190,17 +179,17 @@ def check_sim_dup(sim_id: str, sim_num: int)->bool:
 def find_sim_num(params: dict, param_check: dict) -> dict:
     """Find simulation numbers that was run with a given set of paramters.
 
-    Useful for analysis. For e.g Finding the simulation number that was run with ``si_peak=1.0``
+    Useful for analysis. For e.g Finding the simulation number that was run with 
+    ``si_peak=1.0``
 
-    Parameters:
-        params : dict or Param
-            Dictionary of all simulations generated after a run of multi simulation.
-        param_check : dict
-            A dictionary of parameters to check for. E.g: {si_peak: 1}
+    Args:
+        params (dict or Param): Dictionary of all simulations generated after a 
+            run of multi simulation.
+        param_check (dict): A dictionary of parameters to check for. E.g: {si_peak: 1}
 
     Returns:
-        matches : dict
-            A subset of global dictoinary containing only the simulations that match the given parameters in param_check
+        matches (dict): A subset of global dictoinary containing only the simulations 
+            that match the given parameters in param_check
     """
     
     matches = {}
@@ -225,15 +214,12 @@ def get_sim_num(iters: tuple, n_iters: tuple) -> int:
 
     Useful for analysis.
     
-    Parameters:
-        iters : tuple
-            A tuple of current iteration indices.
-        n_iters : tuple
-            A tuple of the total size for each iterator.
+    Args:
+        iters (tuple): A tuple of current iteration indices.
+        n_iters (tuple): A tuple of the total size for each iterator.
 
     Returns:
-        int
-            simulation number matching the given iterator indices.
+        int: simulation number matching the given iterator indices.
 
     """
 
@@ -251,10 +237,8 @@ def sim_setup_arg_parser()->argparse.ArgumentParser:
     Argument parser is initialzed and processed here to avoid cluttering
     the main setup file.
     
-    Returns
-    -------
-    argparse.ArgumentParser
-        The argument parser with the arguments added.
+    Returns:
+        argparse.ArgumentParser: The argument parser with the arguments added.
     """
     
     parser = argparse.ArgumentParser(description="Run a single simulation")
@@ -276,10 +260,8 @@ def sim_run_arg_parser()->argparse.ArgumentParser:
     Argument parser is initialzed and processed here to avoid cluttering
     the main run file.
     
-    Returns
-    -------
-    argparse.ArgumentParser
-        The argument parser with the arguments added.
+    Returns:
+        argparse.ArgumentParser: The argument parser with the arguments added.
     """
     
     parser = argparse.ArgumentParser(description="Run a single simulation")
@@ -295,13 +277,10 @@ def sim_run_arg_parser()->argparse.ArgumentParser:
 def log_from_rank_0(logger:logging.Logger,rank:int,msg:str,level:int=logging.INFO):
     """Logs a message if the rank is 0.
     
-    Parameters:
-        logger : logging.Logger
-            The logger object to use for logging.
-        rank : int: 
-            The rank of the process.
-        msg : str 
-            The message to be logged.
+    Args:
+        logger (logging.Logger): The logger object to use for logging.
+        rank (int): The rank of the process.
+        msg (str): The message to be logged.
     """
     if rank==0:
         logger.log(level,msg)
@@ -309,12 +288,10 @@ def log_from_rank_0(logger:logging.Logger,rank:int,msg:str,level:int=logging.INF
 def process_data_root(data_root:str)->str:
     """Processes the given data root path to ensure it ends with a slash.
     
-    Parameters:
-    data_root : str
-        The root path to the data directory.
+    Args:
+        data_root (str): The root path to the data directory.
     Returns:
-    str
-        The data root path ending with a slash.
+        str: The data root path ending with a slash.
     """
     return data_root+"/" if data_root[-1]!="/" else data_root
 
@@ -323,19 +300,16 @@ def load_spikes(sim_id:str,sim_num:int=0)->tuple:
 
     """Load spike data for a given simulation ID.
     
-    Parameters
-    ----------
-    sim_id : str
-        Simulation ID to load spikes from.
-    sim_num : int, optional
-        Simulation number to load spikes from, by default 0 (single sim).
+    Args:
+        sim_id (str): Simulation ID to load spikes from.
+        sim_num (int, optional): Simulation number to load spikes from, 
+            by default 0 (single sim).
     
     Returns
-    -------
-    tuple
-        A tuple containing two lists of lists:
-        - stell_spikes_l: List of spike times for stellate cells.
-        - intrnrn_spikes_l: List of spike times for interneurons.
+        tuple
+            A tuple containing two lists of lists:
+            - stell_spikes_l: List of spike times for stellate cells.
+            - intrnrn_spikes_l: List of spike times for interneurons.
     """
     
     data_dir = locate_data_dir(sim_id)
@@ -403,15 +377,11 @@ def get_module_from_path(file_path: str) -> str:
     Used to import specs file that is passed as as argument to 
     the simulation setup scripts.
 
-    Parameters:
-    -----------
-    file_path : str
-        The relative file path (e.g., "specs/s_template.py")
+    Args:
+        file_path (str): The relative file path (e.g., "specs/s_template.py")
     
     Returns:
-    --------
-    str
-        The corresponding module name (e.g., "specs.s_template")
+        str: The corresponding module name (e.g., "specs.s_template")
     """
     # Remove the file extension
     module_name, _ = os.path.splitext(file_path)
@@ -423,21 +393,14 @@ def get_module_from_path(file_path: str) -> str:
 def load_data(sim_id:str,data_id:str,cell_n:int=0,sim_num:str=0)->np.ndarray:
     """Load Non-spiking data for a given simulation ID.
     
-    Parameters:
-    ----------
-    sim_id : str
-        Simulation ID to load data from.
-    data_id : str
-        Data ID. e.g. 'stell_v'
-    cell_n : int, optional
-        Cell number to load data for, by default 0.
-    sim_num : str, optional
-        Simulation number to load data from, by default 0.
+    Args:
+        sim_id (str): Simulation ID to load data from.
+        data_id (str): Data ID. e.g. 'stell_v'
+        cell_n (int, optional): Cell number to load data for, by default 0.
+        sim_num (str, optional): Simulation number to load data from, by default 0.
     
     Returns:
-    --------
-    np.ndarray
-        The data array loaded from the HDF5 file
+        np.ndarray: The data array loaded from the HDF5 file
     """
     sim_num = str(sim_num)
     data_dir = locate_data_dir(sim_id)
@@ -450,21 +413,14 @@ def load_data(sim_id:str,data_id:str,cell_n:int=0,sim_num:str=0)->np.ndarray:
 def load_full_data(sim_id,data_id,sim_num=0):
     """Load Non-spiking data of all cells for a given simulation ID and number.
     
-    Parameters:
-    ----------
-    sim_id : str
-        Simulation ID to load data from.
-    data_id : str
-        Data ID. e.g. 'stell_v'
-    cell_n : int, optional
-        Cell number to load data for, by default 0.
-    sim_num : str, optional
-        Simulation number to load data from, by default 0.
-    
+    Args:
+        sim_id (str): Simulation ID to load data from.
+        data_id (str): Data ID. e.g. 'stell_v'
+        cell_n (int, optional): Cell number to load data for, by default 0.
+        sim_num (str, optional): Simulation number to load data from, by default 0.
+        
     Returns:
-    --------
-    np.ndarray
-        The data array loaded from the HDF5 file.
+        np.ndarray: The data array loaded from the HDF5 file.
     """
     
     data_dir = locate_data_dir(sim_id)

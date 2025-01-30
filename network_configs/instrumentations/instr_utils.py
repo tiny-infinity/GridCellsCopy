@@ -1,11 +1,23 @@
 """
 Utility functions for setting up recorders, noise, global variables and range 
-variables in the network.
+variables in the network. 
+
+File loc: ``network_configs.instrumentations.instr_utils.py``
 """
 from neuron import h
 import numpy as np
 
 def set_intial_noise(cell,noise_params,noise_seed=40):
+    """Sets the initial gaussian noise for a given cell.
+    
+    Args:
+        cell: The cell object to which the noise will be applied.
+        noise_params (list): A list containing noise parameters where noise_params[0] is the duration of the noise.
+            noise_params[1] is the mean of the noise distribution.
+            noise_params[2] is the standard deviation of the noise distribution.
+        noise_seed (int, optional): The seed for the random number generator.  
+            Defaults to 40.
+    """
 
     noise_seed = cell._gid+noise_seed
     cell.init_noise.dur = noise_params[0]
@@ -23,6 +35,18 @@ def set_intial_noise(cell,noise_params,noise_seed=40):
     )
 
 def set_noise(cell,noise_params,noise_seed=80):
+    """Sets the simulation noise (gaussian) for a given cell.
+
+    Args:
+        cell: The cell object to which noise will be added.
+        noise_params (list): A list containing noise parameters where:
+            - noise_params[0] is the duration of the noise.
+            - noise_params[1] is the mean of the noise distribution.
+            - noise_params[2] is the standard deviation of the noise distribution.
+        noise_seed (int, optional): The seed for the random number generator. 
+            Default is 80.
+    """
+
     noise_seed = cell._gid+noise_seed
     cell.noise.dur = noise_params[0]
     cell.noise_t = np.arange(
@@ -38,19 +62,19 @@ def set_noise(cell,noise_params,noise_seed=80):
     cell.noise_amp.play(cell.noise._ref_amp, cell.noise_t, True)
 
 def recursive_getattr(obj, attr_string):
-    """Recursively retrieves an attribute or calls a method on an object based on a colon-separated string.
+    """Recursively retrieves an attribute or calls a method on an object based 
+    on a colon-separated string.
 
-    Used to add recorders.
+    Used to add recorders to the cell object.
 
-    Parameters:
-        obj
-            The object from which to retrieve the attribute or method.
-        attr_string : str
-            A colon-separated string representing the attribute or method to retrieve or call.
-            If the string ends with ')', it indicates a method call.
+    Args:
+        obj: The object from which to retrieve the attribute or method.
+        attr_string (str): A colon-separated string representing the attribute 
+            or method to retrieve or call. If the string ends with ')', 
+            it indicates a method call.
 
     Returns:
-        object: The final attribute or the result of the method call.
+        The final attribute or the result of the method call.
     """
     parts = attr_string.split(':')
     for part in parts:
@@ -67,15 +91,12 @@ def setup_recorders(cell,recorder_handle,recorder_dt):
     For each parameter, create a vector to record from the given location in the cell obj.
     For spikes, create a spike detector and record the spikes.
 
-    Parameters:
-        cell
-            The cell object for which the recorders are being set up.
-        recorder_handle : dict 
-            A dictionary containing recorder configurations.
-        recorder_dt : float
-            The time interval for recording data.
-    Returns:
-        object: The cell object with the recorders set up.
+    Args:
+        cell: The cell object for which the recorders are being set up.
+        recorder_handle (dict): A dictionary containing recorder configurations.
+        recorder_dt (float): The time interval for recording data.
+    Returns: 
+        cell_object: The cell object with the recorders set up.
 
     """
     #dictionary poiting to the location of the parameter in the cell
@@ -98,6 +119,12 @@ def setup_recorders(cell,recorder_handle,recorder_dt):
     return cell
 
 def set_global_variables(params):
+    """Set NEURON global variables.
+
+    Args:
+        params (dict): A dictionary containing the the global variables to set.
+    """
+
     #global variables
     h.hf_tau_input_stellate_mech = params['hf_tau']
     h.hs_tau_input_stellate_mech = params['hs_tau']
@@ -105,11 +132,24 @@ def set_global_variables(params):
     h.omega_i_theta = params['omega_i_theta']
     
 def set_stell_range_variables(stell,params):
+    """Set the range variables for a stellate cell.
+
+    Args:
+        stell: The stellate cell object.
+        params (dict): A dictionary containing the range variables to set.
+    """
+    
     stell.soma(0.5).stellate_mech.ghbar = params['g_h_bar']
     stell.soma(0.5).stellate_mech.gnap_bar = params['gnap_bar']
     stell.soma(0.5).i_theta_stell.Amp = params['stell_theta_Amp']
     stell.soma(0.5).i_theta_stell.omega = params['stell_theta_omega']
 
 def set_intrnrn_range_variables(interneuron,params):
+    """Set the range variables for a interneuron cell.
+
+    Args:
+        interneuron: The interneuron cell object.
+        params (dict): A dictionary containing the range variables to set.
+    """
     interneuron.soma(0.5).i_theta.Amp =params["Amp_i_theta"]
     
