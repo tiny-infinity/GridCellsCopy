@@ -14,7 +14,7 @@ def generate_mult_input_params():
                 input_params = {
                     "sim_num":str(sim_num),
                     "sim_dur": sim_dur,
-                    "sim_id": "VALD-PRED-INT-S-m-2a",
+                    "sim_id": "DEBUG-PRED-INT-S-m-2e",
                     "vel_type": "PRED-IHD",
                     "g_h_bar":0.0015,
                     "n_nodes":10,
@@ -29,9 +29,8 @@ def generate_mult_input_params():
                     "hf_tau": tau_f,
                     "conn_id":"asym",   
                     "init_noise_seed":np.random.randint(0,100000),
-                    "extra_params":{"stell_dc":0,"dir_change_t":180000}, # -0.0006799 0.0016496
+                    "extra_params":{"stell_dc":1.2e-3,"dir_change_t":180000},
                     }
                 mult_input_params[str(sim_num)] = input_params
                 sim_num +=1
-
     return mult_input_params

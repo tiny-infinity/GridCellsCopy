@@ -4,10 +4,8 @@ Template specs file to run 2D simulation.
 
 import numpy as np
 def generate_input_params():
-    """
-    Generates a dictionary of input parameters for a simulation.
-    Returns:
-        dict: A dictionary containing the provided input parameters:
+    """Generates a dictionary of input parameters for a simulation.
+    
     """
     sim_dur = 7000
     N_per_sheet = 5041
@@ -37,12 +35,13 @@ def generate_input_params():
         "si_mean": [[si_shift, 0],[-si_shift,0],[0,si_shift],[0,-si_shift]],
         "stell_init_noise": [1000,0,0.5],
         "intrnrn_init_noise": [1000,0,0.5],
-        "noise_seed": 1400,
-        "init_noise_seed": 2000,
+        "noise_seed": 1000,
+        "init_noise_seed": 5000,
         "ii_stdev": 1.05,
         "ii_mean": 10,
-        "intrnrn_noise":[sim_dur,0,2e-3],
-        "stell_noise":[sim_dur,0,1e-3],
+        "intrnrn_noise":[sim_dur,0,0],
+        "stell_noise":[sim_dur,0,0],
         "intrnrn_dc_amp": 1e-3,
-        "stell_const_dc": [0,-4e-3,-4e-3,-4e-3]}
+        "stell_const_dc": [0,-4e-3,-4e-3,-4e-3],
+        "show_progress_bar":True}
     return input_params
