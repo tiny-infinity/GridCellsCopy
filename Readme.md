@@ -49,7 +49,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync
 ```
 > [!IMPORTANT]
-> For Windows, install NEURON independently through the GUI installer - [NEURON>=8.2](https://nrn.readthedocs.io/en/latest/index.html)
+> For Windows, install NEURON through the GUI installer - [NEURON](https://nrn.readthedocs.io/en/latest/index.html)
 
 **Activate environment:**
 
