@@ -29,6 +29,11 @@ mod_name = s_utils.get_module_from_path(fname)
 #load input parameters
 param_file = importlib.import_module(mod_name)
 mult_input_params = param_file.generate_mult_input_params()
+
+#check if sim_id declared
+if not mult_input_params["0"].get("sim_id",None):
+    raise ValueError("sim_id not set in specs file")
+
 #Initialize params dictionary
 mult_params = mParam()
 mult_params.load_update_mult_params(mult_input_params)
