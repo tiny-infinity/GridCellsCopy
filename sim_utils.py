@@ -31,21 +31,20 @@ def network_intialize(params):
     else:
         try:
             file = h5py.File(
-                f"network_configs/connections/saved_matrices/ \
-                matrix_{params['conn_id']}_{params['matrix_id']}.hdf5", "r"
+                f"network_configs/connections/saved_matrices/matrix_"
+                f"{params['conn_id']}_{params['matrix_id']}.hdf5", "r"
             )
         except FileNotFoundError as err:
-            err.add_note(f"Cannot find saved matrix network_configs/connections/ \
-                         saved_matrices/matrix_{params['conn_id']}_{params['matrix_id']}.hdf5")
+            err.add_note(f"Cannot find saved matrix network_configs/connections/"
+                         f"saved_matrices/matrix_{params['conn_id']}_{params['matrix_id']}.hdf5")
             raise err
         adj_matrix = file["matrix"]
     network = Network(0, adj_matrix, params)  # initialize grid cells
     file.close()
     
     #Add instrumentation
-    setup_instrumentation = importlib.import_module(f"network_configs. \
-                                                    instrumentations \
-                                                    .{params['instr_id']}_instr").setup_instrumentation
+    setup_instrumentation = importlib.import_module(f"network_configs.instrument"
+                                                    f"ations.{params['instr_id']}_instr").setup_instrumentation
     setup_instrumentation(network)
     return network
 
