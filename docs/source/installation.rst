@@ -30,8 +30,8 @@ Data from the simulation is saved in ``data/{sim_id}``, with sim_id specified in
 Check out :doc:`project structure <simulations>` for a detailed overview of the project. ``analysis\examples\BaseModel.ipynb`` 
 contains some basic plots generated from the simulated data.
 
-Dependency Issues?
-------------------
+Handling Dependencies
+---------------------
 This repository is `uv <https://github.com/astral-sh/uv>`_ enabled to manage dependencies. You can use ``uv.lock`` to 
 sync your local environment to the exact state in which these simulations were run in.
 
