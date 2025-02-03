@@ -387,7 +387,7 @@ def calc_predictive_code(stell_spikes_l,intrnrn_spks_l,params,sim_num):
     """
 
     bounds = (params["extra_params"]["dir_change_t"],int(params["sim_dur"]))
-    true_pos = decode_pos_by_intrnrn(intrnrn_spks_l,params,win_size=40)
+    true_pos = decode_pos_by_intrnrn(intrnrn_spks_l,params)
     stell_decoded = a_utils.decode_pos(stell_spikes_l,params)
     bias=calc_bias_stell_intrnrn(stell_decoded,true_pos,params,bounds)
     return bias
