@@ -10,7 +10,7 @@
     ],
 
     "n_nodes": 1,
-    "n_cpus":40,
+    "n_cpus":4,
     
     "post_sim_analysis": false,
     "show_progress_bar":false,
