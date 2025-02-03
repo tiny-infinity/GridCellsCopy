@@ -1,0 +1,5 @@
+﻿To run simulations, For analysis and plotting
+Python >= 3.12,`SciPy>=1.13 <https://scipy.org/install/>`_ 
+`NEURON>=8.2 <https://nrn.readthedocs.io/en/latest/index.html>`_ (with MPI support),`matplotlib>=3.9 <https://matplotlib.org/stable/>`_
+`numpy >= 1.26.4 <https://numpy.org/install/>`_,`seaborn>=0.13.2 <https://seaborn.pydata.org/installing.html>`_
+`h5py >= 3.12 <https://docs.h5py.org/en/latest/build.html>`_

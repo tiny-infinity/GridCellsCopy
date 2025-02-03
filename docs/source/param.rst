@@ -1,5 +1,5 @@
-Parameter Description
-=====================
+Parameters
+==========
 List of all the parameters used in the model
 
 .. csv-table::

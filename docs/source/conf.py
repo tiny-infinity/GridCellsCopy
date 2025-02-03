@@ -19,25 +19,13 @@ release = '0.1.0'
 
 extensions = ['sphinx.ext.autosummary',
                 'sphinx.ext.duration',
-                # 'sphinx.ext.autodoc',
-                # 'sphinx_rtd_theme',
                 'sphinx.ext.napoleon',
+                "sphinx_inline_tabs",
     ]
 
 templates_path = ['_templates']
 exclude_patterns = ['s_sim_setup.py']
-# napoleon_google_docstring  =False
 napoleon_use_param = False
-# napoleon_use_rtype = False
-
-# autodoc_mock_imports = [
-#     's_sim_setup'
-# ]
-
-# -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-
-# html_theme = "sphinx_rtd_theme"
+html_title = "GridCellsCond"
 html_theme = "furo"
-# html_theme="furo"
 html_static_path = ['_static']

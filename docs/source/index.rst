@@ -3,8 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to GridCellsCond's documentation!
-=========================================
+Grid Cells Conductance-based Model
+----------------------------------
+
+A conductance-based model of `Grid cells <https://en.wikipedia.org/wiki/Grid_cell>`_, implemented using the `NEURON <https://www.neuron.yale.edu/>`_ 
+simulator with parallelized functionality for efficient simulations. Grid cells are crucial for spatial navigation, and this model replicates their dynamics 
+with biologically realistic conductances.
+
+**Key Features**:
+
+* Conductance-based implementation of Stellate cells and Inhibitory Interneurons of the medial entorhinal cortex.
+* Parallelized Simulation: leveraging NEURON for multi-core simulations to handle large networks efficiently.
+* User-Friendly Code: Clear structure with modular components for easy setup, modification, and analysis.
 
 .. toctree::
    :maxdepth: 2
