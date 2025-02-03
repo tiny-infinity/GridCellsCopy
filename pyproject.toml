@@ -5,7 +5,7 @@ description = "Conductance-based model of grid cells"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "NEURON>=8.2",
+    "NEURON>=8.2; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'cygwin'",
     "scipy>=1.13",
     "numpy>=1.26.4",
     "h5py>=3.12",
