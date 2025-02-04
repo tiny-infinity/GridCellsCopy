@@ -16,7 +16,7 @@
     "show_progress_bar":false,
     "recorder_dt": 1,
     "data_root":"data/",
-    "python": "python",
+    "python": null,
     "build_conn_matrix":true,
     "save_conn_matrix":false,
     "matrix_id":"",
