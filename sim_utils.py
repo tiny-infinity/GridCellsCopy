@@ -334,11 +334,15 @@ class ProgressBar:
     :meta private:
     """
     def __init__(self,total,pc=None):
-        from colorama import just_fix_windows_console
-        import sys
-        sys.stdout.reconfigure(encoding='utf-8')
-        sys.stderr.reconfigure(encoding='utf-8')
-        just_fix_windows_console()
+        if os.name == 'nt':
+            try:
+                from colorama import just_fix_windows_console
+                import sys
+                sys.stdout.reconfigure(encoding='utf-8')
+                sys.stderr.reconfigure(encoding='utf-8')
+                just_fix_windows_console()
+            except ModuleNotFoundError:
+                print("colorama package not found. progress bar might not work")
         rank0=self._check_rank(pc)
         if rank0:
             self.marker='\x1b[31m█\x1b[39m'
