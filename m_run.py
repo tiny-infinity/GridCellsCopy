@@ -46,7 +46,7 @@ for sim_num, params in mult_params.items():
                          f"Sim {sim_num}:Building connectivity matrix",
                          level=logging.DEBUG)
     if params["build_conn_matrix"] and pc.id()==0:
-        cmd = f"python network_configs/connections/{params['conn_id']}_config.py -i {sim_id} -n {sim_num}"
+        cmd = f"{sys.executable} network_configs/connections/{params['conn_id']}_config.py -i {sim_id} -n {sim_num}"
         proc=subprocess.run(cmd.split(),check=True)
     elif pc.id()==0:
         logging.info(f"Skipping matrix build. Using matrix_{params['conn_id']}.hdf5")

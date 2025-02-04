@@ -42,8 +42,20 @@ In the project directory,
 
 .. code-block:: console
 
-    $ curl -LsSf https://astral.sh/uv/install.sh | sh
-    $ uv sync
+
+.. TAB:: Linux/macOS
+    
+    .. code-block:: console
+        
+        $ curl -LsSf https://astral.sh/uv/install.sh | sh
+        $ uv sync
+
+.. TAB:: Windows
+
+    .. code-block:: powershell
+
+        powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+        uv sync
 
 .. important::
 

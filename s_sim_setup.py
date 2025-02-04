@@ -21,6 +21,7 @@ import logging
 import sim_utils as s_utils
 from param import Param
 import shutil
+import sys
 
 tstart = time.perf_counter()
 args,unk = s_utils.sim_setup_arg_parser().parse_known_args()
@@ -73,7 +74,7 @@ except FileExistsError as err:
 logging.debug(f"Created data location at {data_loc}")
 
 # copy specs file to data_loc for future reference
-os.system(f"cp {fname} {data_loc}{sim_id}.py".format())
+os.system(f"cp {fname} {data_loc}{sim_id}.py")
  
 
 
@@ -84,7 +85,7 @@ os.system(f"cp {fname} {data_loc}{sim_id}.py".format())
 if params["build_conn_matrix"]:
     t2 = time.perf_counter()
     logging.info(f"Building connectivity matrix")
-    cmd = f"python network_configs/connections/{params['conn_id']}_config.py -i {sim_id}"
+    cmd = f"{sys.executable} network_configs/connections/{params['conn_id']}_config.py -i {sim_id}"
     proc=subprocess.run(cmd.split(),check=True)
     logging.info(f"Connectivity matrix built in {round(time.perf_counter()-t2,2)}s")
 else:
@@ -95,10 +96,10 @@ logging.debug(f"Launching s_run")
 verbosity = "-v" if args.verbose == logging.DEBUG else ""
 
 if params["split_sim"][0]:
-    proc=subprocess.run(["mpiexec","-n", f"{n_cpus}","python", "s_run_split.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
+    proc=subprocess.run(["mpiexec","-n", f"{n_cpus}",f"{sys.executable}", "s_run_split.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
 else:
     proc=subprocess.run(
-        ["mpiexec","-n", f"{n_cpus}","python", "s_run.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
+        ["mpiexec","-n", f"{n_cpus}",f"{sys.executable}", "s_run.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
 
 
 # save simulation time

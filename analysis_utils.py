@@ -8,6 +8,7 @@ import os
 import subprocess
 import sim_utils as s_utils
 import copy
+import sys
 
 def periodic_activity_all(stell_spikes_l, sim_dur, window_t, stdev):
     """Instantaneous firing rate for all cells using Gaussian kernel convolution.
@@ -181,7 +182,7 @@ def build_and_return_matrix(sim_id:str=None,specs_file:str=None)->np.ndarray:
     
     if sim_id:
         params = s_utils.load_sim_params(sim_id)
-        subprocess.run([f"python", f"network_configs/connections/{params['conn_id']}_config.py", "-i",f"{sim_id}"])
+        subprocess.run([f"{sys.executable}", f"network_configs/connections/{params['conn_id']}_config.py", "-i",f"{sim_id}"])
         with h5py.File(f"cache/matrix_{params['conn_id']}_{params['sim_id']}_{params['sim_num']}.hdf5", "r") as file:
             adj_matrix = np.array(file["matrix"])
         os.remove(f"cache/matrix_{params['conn_id']}_{params['sim_id']}_{params['sim_num']}.hdf5")

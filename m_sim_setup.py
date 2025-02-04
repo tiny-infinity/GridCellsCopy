@@ -19,6 +19,7 @@ import importlib
 from param import mParam
 import logging
 import shutil
+import sys
 
 tstart = time.perf_counter()
 args,unk = s_utils.sim_setup_arg_parser().parse_known_args()
@@ -70,12 +71,12 @@ except FileExistsError as err:
 logging.debug(f"Created data location at {data_loc}")
 
 # copy specs file to data_loc for future reference
-os.system(f"cp {fname} {data_loc}{sim_id}.py".format())
+os.system(f"cp {fname} {data_loc}{sim_id}.py")
 
 #run simulation
 logging.debug(f"Launching m_run")
 verbosity = "-v" if args.verbose == logging.DEBUG else ""
-proc=subprocess.run(["mpiexec","-n", f"{n_cpus}","python", "m_run.py", 
+proc=subprocess.run(["mpiexec","-n", f"{n_cpus}",f"{sys.executable}", "m_run.py", 
                      "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
 
 # save simulation time
