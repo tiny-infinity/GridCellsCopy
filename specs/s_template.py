@@ -15,7 +15,7 @@ def generate_input_params()-> dict:
         "stell_const_dc":[-2e-3,-7e-3],
         "show_progress_bar":True,
         "n_cpus":8, #all avail
-        "split_sim":[True,1000]
+        "split_sim":[False,1000]
 
     }
     return input_params
