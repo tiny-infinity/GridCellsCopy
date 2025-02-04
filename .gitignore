@@ -168,11 +168,11 @@ network_configs/connections/saved_matrices/**/*
 
 
 
-mod_files/*.c
-mod_files/*.o
-mod_files/x86_64
+mod/*.c
+mod/*.o
+mod/x86_64
 x86_64/*
-
+nrnmech.dll
 
 analysis/figures/**/*
 !analysis/figures/.placeholder
