@@ -19,9 +19,17 @@ To run a simulation, compile the mod files and pass a ``specs`` file to ``s_sim_
 
     $ nrnivmodl mod
 
-.. code-block:: console
+.. TAB:: Linux/macOS
+    
+    .. code-block:: console
 
-    $ python s_sim_setup.py specs/s_template.py
+        $ python s_sim_setup.py specs/s_template.py
+
+.. TAB:: Windows
+
+    .. code-block:: powershell
+
+        $ python s_sim_setup.py specs\s_template.py
 
 A ``specs`` file contains a subset of parameters that override the default parameters to run a simulation. 
 The default parameters are stored in ``default_model_params.json`` and ``default_sim_params.json``. 
@@ -39,9 +47,6 @@ sync your local environment to match the simulation requirements.
 **Install uv and sync environment:**
 
 In the project directory,
-
-.. code-block:: console
-
 
 .. TAB:: Linux/macOS
     
@@ -86,9 +91,17 @@ In the project directory,
 
     $ nrnivmodl mod
 
-.. code-block:: console
+.. TAB:: Linux/macOS
+    
+    .. code-block:: console
 
-    $ python s_sim_setup.py specs/s_template.py
+        $ python s_sim_setup.py specs/s_template.py
+
+.. TAB:: Windows
+
+    .. code-block:: powershell
+
+        $ python s_sim_setup.py specs\s_template.py
 
 Cite
 ----

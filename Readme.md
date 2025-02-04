@@ -27,7 +27,7 @@ nrnivmodl mod
 ```
 
 ```bash
-python s_sim_setup.py specs/s_template.py
+python s_sim_setup.py specs/s_template.py # specs\s_template.py for windows
 ```
 
 A `specs` file contains a subset of parameters that override the default parameters to run a simulation. The default parameters are stored in `default_model_params.json` and `default_sim_params.json`. Data from the simulation is saved in `data/{sim_id}`, with `sim_id` specified in the `specs` file.
@@ -73,7 +73,7 @@ nrnivmodl mod
 ```
 
 ```bash
-python s_sim_setup.py specs/s_template.py
+python s_sim_setup.py specs/s_template.py # specs\s_template.py for windows
 ```
 
 # Cite
