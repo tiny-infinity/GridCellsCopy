@@ -32,13 +32,13 @@ python s_sim_setup.py specs/s_template.py
 
 A `specs` file contains a subset of parameters that override the default parameters to run a simulation. The default parameters are stored in `default_model_params.json` and `default_sim_params.json`. Data from the simulation is saved in `data/{sim_id}`, with `sim_id` specified in the `specs` file.
 
-`analysis\examples\BaseModel.ipynb` contains some basic plots generated from the simulated data.
+`analysis\examples\BaseModel.ipynb` provides some basic plots generated from the simulated data.
 
 **Refer the [docs](https://inayath-sh.github.io/GridCellsCond/) for details on the project's structure and parameters.**
 
 # Handling Dependencies
-
-This repository is [`uv`](https://github.com/astral-sh/uv) enabled to manage dependencies. You can use ``uv.lock`` to sync your local environment to the exact state in which these simulations were run in.
+This repository uses [`uv`](https://github.com/astral-sh/uv) for dependency management. You can use `uv.lock` to 
+sync your local environment to match the simulation requirements.
 
 **Install uv and sync environment:**
 
@@ -66,7 +66,7 @@ For Windows:
 > [!WARNING]
 > This must be executed in every instance of the terminal. You can configure [VS Code](https://code.visualstudio.com/docs/python/environments) to handle python environments.
 
-**Compile the mod files and run the simulation:**
+**Compile the mod files and run a simulation:**
 
 ```bash
 nrnivmodl mod
