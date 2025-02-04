@@ -383,6 +383,7 @@ name = "gridcellscond"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "colorama" },
     { name = "furo" },
     { name = "h5py" },
     { name = "ipykernel" },
@@ -405,6 +406,7 @@ other = [
 
 [package.metadata]
 requires-dist = [
+    { name = "colorama", specifier = ">=0.4.6" },
     { name = "furo", specifier = ">=2024.8.6" },
     { name = "h5py", specifier = ">=3.12" },
     { name = "ipykernel", specifier = ">=6.29.5" },
