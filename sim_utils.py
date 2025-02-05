@@ -296,15 +296,20 @@ def process_data_root(data_root:str)->str:
 
 
 def load_spikes(sim_id:str,sim_num:int=0)->tuple:
-
     """Load spike data for a given simulation ID.
+    
+    This function looks for data in the following directories adn returns both
+    stellate and interneuron spikes.
+     
+        #. "data/" (local)
+        #. "/data/{user}/data/" (global)
     
     Args:
         sim_id (str): Simulation ID to load spikes from.
         sim_num (int, optional): Simulation number to load spikes from, 
             by default 0 (single sim).
     
-    Returns
+    Returns:
         tuple
             A tuple containing two lists of lists:
             - stell_spikes_l: List of spike times for stellate cells.
@@ -312,11 +317,11 @@ def load_spikes(sim_id:str,sim_num:int=0)->tuple:
     """
     
     data_dir = locate_data_dir(sim_id)
-    # get spikes of a sim from hdf5 file
-    sim_num = str(sim_num)
+    sim_num = str(sim_num) #sim_num are stored as string in .hdf5
     data_loc = f"{data_dir}{sim_id}/"
     file_path_stell = data_loc + f"stell_spks_{sim_id}.hdf5"
     file_path_intrnrn = data_loc + f"intrnrn_spks_{sim_id}.hdf5"
+    
     with h5py.File(file_path_stell, "r") as file:
         stellate_spks_arr = np.array(file[f"{sim_num}/stell_spks"][:])
         stell_spikes_l = [list(cell[~np.isnan(cell)]) for cell in stellate_spks_arr]
