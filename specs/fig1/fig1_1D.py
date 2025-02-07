@@ -17,5 +17,6 @@ def generate_input_params():
         "init_noise_seed":500,
         "noise_seed":1000,
         "n_cpus":40,
+        "show_progress_bar":True
     }
     return input_params
