@@ -9,7 +9,7 @@ class Cell:
         self._set_biophysics()
         self._default_instrumentation()
 
-        #vectors to record spike times and membrane potential
+        #vectors to record spike times
         self._spike_detector = h.NetCon(self.soma(0.5)._ref_v, None, sec=self.soma)
         self._ncs = []
 
