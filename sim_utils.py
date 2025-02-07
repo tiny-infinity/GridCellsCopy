@@ -331,6 +331,20 @@ def load_spikes(sim_id:str,sim_num:int=0)->tuple:
     
     return stell_spikes_l, intrnrn_spikes_l
 
+def get_git_commit_hash():
+    """Retrieves the current Git commit hash.
+    
+    Returns:
+        str: The Git commit hash as a string if the command is successful.
+        None: If there is an error executing the command.
+    """
+
+    import subprocess
+    try:
+        return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("utf-8").strip()
+    except subprocess.CalledProcessError:
+        return None
+    
 class ProgressBar:
     """Progress bar for simulations.
     

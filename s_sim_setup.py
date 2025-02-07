@@ -102,9 +102,11 @@ else:
         ["mpiexec","-n", f"{n_cpus}",f"{sys.executable}", "s_run.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
 
 
-# save simulation time
+# save simulation time ang git hash
 t_simulation=round(time.perf_counter() - tstart, 2)
 params["t_simulation"]= t_simulation
+params["git_commit_hash"]= s_utils.get_git_commit_hash()
+
 
 
 #remove cache file

@@ -82,6 +82,7 @@ proc=subprocess.run(["mpiexec","-n", f"{n_cpus}",f"{sys.executable}", "m_run.py"
 # save simulation time
 t_simulation=round(time.perf_counter() - tstart, 2)
 mult_params["0"]["t_simulation"]= t_simulation
+mult_params["0"]["git_commit_hash"]= s_utils.get_git_commit_hash()
 
 #remove cache file
 try:

@@ -21,6 +21,8 @@
     "save_conn_matrix":false,
     "matrix_id":"",
     "split_built_conn_matrix":false,
+    "git_commit_hash":null,
+
 
     "record_handle_stell": {
         "stell_spks": {
