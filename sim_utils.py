@@ -341,7 +341,9 @@ def get_git_commit_hash():
 
     import subprocess
     try:
-        return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("utf-8").strip()
+        out=subprocess.run(["git", "rev-parse", "--short", "HEAD"],capture_output=True,encoding="utf-8")
+        out.check_returncode()
+        return out.stdout.strip()
     except subprocess.CalledProcessError:
         return None
     
