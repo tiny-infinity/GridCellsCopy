@@ -159,6 +159,8 @@ cache/**/*
 !cache/.placeholder
 
 input_data/trajectories/**/*
+!input_data/trajectories/.placeholder
+
 
 
 
