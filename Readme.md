@@ -71,7 +71,7 @@ A `specs` file contains a subset of parameters that override the default paramet
 
 `analysis\examples\BaseModel.ipynb` provides some basic plots generated from the simulated data.
 
-**Refer the [docs](https://inayath-sh.github.io/GridCellsCond/) for details on the project's structure and parameters.**
+**Refer the [docs](https://assisilab.github.io/GridCellsCond/) for details on the project's structure and parameters.**
 
 # Cite
 # Funding
