@@ -26,3 +26,10 @@ This Project is hosted in: `<https://github.com/assisilab/GridCellsCond>`_
    simulations
    param
    utility_functions
+
+
+Cite
+^^^^
+
+Funding
+^^^^^^^

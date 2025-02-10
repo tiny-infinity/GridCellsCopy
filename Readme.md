@@ -8,9 +8,9 @@ Key Features:
 - Parallelized Simulation: leveraging NEURON for multi-core simulations to handle large networks efficiently.
 - User-Friendly Code: Clear structure with modular components for easy setup, modification, and analysis.
 
-# Prerequisites
+## Prerequisites
 
-| To run simulations  | For analysis and plotting: |
+| To run simulations  | For analysis and plots: |
 | ------------- | ------------- |
 | Python >= 3.12  | [SciPy>=1.13](https://scipy.org/install/)   |
 | [NEURON>=8.2](https://nrn.readthedocs.io/en/latest/index.html) (with MPI support)  | [matplotlib>=3.9](https://matplotlib.org/stable/) |
@@ -19,7 +19,44 @@ Key Features:
 
 
 
-# Running a simulation
+## Installing using uv
+This repository uses [`uv`](https://github.com/astral-sh/uv) for dependency management. You can use `uv.lock` to 
+sync your local environment to match the simulation requirements.
+
+### Clone the repository:
+
+```bash
+$ git clone https://github.com/assisilab/GridCellsCond.git
+$ cd GridCellsCond
+```
+
+### Install uv and sync environment:
+
+In the project directory,
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
+```
+> [!IMPORTANT]
+> For Windows, install NEURON through the GUI installer - [NEURON](https://nrn.readthedocs.io/en/latest/index.html)
+
+### Activate environment:
+
+For linux/macOS:
+
+```bash
+source .venv/bin/activate
+```
+For Windows:
+
+```powershell
+.venv\Scripts\activate
+```
+> [!WARNING]
+> This must be executed in every instance of the terminal. You can configure [VS Code](https://code.visualstudio.com/docs/python/environments) to handle python environments.
+
+## Running a simulation
 To run a simulation, compile the mod files and pass a `specs` file to `s_sim_setup.py`.
 
 ```bash
@@ -35,46 +72,6 @@ A `specs` file contains a subset of parameters that override the default paramet
 `analysis\examples\BaseModel.ipynb` provides some basic plots generated from the simulated data.
 
 **Refer the [docs](https://inayath-sh.github.io/GridCellsCond/) for details on the project's structure and parameters.**
-
-# Handling Dependencies
-This repository uses [`uv`](https://github.com/astral-sh/uv) for dependency management. You can use `uv.lock` to 
-sync your local environment to match the simulation requirements.
-
-**Install uv and sync environment:**
-
-In the project directory,
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv sync
-```
-> [!IMPORTANT]
-> For Windows, install NEURON through the GUI installer - [NEURON](https://nrn.readthedocs.io/en/latest/index.html)
-
-**Activate environment:**
-
-For linux/macOS:
-
-```bash
-source .venv/bin/activate
-```
-For Windows:
-
-```powershell
-.venv\Scripts\activate
-```
-> [!WARNING]
-> This must be executed in every instance of the terminal. You can configure [VS Code](https://code.visualstudio.com/docs/python/environments) to handle python environments.
-
-**Compile the mod files and run a simulation:**
-
-```bash
-nrnivmodl mod
-```
-
-```bash
-python s_sim_setup.py specs/s_template.py # specs\s_template.py for windows
-```
 
 # Cite
 # Funding
