@@ -153,20 +153,19 @@ cython_debug/
 #.idea/
 
 data/**/*
-!data/.placeholder
+!data/.gitkeep
 
 cache/**/*
-!cache/.placeholder
+!cache/.gitkeep
 
 input_data/trajectories/**/*
-!input_data/trajectories/.placeholder
+!input_data/trajectories/.gitkeep
 
 
 
 
 network_configs/connections/saved_matrices/**/*
-network_configs/connections/saved_matrices/**/*
-!network_configs/connections/saved_matrices/.placeholder
+!network_configs/connections/saved_matrices/.gitkeep
 
 
 
@@ -176,9 +175,18 @@ mod/x86_64
 x86_64/*
 nrnmech.dll
 
+
+
+
+
+
 analysis/figures/**/*
-!analysis/figures/.placeholder
+!analysis/figures/*/
+!analysis/figures/**/.gitkeep
+
 
 docs/build/*
-!docs/build/.placeholder
+!docs/build/.gitkeep
+
+
 
