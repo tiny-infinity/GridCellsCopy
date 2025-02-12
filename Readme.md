@@ -19,7 +19,7 @@ Key Features:
 
 
 
-## Installing using uv
+## Installation with uv
 This repository uses [`uv`](https://github.com/astral-sh/uv) for dependency management. You can use `uv.lock` to 
 sync your local environment to match the simulation requirements.
 
@@ -30,29 +30,46 @@ $ git clone https://github.com/assisilab/GridCellsCond.git
 $ cd GridCellsCond
 ```
 
-### Install uv and sync environment:
-
-In the project directory,
+### Install uv
 
 ```bash
+#Linux
 wget -qO- https://astral.sh/uv/install.sh | sh
+
+#macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+#windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+See [uv installation guide](https://docs.astral.sh/uv/getting-started/installation/) for alternative installation methods.
+
+### Sync environment
+
+Running `uv sync` sets up a virtual environment and installs all the dependencies.
+
+> [!IMPORTANT]
+> On Windows systems, NEURON must be installed separately through its GUI installer - [NEURON](https://nrn.readthedocs.io/en/latest/index.html)
+
+In the project directory, run:
+
+```bash
 uv sync
 ```
-> [!IMPORTANT]
-> For Windows, install NEURON through the GUI installer - [NEURON](https://nrn.readthedocs.io/en/latest/index.html)
 
 ### Activate environment:
 
 For linux/macOS:
 
 ```bash
+#For macOS/Linux
 source .venv/bin/activate
-```
-For Windows:
 
-```powershell
+#For Windows
 .venv\Scripts\activate
 ```
+
 > [!WARNING]
 > This must be executed in every instance of the terminal. You can configure [VS Code](https://code.visualstudio.com/docs/python/environments) to handle python environments.
 
@@ -64,7 +81,7 @@ nrnivmodl mod
 ```
 
 ```bash
-python s_sim_setup.py specs/s_template.py # specs\s_template.py for windows
+python s_sim_setup.py specs/s_template.py # specs\s_template.py for Windows
 ```
 
 A `specs` file contains a subset of parameters that override the default parameters to run a simulation. The default parameters are stored in `default_model_params.json` and `default_sim_params.json`. Data from the simulation is saved in `data/{sim_id}`, with `sim_id` specified in the `specs` file.

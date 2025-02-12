@@ -10,8 +10,8 @@ Prerequisites
    :header-rows: 1
 
 
-Installing using uv
--------------------
+Installation with uv
+--------------------
 
 This repository uses `uv <https://github.com/astral-sh/uv>`_ for dependency management. You can use ``uv.lock`` to 
 sync your local environment to match the simulation requirements.
@@ -25,32 +25,47 @@ Clone the repository:
     $ cd GridCellsCond
 
 
-Install uv and sync environment:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Install uv
+^^^^^^^^^^
 
-In the project directory,
-
-.. TAB:: Linux/macOS
+.. TAB:: Linux
     
     .. code-block:: console
         
         $ wget -qO- https://astral.sh/uv/install.sh | sh
-        $ uv sync
+
+.. TAB:: macOS
+    
+    .. code-block:: console
+        
+        $ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 .. TAB:: Windows
 
     .. code-block:: powershell
 
         powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-        uv sync
+
+
+See the `uv installation guide <https://docs.astral.sh/uv/getting-started/installation/>`_ for alternative installation methods.        
+
+Sync environment
+^^^^^^^^^^^^^^^^
+
+Running ``uv sync`` sets up a virtual environment and installs all the dependencies.
 
 .. important::
 
-    For Windows: Install NEURON independently through the GUI installer - `NEURON <https://nrn.readthedocs.io/en/latest/index.html>`_ 
+    On Windows systems, NEURON must be installed separately through its GUI installer - `NEURON <https://nrn.readthedocs.io/en/latest/index.html>`_ 
 
+In the project directory, run:
 
-Activate env:
-^^^^^^^^^^^^^
+.. code-block:: console
+    
+    $ uv sync
+
+Activate environment:
+^^^^^^^^^^^^^^^^^^^^^
 
 .. TAB:: Linux/macOS
     
