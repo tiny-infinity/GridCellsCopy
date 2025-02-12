@@ -35,7 +35,7 @@ $ cd GridCellsCond
 In the project directory,
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
+wget -qO- https://astral.sh/uv/install.sh | sh
 uv sync
 ```
 > [!IMPORTANT]

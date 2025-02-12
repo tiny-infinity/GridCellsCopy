@@ -34,7 +34,7 @@ In the project directory,
     
     .. code-block:: console
         
-        $ curl -LsSf https://astral.sh/uv/install.sh | sh
+        $ wget -qO- https://astral.sh/uv/install.sh | sh
         $ uv sync
 
 .. TAB:: Windows
