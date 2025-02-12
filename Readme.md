@@ -60,8 +60,6 @@ uv sync
 
 ### Activate environment:
 
-For linux/macOS:
-
 ```bash
 #For macOS/Linux
 source .venv/bin/activate

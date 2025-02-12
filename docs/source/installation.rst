@@ -34,7 +34,7 @@ Install uv
         
         $ wget -qO- https://astral.sh/uv/install.sh | sh
 
-.. TAB:: macOS
+.. TAB:: macOS/Linux
     
     .. code-block:: console
         
