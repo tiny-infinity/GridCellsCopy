@@ -21,6 +21,7 @@ extensions = ['sphinx.ext.autosummary',
                 'sphinx.ext.duration',
                 'sphinx.ext.napoleon',
                 "sphinx_inline_tabs",
+                'sphinx.ext.imgconverter'
     ]
 
 templates_path = ['_templates']
