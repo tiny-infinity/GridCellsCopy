@@ -39,7 +39,7 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 #macOS/Linux
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-#windows
+#Windows
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 

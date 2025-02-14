@@ -10,7 +10,7 @@
     ],
 
     "n_nodes": 1,
-    "n_cpus":4,
+    "n_cpus":null,
     
     "post_sim_analysis": false,
     "show_progress_bar":false,
@@ -32,10 +32,7 @@
         "stell_v": {
             "state": false,
 
-            "cells_to_record": [
-                12,
-                14
-            ],
+            "cells_to_record": "all",
             "loc":"soma(0.5):_ref_v"
         },
         "stell_ih": {
@@ -81,7 +78,7 @@
         },
         "stell_ih_ms": {
             "state": false,
-            "cellsncpus_to_record": [],
+            "cells_to_record": [],
             "loc":"soma(0.5):stellate_mech:_ref_mhs"
         },
         "stell_syn_exc_i": {
@@ -164,6 +161,11 @@
             "state": false,
             "cells_to_record": [],
             "loc":"soma(0.5):i_theta:_ref_itheta"
+        },
+        "intrnrn_switch_pulse": {
+            "state": false,
+            "cells_to_record": [],
+            "loc":"switch_pulse_iclamp:_ref_amp"
         }
     }
 }

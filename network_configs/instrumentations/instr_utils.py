@@ -152,4 +152,38 @@ def set_intrnrn_range_variables(interneuron,params):
         params (dict): A dictionary containing the range variables to set.
     """
     interneuron.soma(0.5).i_theta.Amp =params["Amp_i_theta"]
+
+
+
+def generate_pulse_train(duration_ms, pulse_width_ms, ipi_ms, start_delay_ms, amplitude, dt=0.025, random_variation=0):
+    """Generate a pulse train signal with optional random variations.
+
+    Args:
+        - duration_ms (float): Total duration of the signal (in milliseconds).
+        - pulse_width_ms (float): Base width of each pulse (in milliseconds).
+        - ipi_ms (float): Base inter-pulse interval (in milliseconds, measured from the start of one pulse to the start of the next).
+        - start_delay_ms (float, optional): Initial delay before the first pulse (in milliseconds). Default is 0.
+        - amplitude (float, optional): Amplitude of the pulses. Default is 1.
+        - sampling_rate (int, optional): Number of samples per second. Default is 1000 Hz.
+        - random_variation (float, optional): Maximum random variation in pulse width and IPI (in milliseconds). Default is 0.
+
+    Returns:
+    - t (numpy array): Time vector.
+    - signal (numpy array): Generated pulse train signal.
+    """
+    sampling_rate = int((1/dt)*1000)
+    duration = duration_ms / 1000  # Convert to seconds
+    t = np.arange(0, duration, 1 / sampling_rate)  # Time vector
+    signal = np.zeros_like(t)  # Initialize signal with zeros
     
+    current_time = max(0, (start_delay_ms + np.random.uniform(-random_variation, random_variation)) / 1000)  # Start after initial delay
+    
+    while current_time < duration:
+        pulse_width = max(0, (pulse_width_ms + np.random.uniform(-random_variation, random_variation)) / 1000)
+        ipi = max(0, (ipi_ms + np.random.uniform(-random_variation, random_variation)) / 1000)
+        
+        pulse_end_time = current_time + pulse_width
+        signal[(t >= current_time) & (t < pulse_end_time)] = amplitude
+        current_time += ipi
+    
+    return signal
