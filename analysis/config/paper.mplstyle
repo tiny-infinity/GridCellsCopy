@@ -1,5 +1,5 @@
 # Matplotlib style for scientific plotting
-# This is the base style for "SciencePlots"
+# This is the base style for 'SciencePlots'
 # see: https://github.com/garrettj403/SciencePlots
 
 # Set color cycle: blue, green, yellow, red, violet, gray
@@ -48,7 +48,7 @@ savefig.bbox : tight
 savefig.pad_inches : 0.05
 
 # Use serif fonts
-font.family : Arial
+font.family : Arial, sans-serif
 
 
 # Use LaTeX for math formatting
