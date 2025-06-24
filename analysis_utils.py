@@ -297,9 +297,26 @@ def grid_props_2D(inst_rates_reshaped,t=-1000):
         grid_score= min_corr-max_corr
         grid_scale = np.median(np.sort(obj_dist_from_centre)[1:7])
         grid_size = np.median(grid_size)
-        return  auto_corr/np.max(auto_corr),np.round(grid_score,2),round(grid_scale,2),round(grid_size,2)
+        # Get position of the center
+        center_row, center_col = center_object_idx
+
+        # Use the nearest peak
+        nearest_obj_idx = closest_obj_idx[0]
+        nearest_obj = obj[nearest_obj_idx]
+
+        # Find center of that object
+        row_cent_idx = int((nearest_obj[0].stop + nearest_obj[0].start) / 2)
+        col_cent_idx = int((nearest_obj[1].stop + nearest_obj[1].start) / 2)
+
+        # Compute vector from center to peak
+        dy = row_cent_idx - center_row
+        dx = col_cent_idx - center_col
+
+        # Compute angle in degrees
+        orientation = (np.degrees(np.arctan2(dy, dx))) % 180  # grid orientation is typically defined modulo 180°
+        return  auto_corr/np.max(auto_corr),np.round(grid_score,2),round(grid_scale,2),round(grid_size,2),round(orientation,2)
     except:
-        return auto_corr/np.max(auto_corr),np.nan,np.nan,np.nan
+        return auto_corr/np.max(auto_corr),np.nan,np.nan,np.nan,np.nan
 
 def spks_to_rate_reshaped(spks_l:list,params:dict,win_size:float=200)->np.ndarray:
     """Convert spike times to firing rates and reshape based on cell position.
@@ -518,14 +535,14 @@ def shift_fields_to_center(stell_spikes):
 
 
 
-def generate_2d_video(sim_id,sheet_to_save=0):
+def generate_2d_video(sim_id,sheet_to_save=0,sim_num=0):
     """Generates a video for the 2D model
 
     Video is saved as data/{sim_id}/{sim_id}_{sheet_to_save}.mp4
 
     Args:
         sim_id (str): The simulation ID to load spikes and parameters.
-        sheet_to_save (int, optional): The sheet index to save (1-4). Defaults to 0. 
+        sheet_to_save (int, optional): The sheet index to save (0-4). Defaults to 0. 
             Index 4 is the interneuron sheet.
     Returns:
         None
@@ -542,10 +559,10 @@ def generate_2d_video(sim_id,sheet_to_save=0):
     plt.rcParams["xtick.labelsize"] = 22
     
     t1 = time.perf_counter()
-    stell_spikes_l,intrnrn_spikes_l=s_utils.load_spikes(sim_id=sim_id)
-    params=s_utils.load_sim_params(sim_id=sim_id)   
-    if list(params.keys())[0] == '0':
-        params = params['0']
+    stell_spikes_l,intrnrn_spikes_l=s_utils.load_spikes(sim_id=sim_id,sim_num=sim_num)
+    params=s_utils.load_sim_params(sim_id=sim_id)
+    if "sim_id" not in params.keys():
+        params = params[f'{sim_num}']
     n_per_sheet=params["N_per_sheet"]
     idx = np.full((4,2),n_per_sheet)*np.array([[0,1],[1,2],[2,3],[3,4]])
     print("Reshaping array")
@@ -560,7 +577,8 @@ def generate_2d_video(sim_id,sheet_to_save=0):
     fig,axs= plt.subplots(1,1)
     fig.set_tight_layout(True)
     plot = plt.imshow(stell_spikes_arr[:,:,0],cmap=sns.cubehelix_palette(as_cmap=True,reverse=True),origin="lower",
-                      vmax=np.max(stell_spikes_arr[:,:,int(params["stell_init_noise"][0]+500):int(params["sim_dur"])]))
+                      vmax=np.max(stell_spikes_arr[:,:,int(params["stell_init_noise"][0]+500):int(params["sim_dur"])]),
+                      vmin=0)
     
     axs.set(xticks=np.arange(1,params["N_per_axis"],20),xticklabels=np.arange(1,params["N_per_axis"],20),
             yticks=np.arange(1,params["N_per_axis"],20),yticklabels=np.arange(1,params["N_per_axis"],20))

@@ -12,6 +12,7 @@ from neuron.units import ms, mV
 import time
 import sim_utils as s_utils
 import h5py
+import os
 h5py.get_config().track_order = True
 import logging
 
@@ -53,15 +54,23 @@ t = h.Vector().record(h._ref_t)
 pc.set_maxstep(10 * ms)
 s_utils.log_from_rank_0(logger,pc.id(),f"Simulation started")
 h.finitialize(-65 * mV)
-
 if not params["show_progress_bar"]:
     pc.psolve(sim_dur * ms)
+elif os.getenv("WHERE_AM_I")=="ADA":
+    #check progress every 5s
+    sim_chunks = s_utils.get_multiples_with_remainder(sim_dur,5000)
+    for chunk in sim_chunks:
+        pc.psolve(chunk * ms)
+        progress=int((chunk/sim_dur)*100)
+        if pc.id()==0:
+            print(f"{progress}%",end=" ",flush=True)
 else:
     pbar=s_utils.ProgressBar(total=int(sim_dur),pc=pc)
-    for i in range(int(sim_dur)):
+    for i in range(int(sim_dur)+1):
         pc.psolve(i * ms)
         pbar.increment(int(pc.t(0)),pc)
-    pbar.finish(pc)        
+    pbar.finish(pc)
+        
 tsim = round(time.perf_counter()-t3, 2)
 s_utils.log_from_rank_0(logger,pc.id(),f"Simulation completed in {tsim}s")
 

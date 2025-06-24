@@ -229,6 +229,20 @@ def get_sim_num(iters: tuple, n_iters: tuple) -> int:
         sim_num+=iter*np.prod(n_iters[i+1:])
     return sim_num
 
+def remove_nodes_from_params(params):
+    """Remove "-node*" suffix from sim_id in multi params dict.
+
+    Args:
+        params (dict): Multi params dict.
+
+    Returns:
+        dict: modified params dict without "-node*" suffix from sim_id.
+    """
+    
+    import re
+    for outer in params.values():
+        outer["sim_id"] = re.sub(r"-node\d+$", "", outer["sim_id"])
+    return params
 
 def sim_setup_arg_parser()->argparse.ArgumentParser:
     """Set up the argument parser for the simulation.
@@ -449,3 +463,19 @@ def load_full_data(sim_id,data_id,sim_num=0):
     with h5py.File(f'{data_dir}{sim_id}/{data_id}_{sim_id}.hdf5', 'r') as f:
             data= np.array(f[str(sim_num)]['{}'.format(data_id)])
     return data
+
+
+def get_multiples_with_remainder(N, k):
+    """Returns a list of multiples of `k` upto N.
+
+    Args:
+        N (int): The upper limit (exclusive) for the multiples.
+        k (int): The step size.
+    """
+
+    N = int(N)
+    k = int(k)
+    multiples = list(range(k, N+1, k))
+    remainder = N - multiples[-1] if multiples else N
+    multiples.append(N) if remainder else None
+    return np.array(multiples,dtype="int")

@@ -95,7 +95,15 @@ else:
 logging.debug(f"Launching s_run")
 verbosity = "-v" if args.verbose == logging.DEBUG else ""
 
-if params["split_sim"][0]:
+if os.getenv("WHERE_AM_I")=="ADA":
+    if params["split_sim"][0]:
+        proc=subprocess.run(
+        ["mpiexec","--mca", "btl", "openib,vader,self", "--hostfile", "pbs_hosts.txt", "--display-allocation",
+         "-x", "WHERE_AM_I","-x","NEURON_MODULE_OPTIONS","-n", f"{n_cpus}",f"{sys.executable}", "s_run_split.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
+    else:
+        proc=subprocess.run(["mpiexec","--mca", "btl", "openib,vader,self", "--hostfile", "pbs_hosts.txt", "--display-allocation",
+                              "-x", "WHERE_AM_I","-x","NEURON_MODULE_OPTIONS","-n", f"{n_cpus}",f"{sys.executable}", "s_run.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
+elif params["split_sim"][0]:
     proc=subprocess.run(["mpiexec","-n", f"{n_cpus}",f"{sys.executable}", "s_run_split.py", "--sim_id",f"{sim_id}",f"{verbosity}"],check=True)
 else:
     proc=subprocess.run(

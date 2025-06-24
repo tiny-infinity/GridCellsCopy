@@ -30,18 +30,18 @@ mod_name = s_utils.get_module_from_path(fname)
 #load input parameters
 param_file = importlib.import_module(mod_name)
 mult_input_params = param_file.generate_mult_input_params()
-
+first_key = next(iter(mult_input_params))
 #check if sim_id declared
-if not mult_input_params["0"].get("sim_id",None):
+if not mult_input_params[first_key].get("sim_id",None):
     raise ValueError("sim_id not set in specs file")
 
 #Initialize params dictionary
 mult_params = mParam()
 mult_params.load_update_mult_params(mult_input_params)
+first_key = next(iter(mult_params))
+sim_id = mult_params[first_key]["sim_id"]
 
-sim_id = mult_params["0"]["sim_id"]
-
-n_cpus = mult_params["0"]["n_cpus"] if mult_params["0"]["n_cpus"] else os.cpu_count()//2
+n_cpus = mult_params[first_key]["n_cpus"] if mult_params[first_key]["n_cpus"] else os.cpu_count()//2
 
 #start logger
 logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log",mode="w"),
@@ -52,7 +52,7 @@ logging.basicConfig(handlers=[logging.FileHandler(f"logs/setup_{sim_id}.log",mod
 s_utils.json_save(mult_params,f"cache/params_{sim_id}.json")
 
 #create data directory in data_root/
-data_root = s_utils.process_data_root(mult_params["0"]["data_root"])
+data_root = s_utils.process_data_root(mult_params[first_key]["data_root"])
 data_loc = data_root+f"{sim_id}/"
 
 try:
@@ -81,8 +81,8 @@ proc=subprocess.run(["mpiexec","-n", f"{n_cpus}",f"{sys.executable}", "m_run.py"
 
 # save simulation time
 t_simulation=round(time.perf_counter() - tstart, 2)
-mult_params["0"]["t_simulation"]= t_simulation
-mult_params["0"]["git_commit_hash"]= s_utils.get_git_commit_hash()
+mult_params[first_key]["t_simulation"]= t_simulation
+mult_params[first_key]["git_commit_hash"]= s_utils.get_git_commit_hash()
 
 #remove cache file
 try:
