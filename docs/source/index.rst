@@ -16,7 +16,7 @@ with biologically realistic conductances.
 * Parallelized Simulation: leveraging NEURON for multi-core simulations to handle large networks efficiently.
 * User-Friendly Code: Clear structure with modular components for easy setup, modification, and analysis.
 
-This project is hosted at: `<https://github.com/assisilab/GridCellsCond>`_
+This project is hosted on: `<https://github.com/assisilab/GridCellsCond>`_
 
 .. toctree::
    :maxdepth: 2
@@ -30,6 +30,6 @@ This project is hosted at: `<https://github.com/assisilab/GridCellsCond>`_
 
 Cite
 ^^^^
-
-Funding
-^^^^^^^
+Shaikh Inayath, Assisi Collins (2025) **Intrinsic and circuit mechanisms of predictive coding in a grid cell network model** *eLife* 14:RP108142.
+ 
+https://doi.org/10.7554/eLife.108142

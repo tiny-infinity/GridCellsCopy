@@ -89,4 +89,6 @@ A `specs` file contains a subset of parameters that override the default paramet
 **Refer the [docs](https://assisilab.github.io/GridCellsCond/) for details on the project's structure and parameters.**
 
 # Cite
-# Funding
+Shaikh Inayath, Assisi Collins (2025) **Intrinsic and circuit mechanisms of predictive coding in a grid cell network model** *eLife* 14:RP108142.
+ 
+https://doi.org/10.7554/eLife.108142
