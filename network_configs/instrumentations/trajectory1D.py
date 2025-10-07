@@ -62,17 +62,51 @@ class Trajectory1D:
         self.left_dc = np.full_like(self.t, self.left_const_dc)
         self.right_dc = np.full_like(self.t, self.right_const_dc)
 
-
+    
     def input_velocity(self):
 
         with hdf.File("input_data/trajectories/traj_{}.hdf5".format(self.params["traj_id"]), "r") as file:
             self.vel_input = np.array(file["vel_rinb"][:])
             self.pos_input = np.array(file["pos_rinb"][:])
+            print(self.pos_input)
             self.init_allothetic_dur = float(file.attrs["allothetic_dur"])
         self.decompose_vel()
         self.right_dc = self.vel_to_dc_fit(self.right_vel)
         self.left_dc = self.vel_to_dc_fit(-1 * self.left_vel)
         self.intrnrn_dc=np.full_like(self.t, self.params["intrnrn_dc_amp"])
+        temp = self.intrnrn_dc
+
+        #making changes from here
+        self.cue_loc = self.params["cue_position"]
+        self.tuning = self.params["tuning"]
+        def distance_function(pos,cue_loc):
+
+            return np.minimum(2*np.pi - np.abs(pos - cue_loc), np.abs(pos - cue_loc))
+
+        
+
+        def amp_mod_function(dis):
+            amp_base = self.params["dc_amp_baseline"]
+            amp_min = self.params["dc_amp_minimum"]
+            resp = self.params["theta_response_scale"]
+
+            term = (amp_base-amp_min)*(np.exp(-dis/resp))
+            
+            return amp_base-term*self.tuning
+        
+        def theta_osc(t_arr):
+            freq = self.params["omega_i_theta"]
+            return np.sin(2*np.pi*freq*t_arr)
+
+        dis_array = distance_function(self.pos_input,self.cue_loc)
+        amp_array = amp_mod_function(dis=dis_array)
+
+        self.intrnrn_dc = self.params["tuning"]*amp_array*theta_osc(self.t) + temp
+
+         #to here
+        
+
+
         if self.params["init_allothetic_input"]:
             self.allothetic_input()
 
@@ -148,3 +182,33 @@ class Trajectory1D:
         self.left_dc = self.create_piecewise(x, left_ring)
         self.right_dc = self.create_piecewise(x, right_ring)
         self.intrnrn_dc=np.full_like(self.t, self.params["intrnrn_dc_amp"])
+
+    def theta_modulation(self):
+        """Theta amplitude changes with proximity to cue on the track"""
+        with hdf.File("input_data/trajectories/traj_{}.hdf5".format(self.params["traj_id"]), "r") as file:
+            self.vel_input = np.array(file["vel_rinb"][:])
+            self.pos_input = np.array(file["pos_rinb"][:])
+            pos_array = self.pos_input
+
+        def periodic_distance(x, y, L):
+            """Shortest distance on a circle of length L"""
+            return np.minimum(np.abs(x - y), L - np.abs(x - y))
+        
+        def theta_amp_mod(cur_pos, cue_pos, L=2*np.pi):
+             base_theta_amp = 1.0   # baseline
+             min_theta_amp  = 0.1   # min at cue
+             pos_var        = 10    # width of cue effect (cm)
+
+             cur_pos = np.array(cur_pos).flatten()
+             d = periodic_distance(cur_pos, cue_pos, L)
+
+             mod_term = (base_theta_amp - min_theta_amp) * np.exp(-(d ** 2) / pos_var)
+             return base_theta_amp - mod_term
+        
+        
+
+        
+
+        return None
+
+    

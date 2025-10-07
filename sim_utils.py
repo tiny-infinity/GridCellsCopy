@@ -329,13 +329,14 @@ def load_spikes(sim_id:str,sim_num:int=0)->tuple:
             - stell_spikes_l: List of spike times for stellate cells.
             - intrnrn_spikes_l: List of spike times for interneurons.
     """
-    
+    print("Hallelujah")
     data_dir = locate_data_dir(sim_id)
     sim_num = str(sim_num) #sim_num are stored as string in .hdf5
     data_loc = f"{data_dir}{sim_id}/"
     file_path_stell = data_loc + f"stell_spks_{sim_id}.hdf5"
     file_path_intrnrn = data_loc + f"intrnrn_spks_{sim_id}.hdf5"
-    
+    print("Stellate File Path : ", file_path_stell)
+    print("Interneuron File Path : ", file_path_intrnrn)
     with h5py.File(file_path_stell, "r") as file:
         stellate_spks_arr = np.array(file[f"{sim_num}/stell_spks"][:])
         stell_spikes_l = [list(cell[~np.isnan(cell)]) for cell in stellate_spks_arr]

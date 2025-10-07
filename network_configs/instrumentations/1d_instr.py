@@ -20,7 +20,35 @@ def setup_instrumentation(network):
     stell_l1_gids = list(range(0,  params["N_per_sheet"]))
     stell_l2_gids = list(range(params["N_per_sheet"],params["N_per_sheet"]*2))
     network.traj = Trajectory1D(params)
+    """
+        # --- Cue-based modulation of theta oscillation amplitude ---
+    pos_array = np.array(network.traj.pos_rinb)           # position trace
+    dc_input  = np.array(network.traj.intrnrn_dc)         # full input trace from trajectory
     
+    # Parameters from params
+    cue_pos  = params.get("cue_pos", 100.0)    # cm
+    sigma    = params.get("cue_sigma", 15.0)   # cm
+    L        = params.get("track_length", np.max(pos_array))
+    
+    # Helper: circular distance
+    def periodic_distance(x, y, L):
+        return np.minimum(np.abs(x - y), L - np.abs(x - y))
+    
+    # Compute Gaussian bump modulation
+    dist = periodic_distance(pos_array, cue_pos, L)
+    amp_mod = np.exp(-(dist**2) / (2 * sigma**2))   # [0,1]
+    
+    # Separate baseline + oscillation
+    baseline = np.mean(dc_input)                    # constant offset
+    oscill   = dc_input - baseline                  # zero-mean oscillatory component
+    
+    # Apply modulation only to oscillatory component
+    modulated_intrnrn_dc = baseline + oscill * (1 - amp_mod)
+
+    
+    # Replace vector (this will be played into interneurons below)
+    network.ext_amp_intrnrn = h.Vector(modulated_intrnrn_dc)
+    """
     #create common vectors
     network.ext_t = h.Vector(np.arange(0, params["sim_dur"]+params["dt"], params["dt"]))
     network.ext_amp_right = h.Vector(network.traj.right_dc)

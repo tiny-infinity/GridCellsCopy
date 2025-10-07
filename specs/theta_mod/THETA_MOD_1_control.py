@@ -4,13 +4,13 @@ def generate_mult_input_params():
     n_trials = 1
     sim_num = 0
     multiple_input_params = {}
-    sim_dur = float(30000)
+    sim_dur = float(60000)
     for tr in range(n_trials):
         input_params = {
             "sim_num":str(sim_num),
             "sim_dur": sim_dur,
-            "sim_id": "VALD-PI-TRAJ-S-m-1a",
-            "traj_id": '1',
+            "sim_id": "THETA_MOD_1_control",
+            "traj_id": 'tmod1',
             "vel_type": "input",
             "init_allothetic_input": True,
             "allothetic_stell_dc":-0.0027,
@@ -24,13 +24,15 @@ def generate_mult_input_params():
             "lambda0":2*np.pi,
             "allothetic_nrn_n":10,
             "Amp_i_theta":1e-4,
-            "intrnrn_dc_amp":1.5e-3,
+            "intrnrn_dc_amp":1e-3,
             "init_noise_seed":np.random.randint(0,100000),
             "noise_seed":np.random.randint(0,100000),
             "n_cpus":8,
+            "tuning":0,
             "netcon_delay":1,
             "record_handle_stell":{"stell_syn_inhib_g":{"state":False,"cells_to_record":[46,64]},
-                                     "stell_ext_dc_amp":{"state":False,"cells_to_record":[46,64]}}
+                                     "stell_ext_dc_amp":{"state":False,"cells_to_record":[46,64]}},
+            "record_handle_intrnrn":{"intrnrn_v":{"state": True,"cells_to_record":"all"}}
         }
         multiple_input_params[str(sim_num)] = input_params
         sim_num +=1

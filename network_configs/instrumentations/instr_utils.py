@@ -85,6 +85,7 @@ def recursive_getattr(obj, attr_string):
         else:
             obj = getattr(obj, part)
     return obj
+
 def setup_recorders(cell,recorder_handle,recorder_dt):
     """Sets up recorders for a given cell based on the provided recorder handle.
 

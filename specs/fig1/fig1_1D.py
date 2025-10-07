@@ -16,7 +16,7 @@ def generate_input_params():
         "stell_noise":[sim_dur,0,1e-3],
         "init_noise_seed":500,
         "noise_seed":1000,
-        "n_cpus":40,
+        "n_cpus":8,
         "show_progress_bar":True
     }
     return input_params

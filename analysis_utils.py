@@ -144,10 +144,10 @@ def calc_speed_of_network(stell_spks_l,params,win_size=100):
     cell_phases = np.concatenate((cell_phases,cell_phases))
     #instantaneous rates
     t_stell=instant_rate_all(stell_spks_l[:],sim_dur,win_size)
-    decoded_pos=((lamb/(2*np.pi))*((np.angle(np.sum((t_stell*np.exp(1j*cell_phases[:,np.newaxis])),axis=0)))))%lamb
-    decoded_pos_unwrapped=np.unwrap(decoded_pos,period=lamb)
+    decoded_pos=((lamb/(2*np.pi))*((np.angle(np.sum((t_stell*np.exp(1j*cell_phases[:,np.newaxis])),axis=0)))))%lamb #THIS LINE
+    decoded_pos_unwrapped=np.unwrap(decoded_pos,period=lamb) #WHAT IS UNWRAP DOING??
     x= (np.arange(0,params['sim_dur'])[:])/1000
-    slope=stats.linregress(x[:],np.unwrap(decoded_pos_unwrapped[:])).slope
+    slope=stats.linregress(x[:],np.unwrap(decoded_pos_unwrapped[:])).slope 
     return slope
 
 
@@ -182,7 +182,7 @@ def build_and_return_matrix(sim_id:str=None,specs_file:str=None)->np.ndarray:
     
     if sim_id:
         params = s_utils.load_sim_params(sim_id)
-        subprocess.run([f"{sys.executable}", f"network_configs/connections/{params['conn_id']}_config.py", "-i",f"{sim_id}"])
+        subprocess.run([f"{sys.executable}", f"network_configs/connections/{params['conn_id']}_config.py", "-i",f"{sim_id}"]) #WHAT IS SUBPROCESS FOR???
         with h5py.File(f"cache/matrix_{params['conn_id']}_{params['sim_id']}_{params['sim_num']}.hdf5", "r") as file:
             adj_matrix = np.array(file["matrix"])
         os.remove(f"cache/matrix_{params['conn_id']}_{params['sim_id']}_{params['sim_num']}.hdf5")
@@ -331,7 +331,7 @@ def spks_to_rate_reshaped(spks_l:list,params:dict,win_size:float=200)->np.ndarra
     """
     
     inst_rate = instant_rate_all(spks_l, params['sim_dur'], win_size)
-    inst_rate_reshaped=inst_rate.reshape(params['N_per_axis'],params['N_per_axis'],inst_rate.shape[1])
+    inst_rate_reshaped=inst_rate.reshape(params['N_per_axis'],params['N_per_axis'],inst_rate.shape[1]) #WHAT DOES RESHAPE do??
     inst_rate_reshaped = np.flip(inst_rate_reshaped,axis=0)
     return inst_rate_reshaped
 
@@ -426,7 +426,7 @@ def clean_spikes(stell_spikes_l,order=1):
 
 
 
-def separate_fields(stell_spikes_l,order=1):
+def separate_fields(stell_spikes_l,order=1): #this too what does it do??
     """
     Separates spike trains into grid fields based on a threshold.
 

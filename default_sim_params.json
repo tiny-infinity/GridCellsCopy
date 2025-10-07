@@ -23,6 +23,8 @@
     "split_built_conn_matrix":false,
     "git_commit_hash":null,
 
+    "cue_position":0, 
+
 
     "record_handle_stell": {
         "stell_spks": {

@@ -13,8 +13,6 @@ import json
 import time
 import copy
 
-
-
 class Param(dict):
    def __init__(self):
       super(Param, self).__init__()
@@ -83,6 +81,7 @@ class mParam(dict):
                       "cells_to_record", self[sim_num][key][rec_param].get("cells_to_record"))
          else:
                self[sim_num][key] = val
+
    def load_update_mult_params(self,mult_input_params):
       """Load default parameters and update the with input parameters
       

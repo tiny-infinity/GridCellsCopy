@@ -1,0 +1,40 @@
+./itheta.c: ../mod/itheta.mod
+	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
+	(cd "../mod";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "itheta.mod" -o "/Users/govindrnair/TheoNeuroLab/GridCellsCond/arm64")
+
+./itheta.o: ./itheta.c
+	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
+	$(COMPILE) -I"../mod" $(INCLUDES) -fPIC -c $< -o $@
+
+./itheta_stell.c: ../mod/itheta_stell.mod
+	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
+	(cd "../mod";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "itheta_stell.mod" -o "/Users/govindrnair/TheoNeuroLab/GridCellsCond/arm64")
+
+./itheta_stell.o: ./itheta_stell.c
+	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
+	$(COMPILE) -I"../mod" $(INCLUDES) -fPIC -c $< -o $@
+
+./kdr.c: ../mod/kdr.mod
+	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
+	(cd "../mod";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "kdr.mod" -o "/Users/govindrnair/TheoNeuroLab/GridCellsCond/arm64")
+
+./kdr.o: ./kdr.c
+	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
+	$(COMPILE) -I"../mod" $(INCLUDES) -fPIC -c $< -o $@
+
+./naf.c: ../mod/naf.mod
+	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
+	(cd "../mod";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "naf.mod" -o "/Users/govindrnair/TheoNeuroLab/GridCellsCond/arm64")
+
+./naf.o: ./naf.c
+	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
+	$(COMPILE) -I"../mod" $(INCLUDES) -fPIC -c $< -o $@
+
+./stellate_mech.c: ../mod/stellate_mech.mod
+	@printf " -> $(C_GREEN)NMODL$(C_RESET) $<\\n"
+	(cd "../mod";  MODLUNIT=$(NRNUNITS) $(NOCMODL) "stellate_mech.mod" -o "/Users/govindrnair/TheoNeuroLab/GridCellsCond/arm64")
+
+./stellate_mech.o: ./stellate_mech.c
+	@printf " -> $(C_GREEN)Compiling$(C_RESET) $<\\n"
+	$(COMPILE) -I"../mod" $(INCLUDES) -fPIC -c $< -o $@
+
