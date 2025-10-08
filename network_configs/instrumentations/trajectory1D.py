@@ -73,8 +73,7 @@ class Trajectory1D:
         self.decompose_vel()
         self.right_dc = self.vel_to_dc_fit(self.right_vel)
         self.left_dc = self.vel_to_dc_fit(-1 * self.left_vel)
-        self.intrnrn_dc=np.full_like(self.t, self.params["intrnrn_dc_amp"])
-        temp = self.intrnrn_dc
+        
 
         #making changes from here
         self.cue_loc = self.params["cue_position"]
@@ -84,7 +83,7 @@ class Trajectory1D:
             return np.minimum(2*np.pi - np.abs(pos - cue_loc), np.abs(pos - cue_loc))
 
         
-
+        
         def amp_mod_function(dis):
             amp_base = self.params["dc_amp_baseline"]
             amp_min = self.params["dc_amp_minimum"]
@@ -92,7 +91,7 @@ class Trajectory1D:
 
             term = (amp_base-amp_min)*(np.exp(-dis/resp))
             
-            return amp_base-term*self.tuning
+            return amp_base-term
         
         def theta_osc(t_arr):
             freq = self.params["omega_i_theta"]
@@ -100,9 +99,15 @@ class Trajectory1D:
 
         dis_array = distance_function(self.pos_input,self.cue_loc)
         amp_array = amp_mod_function(dis=dis_array)
+        if self.params["tuning"]==1:
+             self.intrnrn_dc = (amp_array*theta_osc(self.t)) + np.full_like(self.t, self.params["intrnrn_dc_amp"])
 
-        self.intrnrn_dc = self.params["tuning"]*amp_array*theta_osc(self.t) + temp
+        else:
+             self.intrnrn_dc = np.full_like(self.t, self.params["intrnrn_dc_amp"])
 
+
+
+       
          #to here
         
 
