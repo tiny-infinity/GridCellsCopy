@@ -90,8 +90,10 @@ class Trajectory1D:
             resp = self.params["theta_response_scale"]
 
             term = (amp_base-amp_min)*(np.exp(-dis/resp))
-            
-            return amp_base-term
+            if self.params['tuning']==2:
+                return amp_base - term
+            else:
+                return amp_base
         
         def theta_osc(t_arr):
             freq = self.params["omega_i_theta"]
