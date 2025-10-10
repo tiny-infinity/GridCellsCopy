@@ -92,6 +92,8 @@ class Trajectory1D:
             term = (amp_base-amp_min)*(np.exp(-dis/resp))
             if self.params['tuning']==2:
                 return amp_base - term
+            elif self.params['tuning']==1:
+                return amp_base
             else:
                 return amp_base
         
@@ -101,8 +103,10 @@ class Trajectory1D:
 
         dis_array = distance_function(self.pos_input,self.cue_loc)
         amp_array = amp_mod_function(dis=dis_array)
-        if self.params["tuning"]==1:
+        if self.params["tuning"]==1 or self.params["tuning"]==2:
              self.intrnrn_dc = (amp_array*theta_osc(self.t)) + np.full_like(self.t, self.params["intrnrn_dc_amp"])
+
+        
 
         else:
              self.intrnrn_dc = np.full_like(self.t, self.params["intrnrn_dc_amp"])
