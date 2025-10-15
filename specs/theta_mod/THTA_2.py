@@ -9,7 +9,7 @@ def generate_mult_input_params():
         input_params = {
             "sim_num":str(sim_num),
             "sim_dur": sim_dur,
-            "sim_id": "THETA_CONST",
+            "sim_id": "THTA_2",
             "traj_id": 'tmod2',
             "vel_type": "input",
             "init_allothetic_input": True,
@@ -28,7 +28,8 @@ def generate_mult_input_params():
             "init_noise_seed":np.random.randint(0,100000),
             "noise_seed":np.random.randint(0,100000),
             "n_cpus":4,
-            "tuning":0,
+            "tuning":2,
+            "dc_amp_baseline":1e-3,
             "netcon_delay":1,
             "record_handle_stell":{"stell_syn_inhib_g":{"state":False,"cells_to_record":[46,64]},
                                      "stell_ext_dc_amp":{"state":False,"cells_to_record":[46,64]}},

@@ -9,7 +9,7 @@ def generate_mult_input_params():
         input_params = {
             "sim_num":str(sim_num),
             "sim_dur": sim_dur,
-            "sim_id": "THETA_CONST",
+            "sim_id": "THTA_4",
             "traj_id": 'tmod2',
             "vel_type": "input",
             "init_allothetic_input": True,
