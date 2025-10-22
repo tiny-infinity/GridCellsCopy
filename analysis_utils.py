@@ -10,6 +10,19 @@ import sim_utils as s_utils
 import copy
 import sys
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 def periodic_activity_all(stell_spikes_l, sim_dur, window_t, stdev):
     """Instantaneous firing rate for all cells using Gaussian kernel convolution.
     

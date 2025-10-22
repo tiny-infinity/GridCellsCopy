@@ -9,8 +9,8 @@ def generate_mult_input_params():
         input_params = {
             "sim_num":str(sim_num),
             "sim_dur": sim_dur,
-            "sim_id": "THETA_OSC",
-            "traj_id": 'tmod2',
+            "sim_id": "THETA_OSC_s1",
+            "traj_id": 'tmod_s1',
             "vel_type": "input",
             "init_allothetic_input": True,
             "allothetic_stell_dc":-0.0027,
