@@ -3,7 +3,7 @@ import sim_utils as s_utils
 import analysis_utils as a_utils
 from network_configs.instrumentations.trajectory1D import Trajectory1D
 from scipy import stats
-
+import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -130,6 +130,47 @@ def com_raster(spk_array,convolve=True,gauss_window=10):
     else:
         return com_time_series
 
+
+def plot_mult_com(sim_id_list,sim_dur=60000,sim_num=0):
+    """
+    Plots the time series of the Center of Mass of spike activity for multiple simulations
+    """
+    time_arr = np.linspace(0,sim_dur,sim_dur)
+    plt.figure(figsize=(22,12))
+    for sim_id in sim_id_list:
+        stell_spks,_ = s_utils.load_spikes(sim_id,sim_num)
+        binned_spks = a_utils.bin_spike_ms(stell_spks,60000)
+        
+        plt.plot(time_arr,com_raster(binned_spks),label=f'{sim_id}',linewidth=0.5)
+    plt.title(f"Center of Mass trajectories")
+    plt.xlabel("Time (in ms)")
+    plt.ylabel("Position of activity center")
+    plt.legend()
+    plt.show()
+        
+
+def plot_power_spectrum(time_series,title=None,xmax=None):
+    """
+    Plots the power spectrum of any given time series
+    
+    """
+    fft_freq,fft_sig,pow_spec = a_utils.calc_fft(time_series)
+    plt.figure(figsize=(18,12))
+    plt.plot(fft_freq,pow_spec)
+    plt.xlabel("Frequency (in Hz)")
+    plt.ylabel("Intensity")
+    if xmax:
+        plt.xlim(0,xmax)
+    if title:
+        plt.title(f"{title}")
+    else:
+        plt.title("Power Spectrum")
+
+    plt.show()
+
+    
+
+
 def com_deviation(sim_id,num_sims=10,sim_dur_ms=60000):
     """
     Time series of standard deviation of center of mass of neural activity across multiple trials
@@ -146,6 +187,9 @@ def com_deviation(sim_id,num_sims=10,sim_dur_ms=60000):
 
     return np.std(mult_arr,axis=0)
 
+def bin_spikes(sim_id,sim_num,sim_dur_ms):
+    stell_spks,_ = s_utils.load_spikes(sim_id,sim_num)
+    return a_utils.bin_spike_ms(stell_spks,sim_dur_ms)
 
 def circular_error(var1,var2):
 
