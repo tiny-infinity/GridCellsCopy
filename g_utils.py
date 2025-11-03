@@ -11,14 +11,14 @@ import numpy as np
 New utility functions for analysis
 
 """
-def decode_func(sim_id, sim_num, n_trials=10, sim_dur = float(60000)):
+def decode_func(sim_id, sim_num, n_trials, sim_dur = float(60000)):
     """
     Take in Sim ID, Number
 
     Return arrays of mean and standard deviation of decoded trajectories
     
     """
-
+    print("Number of trials:" , n_trials)
     params = s_utils.load_sim_params(sim_id=sim_id)["0"]
     traj = Trajectory1D(params, save_mem=False)
     dc_inmput = traj.intrnrn_dc
@@ -33,7 +33,7 @@ def decode_func(sim_id, sim_num, n_trials=10, sim_dur = float(60000)):
 
     for tr in range(n_trials):
         print("Trial Number ", tr)
-        stell_spks, _ = s_utils.load_spikes(sim_id, sim_num)
+        stell_spks, _ = s_utils.load_spikes(sim_id, sim_num, )
         decoded_positions[tr, :] = a_utils.decode_pos(stell_spks, params, win_size=40, t_start=int(traj.init_allothetic_dur))
         sim_num += 1
 
@@ -43,7 +43,7 @@ def decode_func(sim_id, sim_num, n_trials=10, sim_dur = float(60000)):
     return mean_decode_posns, std_decode_posns
 
 
-def posn_vel_input(sim_id, sim_num, n_trials=10, sim_dur = float(60000)):
+def posn_vel_input(sim_id, sim_num, n_trials, sim_dur = float(60000)):
     """
     Takes in Simulation ID, returns position, velocity and time arrays 
     
@@ -67,11 +67,11 @@ def plot_mult_stddev(sim_id_list,sim_num=0,save=None,num_trials=10):
     
     
     """
-
-    _,_,t_s=posn_vel_input(sim_id_list[0],sim_num)
+    print("num_trials : ", num_trials)
+    _,_,t_s=posn_vel_input(sim_id_list[0],sim_num,n_trials=num_trials)
     plt.figure(figsize=(22,10))
     for sim_id in sim_id_list:
-        _,std = decode_func(sim_id,sim_num)
+        _,std = decode_func(sim_id,sim_num,n_trials=num_trials)
         plt.plot(t_s,std,label=f"{sim_id}")
     plt.legend()
     plt.title(f"Standard Deviation of decoded trajectories across {num_trials} trials")
@@ -86,10 +86,10 @@ def plot_mult_error(sim_id_list,sim_num=0,save=None,num_trials=10):
     """
     Plots the circular error for all Sim IDs in the input list
     """
-    pos_input,_,t_s=posn_vel_input(sim_id_list[0],sim_num)
+    pos_input,_,t_s=posn_vel_input(sim_id_list[0],sim_num,n_trials=num_trials)
     plt.figure(figsize=(22,10))
     for sim_id in sim_id_list:
-        mean,_ = decode_func(sim_id,sim_num)
+        mean,_ = decode_func(sim_id,sim_num,n_trials=num_trials)
         error = circular_error(pos_input[:-1],mean[1:])
         plt.plot(t_s[1:],error,label=f"{sim_id}")
     plt.title(f"Position decoding error")

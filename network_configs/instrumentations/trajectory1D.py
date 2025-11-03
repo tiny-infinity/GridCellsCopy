@@ -73,6 +73,8 @@ class Trajectory1D:
         self.decompose_vel()
         self.right_dc = self.vel_to_dc_fit(self.right_vel)
         self.left_dc = self.vel_to_dc_fit(-1 * self.left_vel)
+        self.intrnrn_dc = np.full_like(self.t, self.params["intrnrn_dc_amp"])
+
         
 
         #making changes from here
@@ -104,12 +106,11 @@ class Trajectory1D:
         dis_array = distance_function(self.pos_input,self.cue_loc)
         amp_array = amp_mod_function(dis=dis_array)
         if self.params["tuning"]==1 or self.params["tuning"]==2:
-             self.intrnrn_dc = (amp_array*theta_osc(self.t)) + np.full_like(self.t, self.params["intrnrn_dc_amp"])
-
+             self.intrnrn_theta = (amp_array*theta_osc(self.t))
         
 
         else:
-             self.intrnrn_dc = np.full_like(self.t, self.params["intrnrn_dc_amp"])
+             self.intrnrn_theta = np.full_like(self.t, 0)
 
 
 
@@ -194,32 +195,5 @@ class Trajectory1D:
         self.right_dc = self.create_piecewise(x, right_ring)
         self.intrnrn_dc=np.full_like(self.t, self.params["intrnrn_dc_amp"])
 
-    def theta_modulation(self):
-        """Theta amplitude changes with proximity to cue on the track"""
-        with hdf.File("input_data/trajectories/traj_{}.hdf5".format(self.params["traj_id"]), "r") as file:
-            self.vel_input = np.array(file["vel_rinb"][:])
-            self.pos_input = np.array(file["pos_rinb"][:])
-            pos_array = self.pos_input
-
-        def periodic_distance(x, y, L):
-            """Shortest distance on a circle of length L"""
-            return np.minimum(np.abs(x - y), L - np.abs(x - y))
-        
-        def theta_amp_mod(cur_pos, cue_pos, L=2*np.pi):
-             base_theta_amp = 1.0   # baseline
-             min_theta_amp  = 0.1   # min at cue
-             pos_var        = 10    # width of cue effect (cm)
-
-             cur_pos = np.array(cur_pos).flatten()
-             d = periodic_distance(cur_pos, cue_pos, L)
-
-             mod_term = (base_theta_amp - min_theta_amp) * np.exp(-(d ** 2) / pos_var)
-             return base_theta_amp - mod_term
-        
-        
-
-        
-
-        return None
 
     

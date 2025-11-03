@@ -120,6 +120,11 @@
         }
     },
     "record_handle_intrnrn": {
+        "intrnrn_theta_dc":{"state":true,
+        "cells_to_record":"all",
+        "loc":"ext_theta_dc:_ref_amp"
+    },
+
         "intrnrn_spks": {
             "state": true,
             "cells_to_record": "all"

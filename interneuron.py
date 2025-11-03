@@ -43,7 +43,7 @@ class Interneuron(Cell):
 
     def _default_instrumentation(self):
         self.ext_dc = h.IClamp(self.soma(0.5))  # IClamp for const DC
-
+        self.ext_theta_dc = h.IClamp(self.soma(0.5))
         self.noise = h.IClamp(self.soma(0.5))  # IClamp for noise
         self.init_noise = h.IClamp(self.soma(0.5))  # IClamp for intial noise
         self.recorder ={}
