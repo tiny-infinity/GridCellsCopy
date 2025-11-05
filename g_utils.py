@@ -203,3 +203,13 @@ def circular_error(var1,var2):
     """
     circum = 2*np.pi
     return np.abs(np.min(np.vstack((np.abs(var1-var2),circum-np.abs(var1-var2))),axis=0))
+
+
+def isi_distribution(spike_train,sim_dur):
+    isi_list = []
+    for i in range(len(spike_train)-1):
+        isi_list.append((spike_train[i+1]-spike_train[i])/1000)
+    isi_array = np.array(isi_list)
+    plt.figure(figsize=(18,18))
+    plt.hist(isi_array,bins=100,density=True)
+    plt.show()
