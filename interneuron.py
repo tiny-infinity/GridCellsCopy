@@ -22,7 +22,7 @@ class Interneuron(Cell):
         self.soma.insert("naf")
         self.soma.insert("kdr")
         self.soma.insert("pas")
-        #self.soma.insert("i_theta")
+        self.soma.insert("i_theta")
 
         for seg in self.soma:
             seg.pas.g = 1e-4
