@@ -1,12 +1,14 @@
 #!/bin/bash
 
-echo "Starting simulation on 6th Nov, 13:55pM"
+echo "Starting simulation on 8th Nov, 01:59AM"
 
 echo "hello how are you, this is script1"
-python m_sim_setup.py specs/fig2/fig2_c.py -o
-
+python m_sim_setup.py specs/FINAL/final_0_c.py -o
 
 echo "hello how are you, this is script1"
-python m_sim_setup.py specs/fig2/fig2_d.py -o
-
+python m_sim_setup.py specs/FINAL/final_0_o.py -o
+echo "hello how are you, this is script1"
+python m_sim_setup.py specs/FINAL/final_1_o.py -o
+echo "hello how are you, this is script1"
+python m_sim_setup.py specs/FINAL/final_1_c.py -o
 echo "done"
