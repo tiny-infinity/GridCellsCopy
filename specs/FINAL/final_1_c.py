@@ -24,7 +24,7 @@ def generate_mult_input_params():
             "lambda0":2*np.pi,
             "allothetic_nrn_n":10,
             "Amp_i_theta":0,
-            "intrnrn_dc_amp":1e-2,
+            "intrnrn_dc_amp":1e-3,
             "dc_amp_baseline":1e-2,
             "init_noise_seed":np.random.randint(0,100000),
             "noise_seed":np.random.randint(0,100000),

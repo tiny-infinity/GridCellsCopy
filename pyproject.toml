@@ -17,9 +17,9 @@ dependencies = [
     "sphinx-rtd-theme>=3.0.2",
     "furo>=2024.8.6",
     "sphinx-inline-tabs>=2023.4.21",
+    "pyqt5>=5.15.11",
 ]
 [dependency-groups]
 other = [
   "fabric2",
-  "PyQt6"
 ]
