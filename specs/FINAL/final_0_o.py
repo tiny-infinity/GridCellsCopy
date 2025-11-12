@@ -1,7 +1,7 @@
 import numpy as np
 
 def generate_mult_input_params():
-    n_trials = 1
+    n_trials = 10
     sim_num = 0
     multiple_input_params = {}
     sim_dur = float(30000)

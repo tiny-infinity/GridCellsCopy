@@ -1,7 +1,7 @@
 import numpy as np
 
 def generate_mult_input_params():
-    n_trials = 1
+    n_trials = 10
     sim_num = 0
     multiple_input_params = {}
     sim_dur = float(30000)
@@ -25,12 +25,11 @@ def generate_mult_input_params():
             "allothetic_nrn_n":10,
             "Amp_i_theta":0,
             "intrnrn_dc_amp":1e-3,
-            "dc_amp_baseline":1e-2,
+            "dc_amp_baseline":0.7e-2,
             "init_noise_seed":np.random.randint(0,100000),
             "noise_seed":np.random.randint(0,100000),
             "n_cpus":4,
             "tuning":0,
-            "dc_amp_baseline":1e-3,
             "netcon_delay":1,
             "record_handle_stell":{"stell_syn_inhib_g":{"state":False,"cells_to_record":[46,64]},
                                      "stell_ext_dc_amp":{"state":False,"cells_to_record":[46,64]}},

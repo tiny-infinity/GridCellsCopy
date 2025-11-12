@@ -55,7 +55,7 @@ def setup_instrumentation(network):
         #range variables
         interneuron.ext_dc.dur = params['sim_dur'] - interneuron.ext_dc.delay
         network.ext_amp_theta.play(interneuron.ext_theta_dc._ref_amp,network.ext_t,True)
-
+        interneuron.ext_theta_dc.dur = params['sim_dur'] - interneuron.ext_dc.delay
         if interneuron._gid in network.traj.active_cells and params["vel_type"] == 'input':
             network.traj.ext_amp_intnrn_allo.play(interneuron.ext_dc._ref_amp, network.ext_t, True)
         else:

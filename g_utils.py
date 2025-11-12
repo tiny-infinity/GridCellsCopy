@@ -33,7 +33,7 @@ def decode_func(sim_id, sim_num, n_trials, sim_dur = float(60000)):
 
     for tr in range(n_trials):
         print("Trial Number ", tr)
-        stell_spks, _ = s_utils.load_spikes(sim_id, sim_num, )
+        stell_spks, _ = s_utils.load_spikes(sim_id, sim_num)
         decoded_positions[tr, :] = a_utils.decode_pos(stell_spks, params, win_size=40, t_start=int(traj.init_allothetic_dur))
         sim_num += 1
 
@@ -91,7 +91,7 @@ def plot_mult_error(sim_id_list,sim_num=0,save=None,num_trials=10):
     for sim_id in sim_id_list:
         mean,_ = decode_func(sim_id,sim_num,n_trials=num_trials)
         error = circular_error(pos_input[:-1],mean[1:])
-        plt.plot(t_s[1:],error,label=f"{sim_id}")
+        plt.scatter(t_s[1:],error,label=f"{sim_id}")
     plt.title(f"Position decoding error")
     plt.legend()
     plt.ylabel("Error (in rads)")
