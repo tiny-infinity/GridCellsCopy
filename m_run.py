@@ -20,7 +20,10 @@ import logging
 import subprocess
 import os
 
+
 h.nrnmpi_init()
+
+
 pc = h.ParallelContext()
 tstart = time.perf_counter()
 args, unknown= s_utils.sim_run_arg_parser().parse_known_args()

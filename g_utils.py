@@ -91,7 +91,7 @@ def plot_mult_error(sim_id_list,sim_num=0,save=None,num_trials=10):
     for sim_id in sim_id_list:
         mean,_ = decode_func(sim_id,sim_num,n_trials=num_trials)
         error = circular_error(pos_input[:-1],mean[1:])
-        plt.scatter(t_s[1:],error,label=f"{sim_id}")
+        plt.plot(t_s[1:],error,label=f"{sim_id}")
     plt.title(f"Position decoding error")
     plt.legend()
     plt.ylabel("Error (in rads)")
@@ -101,7 +101,7 @@ def plot_mult_error(sim_id_list,sim_num=0,save=None,num_trials=10):
         plt.savefig(f"{save}.png")
     return None
 
-def com_raster(spk_array,convolve=True,gauss_window=10):
+def com_raster(spk_array,convolve=False,gauss_window=20):
     """
     Finds the center of mass of neural activity using binned spike data
     Input:
@@ -112,26 +112,31 @@ def com_raster(spk_array,convolve=True,gauss_window=10):
     Return:
         Time series of center of mass
     """
-    com_time_series=[]
-    for j in range(len(spk_array[0])):
-        num,den=0,0
-        for i in range(len(spk_array)):
+    mean_time_series=[]
+    var_time_series=[]
+    for j in range(len(spk_array[0])): #for each timestep
+        num,den,num2=0,0,0
+        for i in range(len(spk_array)): #for each cell
 
             if spk_array[i][j]==1:
                 num+=i
                 den+=1
+                num2+=i**2
         if den==0:
-            com_time_series.append(0)
+            mean_time_series.append(0)
+            var_time_series.append(0)
         else:
-            com_time_series.append(num/den)
+            mean_time_series.append(num/den)
+            var_time_series.append((num2/den) - (num/den)**2)
+
 
     if convolve:
-        return gaussian_filter1d(com_time_series,sigma=gauss_window)
+        return gaussian_filter1d(mean_time_series,sigma=gauss_window), gaussian_filter1d(np.sqrt(var_time_series),sigma=gauss_window)
     else:
-        return com_time_series
+        return mean_time_series, np.sqrt(var_time_series)
 
 
-def plot_mult_com(sim_id_list,sim_dur=60000,sim_num=0):
+def plot_mult_com(sim_id_list,sim_dur=60000,sim_num=0,convolve=False):
     """
     Plots the time series of the Center of Mass of spike activity for multiple simulations
     """
@@ -140,11 +145,22 @@ def plot_mult_com(sim_id_list,sim_dur=60000,sim_num=0):
     for sim_id in sim_id_list:
         stell_spks,_ = s_utils.load_spikes(sim_id,sim_num)
         binned_spks = a_utils.bin_spike_ms(stell_spks,sim_dur)
-        
-        plt.plot(time_arr,com_raster(binned_spks),label=f'{sim_id}',linewidth=0.5)
+        mean,std=com_raster(binned_spks,convolve=convolve)
+        plt.plot(time_arr,mean,label=f'{sim_id}',linewidth=0.5)
     plt.title(f"Center of Mass trajectories")
     plt.xlabel("Time (in ms)")
     plt.ylabel("Position of activity center")
+    plt.legend()
+    plt.show()
+
+    for sim_id in sim_id_list:
+        stell_spks,_ = s_utils.load_spikes(sim_id,sim_num)
+        binned_spks = a_utils.bin_spike_ms(stell_spks,sim_dur)
+        mean,std=com_raster(binned_spks,convolve=convolve)
+        plt.plot(time_arr,std,label=f'{sim_id}',linewidth=0.5)
+    plt.title(f"Variance in trajectories")
+    plt.xlabel("Time (in ms)")
+    plt.ylabel("Variance")
     plt.legend()
     plt.show()
 
