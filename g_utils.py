@@ -139,7 +139,7 @@ def plot_mult_com(sim_id_list,sim_dur=60000,sim_num=0):
     plt.figure(figsize=(22,12))
     for sim_id in sim_id_list:
         stell_spks,_ = s_utils.load_spikes(sim_id,sim_num)
-        binned_spks = a_utils.bin_spike_ms(stell_spks,60000)
+        binned_spks = a_utils.bin_spike_ms(stell_spks,sim_dur)
         
         plt.plot(time_arr,com_raster(binned_spks),label=f'{sim_id}',linewidth=0.5)
     plt.title(f"Center of Mass trajectories")
@@ -147,6 +147,8 @@ def plot_mult_com(sim_id_list,sim_dur=60000,sim_num=0):
     plt.ylabel("Position of activity center")
     plt.legend()
     plt.show()
+
+    plot_power_spectrum(com_raster(binned_spks),xmax=250)
         
 
 def plot_power_spectrum(time_series,title=None,xmax=None):
@@ -154,7 +156,7 @@ def plot_power_spectrum(time_series,title=None,xmax=None):
     Plots the power spectrum of any given time series
     
     """
-    fft_freq,fft_sig,pow_spec = a_utils.calc_fft(time_series)
+    fft_freq,fft_sig,pow_spec = a_utils.calc_fft(time_series,T=0.001)
     plt.figure(figsize=(18,12))
     plt.plot(fft_freq,pow_spec)
     plt.xlabel("Frequency (in Hz)")
