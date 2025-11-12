@@ -54,12 +54,15 @@ def setup_instrumentation(network):
     for interneuron in network.interneurons:
         #range variables
         interneuron.ext_dc.dur = params['sim_dur'] - interneuron.ext_dc.delay
+
         network.ext_amp_theta.play(interneuron.ext_theta_dc._ref_amp,network.ext_t,True)
         interneuron.ext_theta_dc.dur = params['sim_dur'] - interneuron.ext_dc.delay
+
         if interneuron._gid in network.traj.active_cells and params["vel_type"] == 'input':
             network.traj.ext_amp_intnrn_allo.play(interneuron.ext_dc._ref_amp, network.ext_t, True)
         else:
             network.ext_amp_intrnrn.play(interneuron.ext_dc._ref_amp, network.ext_t, True)
+            
         instr_utils.set_intrnrn_range_variables(interneuron,params)
         instr_utils.set_intial_noise(interneuron,params["intrnrn_init_noise"],noise_seed=params["init_noise_seed"])
         instr_utils.set_noise(interneuron,params["intrnrn_noise"],noise_seed=params["noise_seed"])
