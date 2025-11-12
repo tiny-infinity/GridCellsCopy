@@ -91,7 +91,7 @@ class Trajectory1D:
             amp_min = self.params["dc_amp_minimum"]
             resp = self.params["theta_response_scale"]
 
-            term = (amp_base-amp_min)*(np.exp(-dis/resp))
+            term = (amp_base-amp_min)*(np.exp(-((dis/resp)**2)))
             if self.params['tuning']==2:
                 return amp_base - term
             elif self.params['tuning']==1:

@@ -101,6 +101,17 @@ def plot_mult_error(sim_id_list,sim_num=0,save=None,num_trials=10):
         plt.savefig(f"{save}.png")
     return None
 
+
+def total_error(sim_id,sim_num=0,num_trials=10):
+    pos_input,_,t_s=posn_vel_input(sim_id,sim_num,n_trials=num_trials)
+    mean, std = decode_func(sim_id=sim_id,sim_num=sim_num,n_trials=num_trials)
+
+    error = np.sum(circular_error(pos_input[:-1],mean[1:]))
+
+    return error
+
+
+
 def com_raster(spk_array,convolve=False,gauss_window=20):
     """
     Finds the center of mass of neural activity using binned spike data
