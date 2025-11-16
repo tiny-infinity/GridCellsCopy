@@ -34,6 +34,7 @@
     "stell_const_dc": [1.5e-3,-2.75e-3],
     "dc_amp_baseline":0.5e-3,
     "dc_amp_minimum":1e-4,
+    "dc_amp_maximum":1e-3,
     "theta_response_scale":1.0,
     "tuning":0,
 

@@ -89,11 +89,21 @@ class Trajectory1D:
         def amp_mod_function(dis):
             amp_base = self.params["dc_amp_baseline"]
             amp_min = self.params["dc_amp_minimum"]
+            amp_max = self.params["dc_amp_maximum"]
             resp = self.params["theta_response_scale"]
+             
+            
+            term_min = (amp_base-amp_min)*(np.exp(-((dis/resp)**2)))
 
-            term = (amp_base-amp_min)*(np.exp(-((dis/resp)**2)))
+            term_max = (amp_max - amp_base)*(np.exp(-((dis/resp)**2)))
+
+
             if self.params['tuning']==2:
-                return amp_base - term
+                return amp_base - term_min
+
+            if self.params['tuning']==3:
+                return amp_base + term_max
+
             elif self.params['tuning']==1:
                 return amp_base
             else:
