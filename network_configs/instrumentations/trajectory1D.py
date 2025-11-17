@@ -76,7 +76,7 @@ class Trajectory1D:
         self.intrnrn_dc = np.full_like(self.t, self.params["intrnrn_dc_amp"])
 
         
-
+        
         #making changes from here
         self.cue_loc = self.params["cue_position"]
         self.tuning = self.params["tuning"]
@@ -89,25 +89,21 @@ class Trajectory1D:
         def amp_mod_function(dis):
             amp_base = self.params["dc_amp_baseline"]
             amp_min = self.params["dc_amp_minimum"]
-            amp_max = self.params["dc_amp_maximum"]
+            #amp_max = self.params["dc_amp_maximum"]  # Initialize amp_max before using it
             resp = self.params["theta_response_scale"]
-             
-            
-            term_min = (amp_base-amp_min)*(np.exp(-((dis/resp)**2)))
 
-            term_max = (amp_max - amp_base)*(np.exp(-((dis/resp)**2)))
+             if self.params['tuning'] == 2:
+                 term_min = (amp_base - amp_min) * (np.exp(-((dis / resp) ** 2)))
+                 return amp_base - term_min
 
+            # if self.params['tuning'] == 3:
+                 #term_max = (amp_max - amp_base) * (np.exp(-((dis / resp) ** 2)))
+                 #return amp_base + term_max
 
-            if self.params['tuning']==2:
-                return amp_base - term_min
-
-            if self.params['tuning']==3:
-                return amp_base + term_max
-
-            elif self.params['tuning']==1:
-                return amp_base
-            else:
-                return amp_base
+             elif self.params['tuning'] == 1:
+                 return amp_base
+             else:
+                 return amp_base
         
         def theta_osc(t_arr):
             freq = self.params["omega_i_theta"]
@@ -115,7 +111,7 @@ class Trajectory1D:
 
         dis_array = distance_function(self.pos_input,self.cue_loc)
         amp_array = amp_mod_function(dis=dis_array)
-        if self.params["tuning"]==1 or self.params["tuning"]==2:
+        if self.params["tuning"]==1 or self.params["tuning"]==2: # or self.params["tuning"]==3:
              self.intrnrn_theta = (amp_array*theta_osc(self.t))
         
 

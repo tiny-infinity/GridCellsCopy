@@ -59,7 +59,7 @@ def posn_vel_input(sim_id, sim_num, n_trials, sim_dur = float(60000)):
     return position_input, velocity_input, t_s
 
 
-def plot_mult_stddev(sim_id_list,sim_num=0,save=None,num_trials=10):
+def plot_mult_stddev(sim_id_list,sim_num=0,save=None,num_trials=10,allo_time=None):
     """
     Plots the standard deviation time series for a given simulation ID.
     Input:
@@ -77,9 +77,14 @@ def plot_mult_stddev(sim_id_list,sim_num=0,save=None,num_trials=10):
     plt.title(f"Standard Deviation of decoded trajectories across {num_trials} trials")
     plt.ylabel("Standard Deviation (in rads)")
     plt.xlabel("Time (in s)")
-    plt.show()
+    
+    if allo_time:
+        plt.axvline(x=allo_time,ls='--',lw=1,color='black')
+    
     if save:
-        plt.savefig(f"{save}.png")
+        plt.savefig(f"{save}.png",dpi=300)
+    
+    plt.show()
     return None
 
 def plot_mult_error(sim_id_list,sim_num=0,save=None,num_trials=10):
